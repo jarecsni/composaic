@@ -1,12 +1,12 @@
 {
-    "name": "skeleton-npm-package",
-    "version": "1.0.0",
-    "description": "An easy used and configured skeleton for NPM Package in Javascript and Typescript.",
+    "name": "composaic",
+    "version": "0.1.1",
+    "description": "A Composable Micro-Frontend Framework",
     "main": "./lib/index.js",
     "types": "./lib/index.d.ts",
     "repository": {
         "type": "git",
-        "url": "https://github.com/jornatf/skeleton-npm-package.git"
+        "url": "https://github.com/jarecsni/composaic.git"
     },
     "scripts": {
         "test": "jest",
@@ -21,8 +21,8 @@
         "typescript"
     ],
     "author": {
-        "name": "Jordan Nataf",
-        "email": "me@jordnat.dev"
+        "name": "Johnny Jarecsni",
+        "email": "johnny.jarecsni@icloud.com"
     },
     "files": [
         "lib"
