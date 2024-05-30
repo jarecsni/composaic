@@ -1,43 +1,55 @@
-import { useEffect, useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
-import { say } from '@composaic/utils'
-import React from 'react'
+// @ts-ignore
+import React, { lazy, useEffect, useState } from 'react';
+import './App.css';
+// import { say } from '@composaic/utils';
+
+import {
+  __federation_method_getRemote,
+  __federation_method_setRemote,
+  // @ts-ignore
+} from "__federation__";
+
+function useFeatureFlagsOrSomethingCoolToGetRemote() {
+  // default to remoteA
+  let remoteConfig = {
+    url: "http://localhost:9000/assets/remoteEntry.js",
+    name: "remoteA",
+    module: "./RemoteARoot",
+  };
+
+  // insert super cool logic to determine your remote
+  // for demo purposes, we'll just alternate between remoteA and remoteB every 5 seconds
+  const seconds = new Date().getSeconds();
+  if (Math.floor(seconds / 5) % 2 === 0) {
+    remoteConfig = {
+      url: "http://localhost:9001/assets/remoteEntry.js",
+      name: "remoteB",
+      module: "./RemoteBRoot",
+    };
+  }
+  return remoteConfig;
+}
+
+const DynamicRemoteApp = lazy(() => {
+  const { url, name, module } = useFeatureFlagsOrSomethingCoolToGetRemote();
+  __federation_method_setRemote(name, {
+    url: () => Promise.resolve(url),
+    format: "esm",
+    from: "vite",
+  });
+
+  return __federation_method_getRemote(name, module);
+});
+
 
 function App() {
-    const [count, setCount] = useState(0)
-    useEffect(() => {
-        console.log(say('alma'))
-    }, [])
-    return (
-        <>
-            <div>
-                <a href="https://vitejs.dev" target="_blank">
-                    <img src={viteLogo} className="logo" alt="Vite logo" />
-                </a>
-                <a href="https://react.dev" target="_blank">
-                    <img
-                        src={reactLogo}
-                        className="logo react"
-                        alt="React logo"
-                    />
-                </a>
-            </div>
-            <h1>Vite + React</h1>
-            <div className="card">
-                <button onClick={() => setCount((count) => count + 1)}>
-                    count is {count}
-                </button>
-                <p>
-                    Edit <code>src/App.tsx</code> and save to test HMR
-                </p>
-            </div>
-            <p className="read-the-docs">
-                Click on the Vite and React logos to learn more
-            </p>
-        </>
-    )
+  return (
+    <div className="app">
+      <React.Suspense fallback="Loading">
+        <DynamicRemoteApp />
+      </React.Suspense>
+    </div>
+  );
 }
 
 export default App
