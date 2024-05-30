@@ -5,14 +5,15 @@ import { resolve } from 'path'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [
-    react(),
-    alias({
-      entries: [
-        {
-          find: '@composaic',
-          replacement: resolve(__dirname, '../../../src')
-        }
-      ]
-    })  ]
-});
+    plugins: [
+        react(),
+        alias({
+            entries: [
+                {
+                    find: '@composaic',
+                    replacement: resolve(__dirname, '../../../src'),
+                },
+            ],
+        }),
+    ],
+})
