@@ -30,25 +30,33 @@ function useFeatureFlagsOrSomethingCoolToGetRemote() {
     return remoteConfig
 }
 
-const DynamicRemoteApp = lazy(() => {
-    const { url, name, module } = useFeatureFlagsOrSomethingCoolToGetRemote()
-    __federation_method_setRemote(name, {
-        url: () => Promise.resolve(url),
-        format: 'esm',
-        from: 'vite',
-    })
+const DynamicRemoteApp = lazy(async () => {
+  const { url, name, module } = useFeatureFlagsOrSomethingCoolToGetRemote();
+  __federation_method_setRemote(name, {
+    url: () => Promise.resolve(url),
+    format: "esm",
+    from: "vite",
+  });
+  let comp = null;
+  try {
+    comp = await __federation_method_getRemote(name, module);
+  } catch (error) {
+    console.error('Error fetching remote', error);
+    comp = { default: () => <div>Failed to fetch remote</div> }
+  }
+  return comp;
+});
 
-    return __federation_method_getRemote(name, module)
-})
 
 function App() {
-    return (
-        <div className="app">
-            <React.Suspense fallback="Loading">
-                <DynamicRemoteApp />
-            </React.Suspense>
-        </div>
-    )
+  return (
+    <div className="app">
+      <React.Suspense fallback="Loading">
+        <div>Content</div>
+        <DynamicRemoteApp />
+      </React.Suspense>
+    </div>
+  );
 }
 
 export default App
