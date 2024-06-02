@@ -9,7 +9,8 @@
         "forceConsistentCasingInFileNames": true,
         "strict": true,
         "skipLibCheck": true,
-        "removeComments": true
+        "removeComments": true,
+        "jsx": "react-jsx"
     },
     "include": ["src"],
     "exclude": ["node_modules", "tests"]
