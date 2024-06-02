@@ -1,11 +1,8 @@
 import './App.css'
-import DevContainer from '@composaic/dev/DevContainer';
+import DevContainer from '@composaic/dev/DevContainer'
 
 function App() {
-
-  return (
-    <DevContainer></DevContainer>
-  )
+    return <DevContainer></DevContainer>
 }
 
 export default App
