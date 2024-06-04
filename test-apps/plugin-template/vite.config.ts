@@ -4,7 +4,7 @@ import alias from '@rollup/plugin-alias'
 // import federation from '@originjs/vite-plugin-federation'
 import { resolve } from 'path'
 
-import { viteStaticCopy } from 'vite-plugin-static-copy';
+import { viteStaticCopy } from 'vite-plugin-static-copy'
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -23,9 +23,7 @@ export default defineConfig({
             ],
         }),
         viteStaticCopy({
-            targets: [
-                { src: './manifest.json', dest: '.' }
-            ]
-        })
+            targets: [{ src: './manifest.json', dest: '.' }],
+        }),
     ],
 })
