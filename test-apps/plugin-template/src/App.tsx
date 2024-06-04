@@ -1,5 +1,5 @@
 import './App.css'
-// @ts-expect-error: alias resolution not working in VSC
+// @ts-expect-error - resolution not working
 import DevContainer from '@composaic/dev/DevContainer'
 
 function App() {
