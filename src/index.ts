@@ -2,7 +2,7 @@
  * @param message
  */
 const say = (message: string) => {
-    return message
-}
+    return message;
+};
 
-export { say }
+export { say };

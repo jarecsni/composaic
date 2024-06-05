@@ -1,2 +1,2 @@
-declare const say: (message: string) => string
-export { say }
+declare const say: (message: string) => string;
+export { say };
