@@ -53,7 +53,7 @@ export class PluginManager {
 
     /**
      * Get a plugin by name
-     * @param pluginName 
+     * @param pluginName
      * @returns the plugin instance. No attempt is made to protect this object from modification.
      */
     getPlugin(pluginName: string): PluginDescriptor {
