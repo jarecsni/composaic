@@ -1,4 +1,3 @@
-import { BazCoolExtensionImpl } from './BazCoolExtensionImpl';
 import { PluginManager } from './PluginManager';
 
 export interface MyCoolExtensionType {
