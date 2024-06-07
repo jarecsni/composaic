@@ -43,9 +43,8 @@ describe('PluginManager', () => {
         expect(loadedPlugin.extensions![0].id).toBe('MyCoolExtension');
         expect(loadedPlugin.extensions![0].plugin).toBe('@foo/bar');
         const ExtensionClass = loadedPlugin.extensions![0].impl;
-        // new BazCoolExtensionImpl().doSomethingCool();
-        // @ts-expect-error - we know this is a class
         // new ExtensionClass().doSomethingCool();
+        // @ts-expect-error - we know this is a class
         expect(new ExtensionClass().doSomethingCool).toBeDefined();
     });
 });

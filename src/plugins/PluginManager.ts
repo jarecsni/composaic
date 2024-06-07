@@ -33,10 +33,14 @@ export class PluginManager {
         plugin.dependencies?.forEach((dependency) => {
             this.loadPlugin(dependency as string);
         });
-        const pluginModule = await import(plugin.module);
-        if (plugin.extensions) {
+        let needInit = false;
+        if (!plugin.loadedModule) {
+            needInit = true;
+            plugin.loadedModule = await import(plugin.module);
+        }
+        if (plugin.extensions && needInit) {
             for (const extension of plugin.extensions) {
-                extension.impl = pluginModule[extension.className];
+                extension.impl = plugin.loadedModule![extension.className as keyof typeof plugin.loadedModule];
             }
         }
         return plugin;
