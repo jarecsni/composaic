@@ -18,7 +18,6 @@ export class PluginManager {
 
     // Add your methods here
     addPlugin(pluginDescriptor: PluginDescriptor) {
-        console.log(`Adding plugin ${pluginDescriptor.plugin}`);
         pluginDescriptor.dependencies = [];
         pluginDescriptor.extensions?.forEach((extension) => {
             pluginDescriptor.dependencies!.push(extension.plugin);
@@ -31,23 +30,15 @@ export class PluginManager {
         if (!plugin) {
             throw new Error(`Plugin ${pluginName} not found`);
         }
-        console.log(`Loading plugin ${pluginName}`);
         plugin.dependencies?.forEach((dependency) => {
-            console.log(`Loading dependency ${dependency}`);
             this.loadPlugin(dependency as string);
         });
-        console.log(`Initializing plugin ${pluginName}`);
+        const pluginModule = await import(plugin.module);
         if (plugin.extensions) {
             for (const extension of plugin.extensions) {
-                console.log(`Initializing extension ${extension.id}`);
-                // FIXME - this is a hack. We need to use the module field to load the correct module.
-                const impl = await import('./' + extension.className);
-                console.log('impl', impl);
-                extension.impl = impl[extension.className];
-                console.log('extension.impl', extension.impl);
+                extension.impl = pluginModule[extension.className];
             }
         }
-        console.log(`Plugin ${pluginName} loaded`, plugin);
         return plugin;
     }
 

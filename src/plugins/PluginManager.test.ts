@@ -7,7 +7,7 @@ export interface MyCoolExtensionType {
 describe('PluginManager', () => {
     it('should add a plugin', async () => {
         PluginManager.getInstance().addPlugin({
-            module: 'FooPluginModule',
+            module: './BarPluginModule',
             plugin: '@foo/bar',
             version: '1.0',
             description: 'bar',
@@ -19,7 +19,7 @@ describe('PluginManager', () => {
             ],
         });
         PluginManager.getInstance().addPlugin({
-            module: 'FooPluginModule',
+            module: './BazPluginModule',
             plugin: '@foo/baz',
             version: '1.0',
             description: 'baz',
@@ -40,13 +40,12 @@ describe('PluginManager', () => {
         const loadedPlugin =
             await PluginManager.getInstance().loadPlugin('@foo/baz');
         expect(loadedPlugin).toBeDefined();
-        console.log('loadedPlugin', loadedPlugin);
         expect(loadedPlugin.extensions![0].id).toBe('MyCoolExtension');
         expect(loadedPlugin.extensions![0].plugin).toBe('@foo/bar');
         const ExtensionClass = loadedPlugin.extensions![0].impl;
         // new BazCoolExtensionImpl().doSomethingCool();
         // @ts-expect-error - we know this is a class
-        new ExtensionClass().doSomethingCool();
-        //expect(new ExtensionClass().doSomethingCool).toBeDefined();
+        // new ExtensionClass().doSomethingCool();
+        expect(new ExtensionClass().doSomethingCool).toBeDefined();
     });
 });
