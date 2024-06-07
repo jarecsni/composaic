@@ -20,7 +20,9 @@ export class PluginManager {
     addPlugin(pluginDescriptor: PluginDescriptor) {
         pluginDescriptor.dependencies = [];
         pluginDescriptor.extensions?.forEach((extension) => {
-            pluginDescriptor.dependencies!.push(extension.plugin);
+            if (extension.plugin !== 'self') {
+                pluginDescriptor.dependencies!.push(extension.plugin);
+            }
         });
         PluginManager.registry[pluginDescriptor.plugin] = pluginDescriptor;
     }
@@ -30,9 +32,12 @@ export class PluginManager {
         if (!plugin) {
             throw new Error(`Plugin ${pluginName} not found`);
         }
-        plugin.dependencies?.forEach((dependency) => {
-            this.loadPlugin(dependency as string);
-        });
+        if (plugin.dependencies) {
+            for (const dependency of plugin.dependencies) {
+                console.log(`loading dependency ${dependency}`);
+                await this.loadPlugin(dependency as string);
+            }
+        }
         let needInit = false;
         if (!plugin.loadedModule) {
             needInit = true;
@@ -41,9 +46,7 @@ export class PluginManager {
         if (plugin.extensions && needInit) {
             for (const extension of plugin.extensions) {
                 extension.impl =
-                    plugin.loadedModule![
-                        extension.className as keyof typeof plugin.loadedModule
-                    ];
+                    plugin.loadedModule![extension.className as keyof typeof plugin.loadedModule];
             }
         }
         return plugin;

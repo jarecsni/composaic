@@ -1,8 +1,5 @@
+import { MyCoolBarExtensionType } from './BarPluginModule';
 import { PluginManager } from './PluginManager';
-
-export interface MyCoolExtensionType {
-    doSomethingCool(): void;
-}
 
 describe('PluginManager', () => {
     it('should add a plugin', async () => {
@@ -43,8 +40,41 @@ describe('PluginManager', () => {
         expect(loadedPlugin.extensions![0].id).toBe('MyCoolExtension');
         expect(loadedPlugin.extensions![0].plugin).toBe('@foo/bar');
         const ExtensionClass = loadedPlugin.extensions![0].impl;
+        console.log(ExtensionClass);
         // new ExtensionClass().doSomethingCool();
         // @ts-expect-error - we know this is a class
         expect(new ExtensionClass().doSomethingCool).toBeDefined();
+    });
+    it('should be able to load a plugin with self extension', async () => {
+        PluginManager.getInstance().addPlugin({
+            module: './BarPluginModule',
+            plugin: '@foo/bar',
+            version: '1.0',
+            description: 'bar',
+            extensionPoints: [
+                {
+                    id: 'MyCoolExtension',
+                    type: 'MyCoolBarExtensionType',
+                },
+            ],
+            extensions: [
+                {
+                    plugin: 'self',
+                    id: 'MyCoolExtension',
+                    className: 'SimpleCoolExtensionProvider',
+                },
+            ],
+        });
+
+        const loadedPlugin =
+            await PluginManager.getInstance().loadPlugin('@foo/bar');
+        expect(loadedPlugin).toBeDefined();
+        expect(loadedPlugin.extensions![0].id).toBe('MyCoolExtension');
+        expect(loadedPlugin.extensions![0].plugin).toBe('self');
+        const ExtensionClass = loadedPlugin.extensions![0].impl;
+        // new ExtensionClass().doSomethingCool();
+        // @ts-expect-error - we know this is a class
+        const extension: MyCoolBarExtensionType = new ExtensionClass();
+        expect(extension.saySomethingCool).toBeDefined();
     });
 });
