@@ -14,7 +14,7 @@
             {
                 "plugin": "self",
                 "id": "logger-extension",
-                "className": "SimpleLoggerExtensionProvider",
+                "className": "SimpleLoggerExtensionProvider"
             }
         ]
     }

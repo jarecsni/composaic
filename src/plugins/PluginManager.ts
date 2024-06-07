@@ -46,7 +46,9 @@ export class PluginManager {
         if (plugin.extensions && needInit) {
             for (const extension of plugin.extensions) {
                 extension.impl =
-                    plugin.loadedModule![extension.className as keyof typeof plugin.loadedModule];
+                    plugin.loadedModule![
+                        extension.className as keyof typeof plugin.loadedModule
+                    ];
             }
         }
         return plugin;
