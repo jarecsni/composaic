@@ -22,7 +22,8 @@ export class PluginManager {
         pluginDescriptor.extensions?.forEach((extension) => {
             if (extension.plugin !== 'self') {
                 // Add this plugin as a dependency to the plugin offering the extension point
-                const targetPluginDescriptor = PluginManager.registry[extension.plugin];
+                const targetPluginDescriptor =
+                    PluginManager.registry[extension.plugin];
                 targetPluginDescriptor.dependencies!.push(pluginDescriptor);
             }
         });
@@ -48,9 +49,12 @@ export class PluginManager {
             for (const extension of plugin.extensions) {
                 extension.impl =
                     plugin.loadedModule![
-                    extension.className as keyof typeof plugin.loadedModule
+                        extension.className as keyof typeof plugin.loadedModule
                     ];
-                const targetPlugin = extension.plugin === 'self' ? plugin : PluginManager.registry[extension.plugin];
+                const targetPlugin =
+                    extension.plugin === 'self'
+                        ? plugin
+                        : PluginManager.registry[extension.plugin];
                 // look up the extension point in the targetPlugin matching the extension.id
                 const extensionPoint = targetPlugin.extensionPoints!.find(
                     (ep) => ep.id === extension.id
@@ -58,9 +62,16 @@ export class PluginManager {
                 // add the extension.impl into the targetPlugins's extensionPoint.impl array initialising it if necessary
                 if (extensionPoint) {
                     extensionPoint!.impl = extensionPoint!.impl = [];
-                    extensionPoint!.impl!.push({ plugin: plugin, extensionImpl: extension.impl });
+                    extensionPoint!.impl!.push({
+                        plugin: plugin,
+                        extensionImpl: extension.impl,
+                    });
                 } else {
-                    console.warn('Extension point not found', targetPlugin.plugin, extension.id);
+                    console.warn(
+                        'Extension point not found',
+                        targetPlugin.plugin,
+                        extension.id
+                    );
                 }
             }
         }
@@ -69,10 +80,10 @@ export class PluginManager {
 
     /**
      * Get a plugin by name
-     * 
+     *
      * @param pluginName
      * @returns the plugin instance. If the plugin is not loaded, it will be loaded.
-    */
+     */
     getPlugin(pluginName: string): PluginDescriptor {
         return PluginManager.registry[pluginName];
     }

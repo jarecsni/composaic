@@ -29,15 +29,19 @@ describe('PluginManager', () => {
                 },
             ],
         });
-        const pluginBaz = await PluginManager.getInstance().getPlugin('@foo/baz');
+        const pluginBaz =
+            await PluginManager.getInstance().getPlugin('@foo/baz');
         expect(pluginBaz).toBeDefined();
         expect(pluginBaz.extensions![0].id).toBe('MyCoolExtension');
         expect(pluginBaz.extensions![0].plugin).toBe('@foo/bar');
         expect(pluginBaz.extensions![0].className).toBe('BazCoolExtensionImpl');
         expect(pluginBaz.dependencies!).toEqual([]);
-        const pluginBar = await PluginManager.getInstance().getPlugin('@foo/bar');
+        const pluginBar =
+            await PluginManager.getInstance().getPlugin('@foo/bar');
         expect(pluginBar.dependencies!).toHaveLength(1);
-        expect((pluginBar.dependencies![0] as PluginDescriptor).plugin).toBe('@foo/baz');
+        expect((pluginBar.dependencies![0] as PluginDescriptor).plugin).toBe(
+            '@foo/baz'
+        );
     });
     it('should be able to load a plugin with self extension', async () => {
         PluginManager.getInstance().addPlugin({
