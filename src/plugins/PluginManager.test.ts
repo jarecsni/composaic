@@ -1,5 +1,6 @@
 import { MyCoolBarExtensionType } from './BarPluginModule';
 import { PluginManager } from './PluginManager';
+import { PluginDescriptor } from './types';
 
 describe('PluginManager', () => {
     it('should add a plugin', async () => {
@@ -28,22 +29,15 @@ describe('PluginManager', () => {
                 },
             ],
         });
-        const plugin = await PluginManager.getInstance().getPlugin('@foo/baz');
-        expect(plugin).toBeDefined();
-        expect(plugin.extensions![0].id).toBe('MyCoolExtension');
-        expect(plugin.extensions![0].plugin).toBe('@foo/bar');
-        expect(plugin.extensions![0].className).toBe('BazCoolExtensionImpl');
-
-        const loadedPlugin =
-            await PluginManager.getInstance().loadPlugin('@foo/baz');
-        expect(loadedPlugin).toBeDefined();
-        expect(loadedPlugin.extensions![0].id).toBe('MyCoolExtension');
-        expect(loadedPlugin.extensions![0].plugin).toBe('@foo/bar');
-        const ExtensionClass = loadedPlugin.extensions![0].impl;
-        console.log(ExtensionClass);
-        // new ExtensionClass().doSomethingCool();
-        // @ts-expect-error - we know this is a class
-        expect(new ExtensionClass().doSomethingCool).toBeDefined();
+        const pluginBaz = await PluginManager.getInstance().getPlugin('@foo/baz');
+        expect(pluginBaz).toBeDefined();
+        expect(pluginBaz.extensions![0].id).toBe('MyCoolExtension');
+        expect(pluginBaz.extensions![0].plugin).toBe('@foo/bar');
+        expect(pluginBaz.extensions![0].className).toBe('BazCoolExtensionImpl');
+        expect(pluginBaz.dependencies!).toEqual([]);
+        const pluginBar = await PluginManager.getInstance().getPlugin('@foo/bar');
+        expect(pluginBar.dependencies!).toHaveLength(1);
+        expect((pluginBar.dependencies![0] as PluginDescriptor).plugin).toBe('@foo/baz');
     });
     it('should be able to load a plugin with self extension', async () => {
         PluginManager.getInstance().addPlugin({
@@ -62,6 +56,19 @@ describe('PluginManager', () => {
                     plugin: 'self',
                     id: 'MyCoolExtension',
                     className: 'SimpleCoolExtensionProvider',
+                },
+            ],
+        });
+        PluginManager.getInstance().addPlugin({
+            module: './BazPluginModule',
+            plugin: '@foo/baz',
+            version: '1.0',
+            description: 'baz',
+            extensions: [
+                {
+                    plugin: '@foo/bar',
+                    id: 'MyCoolExtension',
+                    className: 'BazCoolExtensionImpl',
                 },
             ],
         });

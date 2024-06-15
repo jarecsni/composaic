@@ -13,6 +13,7 @@ export interface PluginDescriptor {
         id: string;
         type: string;
         singleton?: boolean;
+        impl?: { plugin: PluginDescriptor; extensionImpl: object }[];
     }[];
     extensions?: {
         plugin: string;

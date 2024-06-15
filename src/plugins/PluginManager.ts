@@ -21,7 +21,9 @@ export class PluginManager {
         pluginDescriptor.dependencies = [];
         pluginDescriptor.extensions?.forEach((extension) => {
             if (extension.plugin !== 'self') {
-                pluginDescriptor.dependencies!.push(extension.plugin);
+                // Add this plugin as a dependency to the plugin offering the extension point
+                const targetPluginDescriptor = PluginManager.registry[extension.plugin];
+                targetPluginDescriptor.dependencies!.push(pluginDescriptor);
             }
         });
         PluginManager.registry[pluginDescriptor.plugin] = pluginDescriptor;
@@ -30,12 +32,11 @@ export class PluginManager {
     async loadPlugin(pluginName: string): Promise<PluginDescriptor> {
         const plugin = PluginManager.registry[pluginName];
         if (!plugin) {
-            throw new Error(`Plugin ${pluginName} not found`);
+            throw new Error(`Plugin with ID ${pluginName} not found`);
         }
         if (plugin.dependencies) {
             for (const dependency of plugin.dependencies) {
-                console.log(`loading dependency ${dependency}`);
-                await this.loadPlugin(dependency as string);
+                await this.loadPlugin((dependency as PluginDescriptor).plugin);
             }
         }
         let needInit = false;
@@ -47,8 +48,20 @@ export class PluginManager {
             for (const extension of plugin.extensions) {
                 extension.impl =
                     plugin.loadedModule![
-                        extension.className as keyof typeof plugin.loadedModule
+                    extension.className as keyof typeof plugin.loadedModule
                     ];
+                const targetPlugin = extension.plugin === 'self' ? plugin : PluginManager.registry[extension.plugin];
+                // look up the extension point in the targetPlugin matching the extension.id
+                const extensionPoint = targetPlugin.extensionPoints!.find(
+                    (ep) => ep.id === extension.id
+                );
+                // add the extension.impl into the targetPlugins's extensionPoint.impl array initialising it if necessary
+                if (extensionPoint) {
+                    extensionPoint!.impl = extensionPoint!.impl = [];
+                    extensionPoint!.impl!.push({ plugin: plugin, extensionImpl: extension.impl });
+                } else {
+                    console.warn('Extension point not found', targetPlugin.plugin, extension.id);
+                }
             }
         }
         return plugin;
@@ -56,9 +69,10 @@ export class PluginManager {
 
     /**
      * Get a plugin by name
+     * 
      * @param pluginName
-     * @returns the plugin instance. No attempt is made to protect this object from modification.
-     */
+     * @returns the plugin instance. If the plugin is not loaded, it will be loaded.
+    */
     getPlugin(pluginName: string): PluginDescriptor {
         return PluginManager.registry[pluginName];
     }
