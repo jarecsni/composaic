@@ -1,11 +1,10 @@
-import { MyCoolBarExtensionType } from './BarPluginModule';
 import { PluginManager } from './PluginManager';
 import { PluginDescriptor } from './types';
 
 describe('PluginManager', () => {
     it('should add a plugin', async () => {
         PluginManager.getInstance().addPlugin({
-            module: './BarPluginModule',
+            module: 'BarPluginModule',
             plugin: '@foo/bar',
             version: '1.0',
             description: 'bar',
@@ -17,7 +16,7 @@ describe('PluginManager', () => {
             ],
         });
         PluginManager.getInstance().addPlugin({
-            module: './BazPluginModule',
+            module: 'BazPluginModule',
             plugin: '@foo/baz',
             version: '1.0',
             description: 'baz',
@@ -45,7 +44,7 @@ describe('PluginManager', () => {
     });
     it('should be able to load a plugin with self extension', async () => {
         PluginManager.getInstance().addPlugin({
-            module: './BarPluginModule',
+            module: 'BarPluginModule',
             plugin: '@foo/bar',
             version: '1.0',
             description: 'bar',
@@ -64,7 +63,7 @@ describe('PluginManager', () => {
             ],
         });
         PluginManager.getInstance().addPlugin({
-            module: './BazPluginModule',
+            module: 'BazPluginModule',
             plugin: '@foo/baz',
             version: '1.0',
             description: 'baz',

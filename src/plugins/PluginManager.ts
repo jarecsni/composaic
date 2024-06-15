@@ -43,7 +43,7 @@ export class PluginManager {
         let needInit = false;
         if (!plugin.loadedModule) {
             needInit = true;
-            plugin.loadedModule = await import(plugin.module);
+            plugin.loadedModule = await import(`./impl/${plugin.module}.ts`);
         }
         if (plugin.extensions && needInit) {
             for (const extension of plugin.extensions) {
