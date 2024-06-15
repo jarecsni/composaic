@@ -14,9 +14,11 @@ PluginManager.getInstance().addPlugin({
     ],
 });
 
-PluginManager.getInstance().loadPlugin('@foo/bar').then((plugin) => {
-    console.log('Loaded plugin:', plugin);
-});
+PluginManager.getInstance()
+    .loadPlugin('@foo/bar')
+    .then((plugin) => {
+        console.log('Loaded plugin:', plugin);
+    });
 
 const SimpleComponent: FC = () => {
     return (
