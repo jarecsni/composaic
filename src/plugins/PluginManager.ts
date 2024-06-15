@@ -49,7 +49,7 @@ export class PluginManager {
             for (const extension of plugin.extensions) {
                 extension.impl =
                     plugin.loadedModule![
-                    extension.className as keyof typeof plugin.loadedModule
+                        extension.className as keyof typeof plugin.loadedModule
                     ];
                 const targetPlugin =
                     extension.plugin === 'self'
@@ -64,7 +64,10 @@ export class PluginManager {
                     if (!extensionPoint!.impl) {
                         extensionPoint!.impl = [];
                     }
-                    extensionPoint!.impl!.push({ plugin: plugin.plugin, extensionImpl: extension.impl });
+                    extensionPoint!.impl!.push({
+                        plugin: plugin.plugin,
+                        extensionImpl: extension.impl,
+                    });
                 } else {
                     console.warn(
                         'Extension point not found',
