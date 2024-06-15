@@ -52,7 +52,7 @@ describe('PluginManager', () => {
             extensionPoints: [
                 {
                     id: 'MyCoolExtension',
-                    type: 'MyCoolBarExtensionType',
+                    type: 'MyCoolExtensionType',
                 },
             ],
             extensions: [
@@ -87,5 +87,11 @@ describe('PluginManager', () => {
         // @ts-expect-error - we know this is a class
         const extension: MyCoolBarExtensionType = new ExtensionClass();
         expect(extension.saySomethingCool).toBeDefined();
+
+        expect(loadedPlugin.extensionPoints![0].impl).toHaveLength(2);
+        // @ts-expect-error - we know this is a class
+        new (loadedPlugin.extensionPoints![0].impl![0].extensionImpl)().saySomethingCool();
+        // @ts-expect-error - we know this is a class
+        new (loadedPlugin.extensionPoints![0].impl![1].extensionImpl)().saySomethingCool();
     });
 });

@@ -1,7 +1,7 @@
 import { MyCoolExtensionType } from './BarPluginModule';
 
 export class BazCoolExtensionImpl implements MyCoolExtensionType {
-    doSomethingCool(): void {
+    saySomethingCool(): void {
         console.log('Doing something cool');
     }
 }
