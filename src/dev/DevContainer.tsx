@@ -12,6 +12,13 @@ PluginManager.getInstance().addPlugin({
             type: 'MyCoolExtensionType',
         },
     ],
+    extensions: [
+        {
+            plugin: 'self',
+            id: 'MyCoolExtension',
+            className: 'SimpleCoolExtensionProvider',
+        },
+    ],
 });
 
 PluginManager.getInstance()
