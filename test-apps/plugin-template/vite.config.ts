@@ -26,4 +26,7 @@ export default defineConfig({
             targets: [{ src: './manifest.json', dest: '.' }],
         }),
     ],
+    preview: {
+        port: 9000,
+    },
 });
