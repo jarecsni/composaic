@@ -18,14 +18,14 @@ function useFeatureFlagsOrSomethingCoolToGetRemote() {
 
     // insert super cool logic to determine your remote
     // for demo purposes, we'll just alternate between remoteA and remoteB every 5 seconds
-    const seconds = new Date().getSeconds()
-    if (Math.floor(seconds / 5) % 2 === 0) {
-        remoteConfig = {
-            url: 'http://localhost:9001/assets/remoteEntry.js',
-            name: 'remoteB',
-            module: './RemoteBRoot',
-        }
-    }
+    // const seconds = new Date().getSeconds()
+    // if (Math.floor(seconds / 5) % 2 === 0) {
+    //     remoteConfig = {
+    //         url: 'http://localhost:9001/assets/remoteEntry.js',
+    //         name: 'remoteB',
+    //         module: './RemoteBRoot',
+    //     }
+    // }
     return remoteConfig
 }
 
@@ -40,6 +40,7 @@ const DynamicRemoteApp = lazy(async () => {
     try {
         comp = await __federation_method_getRemote(name, module)
     } catch (error) {
+        console.error(error)
         console.error('Error fetching remote', error)
         comp = { default: () => <div>Failed to fetch remote</div> }
     }
