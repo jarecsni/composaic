@@ -1,30 +1,16 @@
-# React + TypeScript + Vite
+# Test MFE container application
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## How to run the app + MFE remote
 
-Currently, two official plugins are available:
+```
+// in host project
+npm run dev
 
--   [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
--   [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
-
--   Configure the top-level `parserOptions` property like this:
-
-```js
-export default {
-    // other rules...
-    parserOptions: {
-        ecmaVersion: 'latest',
-        sourceType: 'module',
-        project: ['./tsconfig.json', './tsconfig.node.json'],
-        tsconfigRootDir: __dirname,
-    },
-}
+// in remote
+Terminal 1: npm run build:watch
+Terminal 2: npm run preview
 ```
 
--   Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
--   Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
--   Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+This is needed as ```run dev``` is bundle-less, and therefore the host will not find the remoteEntry.js (it's a bit strange as when you hit in the browser, the URL does seem to work, however it's a 404 from inside the host app).
+
+Hot reloading does not work, you will need to manually reload the host app.
