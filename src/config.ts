@@ -6,12 +6,11 @@ export const config = {
                 name: 'SimplePlugin',
                 url: 'http://localhost:3001/remoteEntry.js',
                 module: './SimplePlugin',
-            }
-        ]
+            },
+        ],
     },
     production: {
         id: 'prd',
-        plugins: [
-        ]
-    }
+        plugins: [],
+    },
 };

@@ -4,7 +4,7 @@ import { config } from '../config';
 
 type ENV = 'development' | 'production';
 
-const env: ENV = (process.env.NODE_ENV as ENV) || 'development'
+const env: ENV = (process.env.NODE_ENV as ENV) || 'development';
 
 console.log('Env id:', config[env].id);
 
