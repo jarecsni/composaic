@@ -19,10 +19,10 @@ export const config = {
                                 type: 'MyCoolExtensionType',
                             },
                         ],
-                    }
-                ]
-            }
-        ]
+                    },
+                ],
+            },
+        ],
     },
     production: {
         id: 'prd',
