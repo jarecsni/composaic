@@ -44,15 +44,14 @@ export class PluginManager {
         if (!plugin.loadedModule) {
             needInit = true;
             console.log(`Loading module ${plugin.module}`);
-            plugin.loadedModule = await import(
-                `./impl/${plugin.package}/${plugin.module}.ts`
-            );
+            plugin.loadedModule = await import(`./impl/${plugin.package}/${plugin.module}.ts`);
+            plugin.loadedClass = plugin.loadedModule![plugin.class as keyof typeof plugin.loadedModule];
         }
         if (plugin.extensions && needInit) {
             for (const extension of plugin.extensions) {
                 extension.impl =
                     plugin.loadedModule![
-                        extension.className as keyof typeof plugin.loadedModule
+                    extension.className as keyof typeof plugin.loadedModule
                     ];
                 const targetPlugin =
                     extension.plugin === 'self'
@@ -80,6 +79,7 @@ export class PluginManager {
                 }
             }
         }
+        // load class
         return plugin;
     }
 

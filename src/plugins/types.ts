@@ -6,6 +6,8 @@
 export interface PluginDescriptor {
     module: string;
     package: string;
+    class: string;
+    loadedClass?: object;
     loadedModule?: object;
     plugin: string;
     version: string;
@@ -25,10 +27,23 @@ export interface PluginDescriptor {
     dependencies?: (string | PluginDescriptor)[];
 }
 
+export abstract class Plugin {
+    start(): void {
+    }
+    stop(): void {
+    }
+    setConnectedExtensions() {
+    }
+}
+
+export type ClassConstructor<T = any> = new (...args: any[]) => T;
+
 const x: PluginDescriptor = {
     module: 'FooPluginModule',
     plugin: '@foo/bar',
+    package: 'foo',
     version: '1.0',
+    class: 'FooPlugin',
     description: 'bar',
     extensions: [
         {

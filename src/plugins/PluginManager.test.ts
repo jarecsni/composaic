@@ -1,11 +1,12 @@
 import { PluginManager } from './PluginManager';
-import { PluginDescriptor } from './types';
+import { ClassConstructor, Plugin, PluginDescriptor } from './types';
 
 describe('PluginManager', () => {
     it('should add a plugin', async () => {
         PluginManager.getInstance().addPlugin({
             module: 'BarPluginModule',
             package: 'bar',
+            class: 'BarPlugin',
             plugin: '@foo/bar',
             version: '1.0',
             description: 'bar',
@@ -19,6 +20,7 @@ describe('PluginManager', () => {
         PluginManager.getInstance().addPlugin({
             module: 'BazPluginModule',
             package: 'baz',
+            class: 'BazPlugin',
             plugin: '@foo/baz',
             version: '1.0',
             description: 'baz',
@@ -48,6 +50,7 @@ describe('PluginManager', () => {
         PluginManager.getInstance().addPlugin({
             module: 'BarPluginModule',
             package: 'bar',
+            class: 'BarPlugin',
             plugin: '@foo/bar',
             version: '1.0',
             description: 'bar',
@@ -68,6 +71,7 @@ describe('PluginManager', () => {
         PluginManager.getInstance().addPlugin({
             module: 'BazPluginModule',
             package: 'baz',
+            class: 'BazPlugin',
             plugin: '@foo/baz',
             version: '1.0',
             description: 'baz',
@@ -86,10 +90,14 @@ describe('PluginManager', () => {
         expect(loadedPlugin.extensions![0].id).toBe('MyCoolExtension');
         expect(loadedPlugin.extensions![0].plugin).toBe('self');
         const ExtensionClass = loadedPlugin.extensions![0].impl;
-        // new ExtensionClass().doSomethingCool();
-        // @ts-expect-error - we know this is a class
-        const extension: MyCoolBarExtensionType = new ExtensionClass();
+        const extension = new ExtensionClass();
         expect(extension.saySomethingCool).toBeDefined();
+
+        // testing class got loaded
+        const PluginClass: ClassConstructor = loadedPlugin.loadedClass as ClassConstructor;
+        expect(PluginClass).toBeDefined();
+        const x = new PluginClass();
+        x.start()
 
         expect(loadedPlugin.extensionPoints![0].impl).toHaveLength(2);
         // @ts-expect-error - we know this is a class
