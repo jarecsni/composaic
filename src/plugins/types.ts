@@ -28,12 +28,9 @@ export interface PluginDescriptor {
 }
 
 export abstract class Plugin {
-    start(): void {
-    }
-    stop(): void {
-    }
-    setConnectedExtensions() {
-    }
+    start(): void {}
+    stop(): void {}
+    setConnectedExtensions() {}
 }
 
 export type ClassConstructor<T = any> = new (...args: any[]) => T;

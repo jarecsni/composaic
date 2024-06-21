@@ -7,5 +7,4 @@ export class BazCoolExtensionImpl implements MyCoolExtensionType {
     }
 }
 
-export class BazPlugin extends Plugin {
-}
+export class BazPlugin extends Plugin {}

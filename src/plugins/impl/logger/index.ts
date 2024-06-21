@@ -8,6 +8,4 @@ export interface LoggerExtension {
     error(message: string, ...args: unknown[]): void;
 }
 
-export class LoggerPlugin extends Plugin {
-
-}
+export class LoggerPlugin extends Plugin {}

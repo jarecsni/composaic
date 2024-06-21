@@ -10,5 +10,4 @@ export class SimpleCoolExtensionProvider implements MyCoolExtensionType {
     }
 }
 
-export class BarPlugin extends Plugin {
-}
+export class BarPlugin extends Plugin {}

@@ -94,10 +94,11 @@ describe('PluginManager', () => {
         expect(extension.saySomethingCool).toBeDefined();
 
         // testing class got loaded
-        const PluginClass: ClassConstructor = loadedPlugin.loadedClass as ClassConstructor;
+        const PluginClass: ClassConstructor =
+            loadedPlugin.loadedClass as ClassConstructor;
         expect(PluginClass).toBeDefined();
         const x = new PluginClass();
-        x.start()
+        x.start();
 
         expect(loadedPlugin.extensionPoints![0].impl).toHaveLength(2);
         // @ts-expect-error - we know this is a class
