@@ -3,13 +3,12 @@ import { config } from '../config';
 export type NodeEnv = 'development' | 'production';
 export type ComposaicEnv = 'dev' | 'prd';
 export type EnvironmentConfiguration = {
-    remotes: string[]
-}
-export type Configuration = {
-    dev: EnvironmentConfiguration,
-    prd: EnvironmentConfiguration,
+    remotes: string[];
 };
-
+export type Configuration = {
+    dev: EnvironmentConfiguration;
+    prd: EnvironmentConfiguration;
+};
 
 const environmentMap: { [key in NodeEnv]: ComposaicEnv } = {
     development: 'dev',
@@ -23,16 +22,21 @@ class ConfigurationService {
     private constructor() {
         // init
     }
-    public static getInstance(configuration: Configuration = config): ConfigurationService {
+    public static getInstance(
+        configuration: Configuration = config
+    ): ConfigurationService {
         if (!ConfigurationService.instance) {
             ConfigurationService.configuration = configuration;
-            ConfigurationService.env = (process.env.NODE_ENV as NodeEnv) || 'development';
+            ConfigurationService.env =
+                (process.env.NODE_ENV as NodeEnv) || 'development';
             ConfigurationService.instance = new ConfigurationService();
         }
         return ConfigurationService.instance;
     }
     getConfiguration = () => {
-        return ConfigurationService.configuration[environmentMap[ConfigurationService.env]];
+        return ConfigurationService.configuration[
+            environmentMap[ConfigurationService.env]
+        ];
     };
 }
 

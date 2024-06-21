@@ -1,8 +1,8 @@
 export const config = {
     dev: {
-        remotes: []
+        remotes: [],
     },
     prd: {
-        remotes: []
+        remotes: [],
     },
 };
