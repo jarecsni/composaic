@@ -1,4 +1,4 @@
-import { MyCoolExtensionType } from './BarPluginModule';
+import { MyCoolExtensionType } from '../bar/BarPluginModule';
 
 export class BazCoolExtensionImpl implements MyCoolExtensionType {
     saySomethingCool(): void {

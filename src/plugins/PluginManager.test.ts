@@ -5,6 +5,7 @@ describe('PluginManager', () => {
     it('should add a plugin', async () => {
         PluginManager.getInstance().addPlugin({
             module: 'BarPluginModule',
+            package: 'bar',
             plugin: '@foo/bar',
             version: '1.0',
             description: 'bar',
@@ -17,6 +18,7 @@ describe('PluginManager', () => {
         });
         PluginManager.getInstance().addPlugin({
             module: 'BazPluginModule',
+            package: 'baz',
             plugin: '@foo/baz',
             version: '1.0',
             description: 'baz',
@@ -45,6 +47,7 @@ describe('PluginManager', () => {
     it('should be able to load a plugin with self extension', async () => {
         PluginManager.getInstance().addPlugin({
             module: 'BarPluginModule',
+            package: 'bar',
             plugin: '@foo/bar',
             version: '1.0',
             description: 'bar',
@@ -64,6 +67,7 @@ describe('PluginManager', () => {
         });
         PluginManager.getInstance().addPlugin({
             module: 'BazPluginModule',
+            package: 'baz',
             plugin: '@foo/baz',
             version: '1.0',
             description: 'baz',

@@ -3,6 +3,7 @@ import { PluginManager } from '../plugins/PluginManager';
 
 PluginManager.getInstance().addPlugin({
     module: 'BarPluginModule',
+    package: 'bar',
     plugin: '@foo/bar',
     version: '1.0',
     description: 'bar',

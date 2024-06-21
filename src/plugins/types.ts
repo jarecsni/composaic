@@ -5,6 +5,7 @@
  */
 export interface PluginDescriptor {
     module: string;
+    package: string;
     loadedModule?: object;
     plugin: string;
     version: string;
