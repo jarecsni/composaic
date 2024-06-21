@@ -1,3 +1,25 @@
 {
-    "name": "@composaic/plugin-test"
+    "name": "@composaic/plugin-test",
+    "plugins": [
+        {
+            "remote": {
+                "name": "SimplePlugin",
+                "url": "http://localhost:3001/remoteEntry.js",
+            },
+            "definitions": [
+                {
+                    "module": "./SimplePlugin",
+                    "plugin": "@foo/bar",
+                    "version": "1.0",
+                    "description": "bar",
+                    "extensionPoints": [
+                        {
+                            "id": "MyCoolExtension",
+                            "type": "MyCoolExtensionType"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
 }

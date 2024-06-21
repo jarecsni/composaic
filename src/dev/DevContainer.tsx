@@ -1,12 +1,5 @@
 import React, { FC } from 'react';
 import { PluginManager } from '../plugins/PluginManager';
-import { config } from '../config';
-
-type ENV = 'development' | 'production';
-
-const env: ENV = (process.env.NODE_ENV as ENV) || 'development';
-
-console.log('Env id:', config[env].id);
 
 PluginManager.getInstance().addPlugin({
     module: 'BarPluginModule',
