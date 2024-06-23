@@ -8,15 +8,15 @@
         "class": "LoggerPlugin",
         "extensionPoints": [
             {
-                "id": "logger-epoint",
-                "type": "LoggerExtension"
+                "id": "logger",
+                "type": "LoggerExtensionPoint"
             }
         ],
         "extensions": [
             {
                 "plugin": "self",
                 "id": "logger-epoint",
-                "className": "SimpleLoggerExtensionProvider"
+                "className": "SimpleLoggerExtension"
             }
         ]
     }
