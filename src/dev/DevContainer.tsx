@@ -1,32 +1,9 @@
 import React, { FC } from 'react';
 import { PluginManager } from '../plugins/PluginManager';
+// @ts-expect-error - this is not working in VScode
+import corePlugins from '../plugins/core-plugins.json';
 
-PluginManager.getInstance().addPlugin({
-    module: 'BarPluginModule',
-    package: 'bar',
-    plugin: '@foo/bar',
-    version: '1.0',
-    description: 'bar',
-    extensionPoints: [
-        {
-            id: 'MyCoolExtension',
-            type: 'MyCoolExtensionType',
-        },
-    ],
-    extensions: [
-        {
-            plugin: 'self',
-            id: 'MyCoolExtension',
-            className: 'SimpleCoolExtensionProvider',
-        },
-    ],
-});
-
-PluginManager.getInstance()
-    .loadPlugin('@foo/bar')
-    .then((plugin) => {
-        console.log('Loaded plugin:', plugin);
-    });
+PluginManager.getInstance().addPluginDefinitions(corePlugins);
 
 const SimpleComponent: FC = () => {
     return (

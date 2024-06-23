@@ -16,7 +16,20 @@ export class PluginManager {
         return PluginManager.instance;
     }
 
-    // Add your methods here
+    /**
+     * Add an array of plugin definitions to the registry
+     * @param plugins - an array of plugin definitions
+     */
+    addPluginDefinitions(plugins: PluginDescriptor[]) {
+        plugins.forEach((plugin) => {
+            this.addPlugin(plugin);
+        });
+    }
+
+    /**
+     * Add a plugin definition to the registry
+     * @param pluginDescriptor - a plugin definition
+     */
     addPlugin(pluginDescriptor: PluginDescriptor) {
         pluginDescriptor.dependencies = [];
         pluginDescriptor.extensions?.forEach((extension) => {
@@ -49,14 +62,14 @@ export class PluginManager {
             );
             plugin.loadedClass =
                 plugin.loadedModule![
-                    plugin.class as keyof typeof plugin.loadedModule
+                plugin.class as keyof typeof plugin.loadedModule
                 ];
         }
         if (plugin.extensions && needInit) {
             for (const extension of plugin.extensions) {
                 extension.impl =
                     plugin.loadedModule![
-                        extension.className as keyof typeof plugin.loadedModule
+                    extension.className as keyof typeof plugin.loadedModule
                     ];
                 const targetPlugin =
                     extension.plugin === 'self'
