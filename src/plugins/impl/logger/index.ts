@@ -2,8 +2,8 @@ import { Plugin } from '../../types';
 
 /**
  * Logger extension point.
- * 
- * Extensions for this extension point will need to implement these methods. 
+ *
+ * Extensions for this extension point will need to implement these methods.
  */
 export interface LoggerExtensionPoint {
     log(message: string, ...args: unknown[]): void;
@@ -13,9 +13,7 @@ export interface LoggerExtensionPoint {
     error(message: string, ...args: unknown[]): void;
 }
 
-export class LoggerPlugin extends Plugin {
-
-}
+export class LoggerPlugin extends Plugin {}
 
 export class SimpleLoggerExtension implements LoggerExtensionPoint {
     log(message: string, ...args: unknown[]): void {
