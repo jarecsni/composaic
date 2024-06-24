@@ -3,19 +3,21 @@
     "plugins": [
         {
             "remote": {
-                "name": "SimplePlugin",
+                "name": "TestPlugins",
                 "url": "http://localhost:3001/remoteEntry.js"
             },
             "definitions": [
                 {
-                    "module": "./SimplePlugin",
-                    "plugin": "@foo/bar",
+                    "module": "SimpleLoggerPlugin",
+                    "class": "SimpleLogger",
+                    "plugin": "@composaic-tests/simple-logger",
                     "version": "1.0",
-                    "description": "bar",
-                    "extensionPoints": [
+                    "description": "Simple extension for the Composaic Logger Plugin",
+                    "extensions": [
                         {
-                            "id": "MyCoolExtension",
-                            "type": "MyCoolExtensionType"
+                            "plugin": "@composaic/logger",
+                            "id": "logger",
+                            "className": "SimpleLoggerExtension"
                         }
                     ]
                 }
