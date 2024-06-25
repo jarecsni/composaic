@@ -1,5 +1,5 @@
 import './App.css'
-import { sayHello } from './util/say-hello';
+import { sayHello } from './util/say-hello'
 
 function App() {
     return (
