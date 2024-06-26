@@ -21,4 +21,4 @@ export class SimpleLoggerExtension implements LoggerExtensionPoint {
     }
 }
 
-export class SimpleLoggerPlugin extends Plugin { }
+export class SimpleLoggerPlugin extends Plugin {}
