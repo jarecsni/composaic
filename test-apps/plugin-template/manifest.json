@@ -8,6 +8,7 @@
             },
             "definitions": [
                 {
+                    "package": "simplelogger",
                     "module": "SimpleLoggerPlugin",
                     "class": "SimpleLogger",
                     "plugin": "@composaic-tests/simple-logger",
