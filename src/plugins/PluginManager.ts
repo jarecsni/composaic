@@ -1,4 +1,4 @@
-import { PluginDescriptor } from './types';
+import { ClassConstructor, Plugin, PluginDescriptor } from './types';
 
 export class PluginManager {
     private static instance: PluginManager;
@@ -43,37 +43,37 @@ export class PluginManager {
         PluginManager.registry[pluginDescriptor.plugin] = pluginDescriptor;
     }
 
-    async loadPlugin(pluginName: string): Promise<PluginDescriptor> {
-        const plugin = PluginManager.registry[pluginName];
-        if (!plugin) {
+    async loadPlugin(pluginName: string): Promise<Plugin> {
+        const pluginDescriptor = PluginManager.registry[pluginName];
+        if (!pluginDescriptor) {
             throw new Error(`Plugin with ID ${pluginName} not found`);
         }
-        if (plugin.dependencies) {
-            for (const dependency of plugin.dependencies) {
+        if (pluginDescriptor.dependencies) {
+            for (const dependency of pluginDescriptor.dependencies) {
                 await this.loadPlugin((dependency as PluginDescriptor).plugin);
             }
         }
         let needInit = false;
-        if (!plugin.loadedModule) {
+        if (!pluginDescriptor.loadedModule) {
             needInit = true;
-            console.log(`Loading module ${plugin.module}`);
-            plugin.loadedModule = await import(
-                `./impl/${plugin.package}/${plugin.module}.ts`
+            console.log(`Loading module ${pluginDescriptor.module}`);
+            pluginDescriptor.loadedModule = await import(
+                `./impl/${pluginDescriptor.package}/${pluginDescriptor.module}.ts`
             );
-            plugin.loadedClass =
-                plugin.loadedModule![
-                    plugin.class as keyof typeof plugin.loadedModule
+            pluginDescriptor.loadedClass =
+                pluginDescriptor.loadedModule![
+                pluginDescriptor.class as keyof typeof pluginDescriptor.loadedModule
                 ];
         }
-        if (plugin.extensions && needInit) {
-            for (const extension of plugin.extensions) {
+        if (pluginDescriptor.extensions && needInit) {
+            for (const extension of pluginDescriptor.extensions) {
                 extension.impl =
-                    plugin.loadedModule![
-                        extension.className as keyof typeof plugin.loadedModule
+                    pluginDescriptor.loadedModule![
+                    extension.className as keyof typeof pluginDescriptor.loadedModule
                     ];
                 const targetPlugin =
                     extension.plugin === 'self'
-                        ? plugin
+                        ? pluginDescriptor
                         : PluginManager.registry[extension.plugin];
                 // look up the extension point in the targetPlugin matching the extension.id
                 const extensionPoint = targetPlugin.extensionPoints!.find(
@@ -85,7 +85,7 @@ export class PluginManager {
                         extensionPoint!.impl = [];
                     }
                     extensionPoint!.impl!.push({
-                        plugin: plugin.plugin,
+                        plugin: pluginDescriptor.plugin,
                         extensionImpl: extension.impl,
                     });
                 } else {
@@ -98,6 +98,10 @@ export class PluginManager {
             }
         }
         // load class
+        //const plugin: Plugin = Object.create(pluginDescriptor.loadedClass!);
+        const PluginClass = pluginDescriptor.loadedClass! as ClassConstructor;
+        const plugin = new PluginClass();
+        plugin.init(pluginDescriptor);
         return plugin;
     }
 

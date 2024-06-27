@@ -87,23 +87,15 @@ describe('PluginManager', () => {
         const loadedPlugin =
             await PluginManager.getInstance().loadPlugin('@foo/bar');
         expect(loadedPlugin).toBeDefined();
-        expect(loadedPlugin.extensions![0].id).toBe('MyCoolExtension');
-        expect(loadedPlugin.extensions![0].plugin).toBe('self');
-        const ExtensionClass = loadedPlugin.extensions![0].impl;
+        expect(loadedPlugin.getPluginDescriptor().extensions![0].id).toBe('MyCoolExtension');
+        expect(loadedPlugin.getPluginDescriptor().extensions![0].plugin).toBe('self');
+        const ExtensionClass = loadedPlugin.getPluginDescriptor().extensions![0].impl! as ClassConstructor;
         const extension = new ExtensionClass();
         expect(extension.saySomethingCool).toBeDefined();
-
-        // testing class got loaded
-        const PluginClass: ClassConstructor =
-            loadedPlugin.loadedClass as ClassConstructor;
-        expect(PluginClass).toBeDefined();
-        const x = new PluginClass();
-        x.start();
-
-        expect(loadedPlugin.extensionPoints![0].impl).toHaveLength(2);
-        // @ts-expect-error - we know this is a class
-        new loadedPlugin.extensionPoints![0].impl![0].extensionImpl().saySomethingCool();
-        // @ts-expect-error - we know this is a class
-        new loadedPlugin.extensionPoints![0].impl![1].extensionImpl().saySomethingCool();
+        expect(loadedPlugin.getPluginDescriptor().extensionPoints![0].impl).toHaveLength(2);
+        const ExtClass = loadedPlugin.getPluginDescriptor().extensionPoints![0].impl![0].extensionImpl as ClassConstructor;
+        new ExtClass().saySomethingCool();
+        const ExtClass2 = loadedPlugin.getPluginDescriptor().extensionPoints![0].impl![1].extensionImpl as ClassConstructor;
+        new ExtClass2().saySomethingCool();
     });
 });

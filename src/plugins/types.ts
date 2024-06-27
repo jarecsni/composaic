@@ -28,9 +28,20 @@ export interface PluginDescriptor {
 }
 
 export abstract class Plugin {
-    start(): void {}
-    stop(): void {}
-    setConnectedExtensions() {}
+    initialised = false;
+    pluginDescriptor: PluginDescriptor = {} as PluginDescriptor;
+    start(): void { }
+    stop(): void { }
+    init(pluginDescriptor: PluginDescriptor): void {
+        if (this.initialised) {
+            throw new Error('Plugin already initialised');
+        }
+        this.pluginDescriptor = pluginDescriptor;
+        this.initialised = true;
+    }
+    getPluginDescriptor(): PluginDescriptor {
+        return this.pluginDescriptor;
+    }
 }
 
 export type ClassConstructor<T = any> = new (...args: any[]) => T;
