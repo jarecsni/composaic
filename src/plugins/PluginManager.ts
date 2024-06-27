@@ -62,14 +62,14 @@ export class PluginManager {
             );
             pluginDescriptor.loadedClass =
                 pluginDescriptor.loadedModule![
-                pluginDescriptor.class as keyof typeof pluginDescriptor.loadedModule
+                    pluginDescriptor.class as keyof typeof pluginDescriptor.loadedModule
                 ];
         }
         if (pluginDescriptor.extensions && needInit) {
             for (const extension of pluginDescriptor.extensions) {
                 extension.impl =
                     pluginDescriptor.loadedModule![
-                    extension.className as keyof typeof pluginDescriptor.loadedModule
+                        extension.className as keyof typeof pluginDescriptor.loadedModule
                     ];
                 const targetPlugin =
                     extension.plugin === 'self'

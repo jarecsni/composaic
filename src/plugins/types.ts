@@ -30,8 +30,8 @@ export interface PluginDescriptor {
 export abstract class Plugin {
     initialised = false;
     pluginDescriptor: PluginDescriptor = {} as PluginDescriptor;
-    start(): void { }
-    stop(): void { }
+    start(): void {}
+    stop(): void {}
     init(pluginDescriptor: PluginDescriptor): void {
         if (this.initialised) {
             throw new Error('Plugin already initialised');
