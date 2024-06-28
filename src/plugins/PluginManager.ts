@@ -62,15 +62,16 @@ export class PluginManager {
             );
             pluginDescriptor.loadedClass =
                 pluginDescriptor.loadedModule![
-                    pluginDescriptor.class as keyof typeof pluginDescriptor.loadedModule
+                pluginDescriptor.class as keyof typeof pluginDescriptor.loadedModule
                 ];
         }
         if (pluginDescriptor.extensions && needInit) {
             for (const extension of pluginDescriptor.extensions) {
-                extension.impl =
+                const ExtensionImpl =
                     pluginDescriptor.loadedModule![
-                        extension.className as keyof typeof pluginDescriptor.loadedModule
-                    ];
+                    extension.className as keyof typeof pluginDescriptor.loadedModule
+                    ] as ClassConstructor;
+                extension.impl = new ExtensionImpl();
                 const targetPlugin =
                     extension.plugin === 'self'
                         ? pluginDescriptor
@@ -86,7 +87,7 @@ export class PluginManager {
                     }
                     extensionPoint!.impl!.push({
                         plugin: pluginDescriptor.plugin,
-                        extensionImpl: extension.impl,
+                        extensionImpl: extension.impl!,
                     });
                 } else {
                     console.warn(
@@ -97,10 +98,13 @@ export class PluginManager {
                 }
             }
         }
-        // load class
-        //const plugin: Plugin = Object.create(pluginDescriptor.loadedClass!);
         const PluginClass = pluginDescriptor.loadedClass! as ClassConstructor;
         const plugin = new PluginClass();
+
+        pluginDescriptor.extensionPoints?.forEach((extensionPoint) => {
+            plugin.connectExtensions(extensionPoint.id, extensionPoint.impl!);
+        });
+
         plugin.init(pluginDescriptor);
         return plugin;
     }

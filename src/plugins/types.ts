@@ -30,8 +30,9 @@ export interface PluginDescriptor {
 export abstract class Plugin {
     initialised = false;
     pluginDescriptor: PluginDescriptor = {} as PluginDescriptor;
-    start(): void {}
-    stop(): void {}
+    extensions: { [extensionPointId: string]: { plugin: string, extensionImpl: object }[] } = {};
+    start(): void { }
+    stop(): void { }
     init(pluginDescriptor: PluginDescriptor): void {
         if (this.initialised) {
             throw new Error('Plugin already initialised');
@@ -41,6 +42,15 @@ export abstract class Plugin {
     }
     getPluginDescriptor(): PluginDescriptor {
         return this.pluginDescriptor;
+    }
+    connectExtensions(extensionPointId: string, extensions: { plugin: string; extensionImpl: { plugin: string, impl: object } }[]): void {
+        if (this.initialised) {
+            throw new Error('Plugin already initialised');
+        }
+        this.extensions[extensionPointId] = extensions;
+    }
+    getConnectedExtensions(extensionPointId: string): { plugin: string; extensionImpl: object }[] {
+        return this.extensions[extensionPointId];
     }
 }
 

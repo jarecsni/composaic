@@ -87,24 +87,22 @@ describe('PluginManager', () => {
         const loadedPlugin =
             await PluginManager.getInstance().loadPlugin('@foo/bar');
         expect(loadedPlugin).toBeDefined();
-        expect(loadedPlugin.getPluginDescriptor().extensions![0].id).toBe(
-            'MyCoolExtension'
-        );
-        expect(loadedPlugin.getPluginDescriptor().extensions![0].plugin).toBe(
-            'self'
-        );
-        const ExtensionClass = loadedPlugin.getPluginDescriptor().extensions![0]
-            .impl! as ClassConstructor;
-        const extension = new ExtensionClass();
-        expect(extension.saySomethingCool).toBeDefined();
-        expect(
-            loadedPlugin.getPluginDescriptor().extensionPoints![0].impl
-        ).toHaveLength(2);
-        const ExtClass = loadedPlugin.getPluginDescriptor().extensionPoints![0]
-            .impl![0].extensionImpl as ClassConstructor;
-        new ExtClass().saySomethingCool();
-        const ExtClass2 = loadedPlugin.getPluginDescriptor().extensionPoints![0]
-            .impl![1].extensionImpl as ClassConstructor;
-        new ExtClass2().saySomethingCool();
+        expect(loadedPlugin.getPluginDescriptor().extensions![0].id).toBe('MyCoolExtension');
+        expect(loadedPlugin.getPluginDescriptor().extensions![0].plugin).toBe('self');
+        const extensionImpl = loadedPlugin.getPluginDescriptor().extensions![0].impl!;
+        // @ts-expect-error - we know this is a function
+        expect(extensionImpl.saySomethingCool).toBeDefined();
+        expect(loadedPlugin.getPluginDescriptor().extensionPoints![0].impl).toHaveLength(2);
+        const ext1 = loadedPlugin.getPluginDescriptor().extensionPoints![0].impl![0].extensionImpl;
+        // @ts-expect-error - we know this is a function
+        ext1.saySomethingCool();
+        const ext2 = loadedPlugin.getPluginDescriptor().extensionPoints![0].impl![1].extensionImpl;
+        // @ts-expect-error - we know this is a function
+        ext2.saySomethingCool();
+
+        // connected extensions
+        loadedPlugin.getConnectedExtensions('MyCoolExtension').forEach((ext) => {
+            console.log(ext.plugin, ext.extensionImpl);
+        })
     });
 });
