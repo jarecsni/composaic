@@ -53,19 +53,16 @@ export class PluginManager {
                 await this.loadPlugin((dependency as PluginDescriptor).plugin);
             }
         }
-        let needInit = false;
         if (!pluginDescriptor.loadedModule) {
-            needInit = true;
-            console.log(`Loading module ${pluginDescriptor.module}`);
             pluginDescriptor.loadedModule = await import(
                 `./impl/${pluginDescriptor.package}/${pluginDescriptor.module}.ts`
             );
-            pluginDescriptor.loadedClass =
-                pluginDescriptor.loadedModule![
-                    pluginDescriptor.class as keyof typeof pluginDescriptor.loadedModule
-                ];
         }
-        if (pluginDescriptor.extensions && needInit) {
+        pluginDescriptor.loadedClass =
+            pluginDescriptor.loadedModule![
+            pluginDescriptor.class as keyof typeof pluginDescriptor.loadedModule
+            ];
+        if (pluginDescriptor.extensions) {
             for (const extension of pluginDescriptor.extensions) {
                 const ExtensionImpl = pluginDescriptor.loadedModule![
                     extension.className as keyof typeof pluginDescriptor.loadedModule
@@ -116,5 +113,9 @@ export class PluginManager {
      */
     getPlugin(pluginName: string): PluginDescriptor {
         return PluginManager.registry[pluginName];
+    }
+
+    clear() {
+        PluginManager.registry = {};
     }
 }
