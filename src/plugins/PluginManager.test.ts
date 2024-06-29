@@ -41,14 +41,16 @@ describe('PluginManager', () => {
             expect(pluginBaz).toBeDefined();
             expect(pluginBaz.extensions![0].id).toBe('MyCoolExtension');
             expect(pluginBaz.extensions![0].plugin).toBe('@foo/bar');
-            expect(pluginBaz.extensions![0].className).toBe('BazCoolExtensionImpl');
+            expect(pluginBaz.extensions![0].className).toBe(
+                'BazCoolExtensionImpl'
+            );
             expect(pluginBaz.dependencies!).toEqual([]);
             const pluginBar =
                 await PluginManager.getInstance().getPlugin('@foo/bar');
             expect(pluginBar.dependencies!).toHaveLength(1);
-            expect((pluginBar.dependencies![0] as PluginDescriptor).plugin).toBe(
-                '@foo/baz'
-            );
+            expect(
+                (pluginBar.dependencies![0] as PluginDescriptor).plugin
+            ).toBe('@foo/baz');
         });
         it('should be able to load a plugin with self extension', async () => {
             PluginManager.getInstance().addPlugin({
@@ -91,25 +93,38 @@ describe('PluginManager', () => {
             const loadedPlugin =
                 await PluginManager.getInstance().loadPlugin('@foo/bar');
             expect(loadedPlugin).toBeDefined();
-            expect(loadedPlugin.getPluginDescriptor().extensions![0].id).toBe('MyCoolExtension');
-            expect(loadedPlugin.getPluginDescriptor().extensions![0].plugin).toBe('self');
-            const extensionImpl = loadedPlugin.getPluginDescriptor().extensions![0].impl!;
+            expect(loadedPlugin.getPluginDescriptor().extensions![0].id).toBe(
+                'MyCoolExtension'
+            );
+            expect(
+                loadedPlugin.getPluginDescriptor().extensions![0].plugin
+            ).toBe('self');
+            const extensionImpl =
+                loadedPlugin.getPluginDescriptor().extensions![0].impl!;
             // @ts-expect-error - we know this is a function
             expect(extensionImpl.saySomethingCool).toBeDefined();
-            expect(loadedPlugin.getPluginDescriptor().extensionPoints![0].impl).toHaveLength(2);
-            const ext1 = loadedPlugin.getPluginDescriptor().extensionPoints![0].impl![0].extensionImpl;
+            expect(
+                loadedPlugin.getPluginDescriptor().extensionPoints![0].impl
+            ).toHaveLength(2);
+            const ext1 =
+                loadedPlugin.getPluginDescriptor().extensionPoints![0].impl![0]
+                    .extensionImpl;
             // @ts-expect-error - we know this is a function
             ext1.saySomethingCool();
-            const ext2 = loadedPlugin.getPluginDescriptor().extensionPoints![0].impl![1].extensionImpl;
+            const ext2 =
+                loadedPlugin.getPluginDescriptor().extensionPoints![0].impl![1]
+                    .extensionImpl;
             // @ts-expect-error - we know this is a function
             ext2.saySomethingCool();
 
             // connected extensions
-            loadedPlugin.getConnectedExtensions('MyCoolExtension').forEach((ext) => {
-                console.log(ext.plugin, ext.extensionImpl);
-            })
+            loadedPlugin
+                .getConnectedExtensions('MyCoolExtension')
+                .forEach((ext) => {
+                    console.log(ext.plugin, ext.extensionImpl);
+                });
         });
-    })
+    });
     describe('using resolved descriptors', () => {
         beforeEach(() => {
             PluginManager.getInstance().clear();
@@ -165,23 +180,36 @@ describe('PluginManager', () => {
             const loadedPlugin =
                 await PluginManager.getInstance().loadPlugin('@foo/bar');
             expect(loadedPlugin).toBeDefined();
-            expect(loadedPlugin.getPluginDescriptor().extensions![0].id).toBe('MyCoolExtension');
-            expect(loadedPlugin.getPluginDescriptor().extensions![0].plugin).toBe('self');
-            const extensionImpl = loadedPlugin.getPluginDescriptor().extensions![0].impl!;
+            expect(loadedPlugin.getPluginDescriptor().extensions![0].id).toBe(
+                'MyCoolExtension'
+            );
+            expect(
+                loadedPlugin.getPluginDescriptor().extensions![0].plugin
+            ).toBe('self');
+            const extensionImpl =
+                loadedPlugin.getPluginDescriptor().extensions![0].impl!;
             // @ts-expect-error - we know this is a function
             expect(extensionImpl.saySomethingCool).toBeDefined();
-            expect(loadedPlugin.getPluginDescriptor().extensionPoints![0].impl).toHaveLength(2);
-            const ext1 = loadedPlugin.getPluginDescriptor().extensionPoints![0].impl![0].extensionImpl;
+            expect(
+                loadedPlugin.getPluginDescriptor().extensionPoints![0].impl
+            ).toHaveLength(2);
+            const ext1 =
+                loadedPlugin.getPluginDescriptor().extensionPoints![0].impl![0]
+                    .extensionImpl;
             // @ts-expect-error - we know this is a function
             ext1.saySomethingCool();
-            const ext2 = loadedPlugin.getPluginDescriptor().extensionPoints![0].impl![1].extensionImpl;
+            const ext2 =
+                loadedPlugin.getPluginDescriptor().extensionPoints![0].impl![1]
+                    .extensionImpl;
             // @ts-expect-error - we know this is a function
             ext2.saySomethingCool();
 
             // connected extensions
-            loadedPlugin.getConnectedExtensions('MyCoolExtension').forEach((ext) => {
-                console.log(ext.plugin, ext.extensionImpl);
-            })
+            loadedPlugin
+                .getConnectedExtensions('MyCoolExtension')
+                .forEach((ext) => {
+                    console.log(ext.plugin, ext.extensionImpl);
+                });
         });
     });
 });
