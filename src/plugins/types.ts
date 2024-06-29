@@ -33,8 +33,8 @@ export abstract class Plugin {
     extensions: {
         [extensionPointId: string]: { plugin: string; extensionImpl: object }[];
     } = {};
-    start(): void { }
-    stop(): void { }
+    start(): void {}
+    stop(): void {}
     init(pluginDescriptor: PluginDescriptor): void {
         if (this.initialised) {
             throw new Error('Plugin already initialised');

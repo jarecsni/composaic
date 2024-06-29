@@ -112,7 +112,9 @@ describe('PluginManager', () => {
                     .extensionImpl;
             // @ts-expect-error - we know this is a function
             // ext1.saySomethingCool();
-            const ext2 = loadedPlugin.getPluginDescriptor().extensionPoints![0].impl![1].extensionImpl;
+            const ext2 =
+                loadedPlugin.getPluginDescriptor().extensionPoints![0].impl![1]
+                    .extensionImpl;
             // @ts-expect-error - we know this is a function
             // ext2.saySomethingCool();
 
@@ -194,7 +196,9 @@ describe('PluginManager', () => {
                     .extensionImpl;
             // @ts-expect-error - we know this is a function
             // ext1.saySomethingCool();
-            const ext2 = loadedPlugin.getPluginDescriptor().extensionPoints![0].impl![1].extensionImpl;
+            const ext2 =
+                loadedPlugin.getPluginDescriptor().extensionPoints![0].impl![1]
+                    .extensionImpl;
             // @ts-expect-error - we know this is a function
             // ext2.saySomethingCool();
 

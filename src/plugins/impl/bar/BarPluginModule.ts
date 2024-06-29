@@ -23,7 +23,9 @@ export class BarPlugin extends Plugin implements MyCoolExtensionType {
         console.log('connected extensions:', extensions.length);
         if (extensions) {
             extensions.forEach((extension) => {
-                (extension.extensionImpl as MyCoolExtensionType).saySomethingCool();
+                (
+                    extension.extensionImpl as MyCoolExtensionType
+                ).saySomethingCool();
             });
         }
     }
