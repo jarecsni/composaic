@@ -10,4 +10,21 @@ export class SimpleCoolExtensionProvider implements MyCoolExtensionType {
     }
 }
 
-export class BarPlugin extends Plugin {}
+export class BarPlugin extends Plugin implements MyCoolExtensionType {
+    start(): void {
+        console.log('BarPlugin started');
+    }
+    stop(): void {
+        console.log('BarPlugin stopped');
+    }
+    saySomethingCool(): void {
+        console.log('BarPlugin saying something cool is running');
+        const extensions = this.getConnectedExtensions('MyCoolExtension');
+        console.log('connected extensions:', extensions.length);
+        if (extensions) {
+            extensions.forEach((extension) => {
+                (extension.extensionImpl as MyCoolExtensionType).saySomethingCool();
+            });
+        }
+    }
+}

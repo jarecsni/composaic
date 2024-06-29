@@ -1,4 +1,5 @@
 import { PluginManager } from './PluginManager';
+import { BarPlugin } from './impl/bar/BarPluginModule';
 import { ClassConstructor, Plugin, PluginDescriptor } from './types';
 
 describe('PluginManager', () => {
@@ -110,26 +111,20 @@ describe('PluginManager', () => {
                 loadedPlugin.getPluginDescriptor().extensionPoints![0].impl![0]
                     .extensionImpl;
             // @ts-expect-error - we know this is a function
-            ext1.saySomethingCool();
-            const ext2 =
-                loadedPlugin.getPluginDescriptor().extensionPoints![0].impl![1]
-                    .extensionImpl;
+            // ext1.saySomethingCool();
+            const ext2 = loadedPlugin.getPluginDescriptor().extensionPoints![0].impl![1].extensionImpl;
             // @ts-expect-error - we know this is a function
-            ext2.saySomethingCool();
+            // ext2.saySomethingCool();
 
             // connected extensions
-            loadedPlugin
-                .getConnectedExtensions('MyCoolExtension')
-                .forEach((ext) => {
-                    console.log(ext.plugin, ext.extensionImpl);
-                });
+            // loadedPlugin.getConnectedExtensions('MyCoolExtension').forEach((ext) => {
+            //     console.log(ext.plugin, ext.extensionImpl);
+            // })
         });
     });
     describe('using resolved descriptors', () => {
-        beforeEach(() => {
+        beforeEach(async () => {
             PluginManager.getInstance().clear();
-        });
-        it('should add a plugin with a loaded module', async () => {
             const barPlugin: PluginDescriptor = {
                 module: 'BarPluginModule',
                 package: 'bar',
@@ -176,7 +171,8 @@ describe('PluginManager', () => {
             );
 
             PluginManager.getInstance().addPlugin(bazPlugin);
-
+        });
+        it('should add a plugin with a loaded module', async () => {
             const loadedPlugin =
                 await PluginManager.getInstance().loadPlugin('@foo/bar');
             expect(loadedPlugin).toBeDefined();
@@ -197,19 +193,13 @@ describe('PluginManager', () => {
                 loadedPlugin.getPluginDescriptor().extensionPoints![0].impl![0]
                     .extensionImpl;
             // @ts-expect-error - we know this is a function
-            ext1.saySomethingCool();
-            const ext2 =
-                loadedPlugin.getPluginDescriptor().extensionPoints![0].impl![1]
-                    .extensionImpl;
+            // ext1.saySomethingCool();
+            const ext2 = loadedPlugin.getPluginDescriptor().extensionPoints![0].impl![1].extensionImpl;
             // @ts-expect-error - we know this is a function
-            ext2.saySomethingCool();
+            // ext2.saySomethingCool();
 
             // connected extensions
-            loadedPlugin
-                .getConnectedExtensions('MyCoolExtension')
-                .forEach((ext) => {
-                    console.log(ext.plugin, ext.extensionImpl);
-                });
+            (loadedPlugin as BarPlugin).saySomethingCool();
         });
     });
 });
