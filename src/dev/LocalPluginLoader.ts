@@ -1,3 +1,5 @@
-import { PluginDescriptor, PluginManifest, PluginManifestPluginDefinition } from '../plugins/types';
-
-
+import {
+    PluginDescriptor,
+    PluginManifest,
+    PluginManifestPluginDefinition,
+} from '../plugins/types';
