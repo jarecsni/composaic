@@ -27,14 +27,44 @@ export interface PluginDescriptor {
     dependencies?: (string | PluginDescriptor)[];
 }
 
+export type PluginManifestExtension = {
+    plugin: string,
+    id: string,
+    className: string
+};
+
+export type PluginManifestPluginDefinition = {
+    package: string,
+    module: string,
+    class: string,
+    plugin: string,
+    version: string,
+    description: string,
+    extensions: PluginManifestExtension[]
+};
+
+export type PluginManifestPlugin = {
+    remote: {
+        name: string,
+        url: string
+    },
+    definitions: PluginManifestPluginDefinition[]
+};
+
+export type PluginManifest = {
+    plugins: PluginManifestPlugin[]
+}
+
+
+
 export abstract class Plugin {
     initialised = false;
     pluginDescriptor: PluginDescriptor = {} as PluginDescriptor;
     extensions: {
         [extensionPointId: string]: { plugin: string; extensionImpl: object }[];
     } = {};
-    start(): void {}
-    stop(): void {}
+    start(): void { }
+    stop(): void { }
     init(pluginDescriptor: PluginDescriptor): void {
         if (this.initialised) {
             throw new Error('Plugin already initialised');

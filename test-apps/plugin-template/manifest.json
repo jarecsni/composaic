@@ -9,8 +9,8 @@
             "definitions": [
                 {
                     "package": "simplelogger",
-                    "module": "SimpleLoggerPlugin",
-                    "class": "SimpleLogger",
+                    "module": "SimpleLogger",
+                    "class": "SimpleLoggerPlugin",
                     "plugin": "@composaic-tests/simple-logger",
                     "version": "1.0",
                     "description": "Simple extension for the Composaic Logger Plugin",
