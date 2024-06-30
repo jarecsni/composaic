@@ -1,7 +1,7 @@
-// @ts-expect-error - resolution not working
 import {
     LoggerExtensionPoint,
     LogMessage,
+    // @ts-expect-error - resolution not working
 } from '@composaic/plugins/impl/logger';
 // @ts-expect-error - resolution not working
 import { Plugin } from '@composaic/plugins/types';
@@ -21,4 +21,4 @@ export class SimpleLoggerExtension implements LoggerExtensionPoint {
     }
 }
 
-export class SimpleLoggerPlugin extends Plugin {}
+export class SimpleLoggerPlugin extends Plugin { }
