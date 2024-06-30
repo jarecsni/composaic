@@ -20,16 +20,16 @@ export interface LoggerExtensionPoint {
 export class LoggerPlugin extends Plugin {
     start(): void {
         this.getConnectedExtensions('logger').forEach((extension) => {
-            const loggerExtension = extension.extensionImpl as LoggerExtensionPoint;
+            const loggerExtension =
+                extension.extensionImpl as LoggerExtensionPoint;
             loggerExtension.setLogCallback((message: LogMessage) => {
                 console.log(
-                    `${message.timestamp.toISOString()} [${message.level.toUpperCase()}] [${loggerExtension.getSubSystemName()
-                    }] ${message.message}`
+                    `${message.timestamp.toISOString()} [${message.level.toUpperCase()}] [${loggerExtension.getSubSystemName()}] ${message.message}`
                 );
             });
         });
     }
-    stop(): void { }
+    stop(): void {}
 }
 
 export class SimpleLoggerExtension implements LoggerExtensionPoint {
@@ -39,6 +39,10 @@ export class SimpleLoggerExtension implements LoggerExtensionPoint {
     }
     setLogCallback(log: (message: LogMessage) => void): void {
         this.log = log;
-        this.log({ level: 'info', message: 'Logger initialised', timestamp: new Date() });
+        this.log({
+            level: 'info',
+            message: 'Logger initialised',
+            timestamp: new Date(),
+        });
     }
 }

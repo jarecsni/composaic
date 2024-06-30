@@ -1,5 +1,8 @@
 // @ts-expect-error - resolution not working
-import { LoggerExtensionPoint, LogMessage } from '@composaic/plugins/impl/logger';
+import {
+    LoggerExtensionPoint,
+    LogMessage,
+} from '@composaic/plugins/impl/logger';
 // @ts-expect-error - resolution not working
 import { Plugin } from '@composaic/plugins/types';
 
@@ -10,9 +13,12 @@ export class SimpleLoggerExtension implements LoggerExtensionPoint {
     }
     setLogCallback(log: (message: LogMessage) => void): void {
         this.log = log;
-        this.log({ level: 'info', message: 'Logger initialised', timestamp: new Date() });
+        this.log({
+            level: 'info',
+            message: 'Logger initialised',
+            timestamp: new Date(),
+        });
     }
 }
 
-export class SimpleLoggerPlugin extends Plugin {
-}
+export class SimpleLoggerPlugin extends Plugin {}
