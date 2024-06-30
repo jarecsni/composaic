@@ -1,24 +1,18 @@
 // @ts-expect-error - resolution not working
-import { LoggerExtensionPoint } from '@composaic/plugins/impl/logger';
+import { LoggerExtensionPoint, LogMessage } from '@composaic/plugins/impl/logger';
 // @ts-expect-error - resolution not working
 import { Plugin } from '@composaic/plugins/types';
 
 export class SimpleLoggerExtension implements LoggerExtensionPoint {
-    log(message: string, ...args: unknown[]): void {
-        console.log(message, ...args);
+    private log?: (message: LogMessage) => void;
+    getSubSystemName(): string {
+        return 'Test Plugin';
     }
-    info(message: string, ...args: unknown[]): void {
-        console.log(message, ...args);
-    }
-    debug(message: string, ...args: unknown[]): void {
-        console.debug(message, ...args);
-    }
-    warn(message: string, ...args: unknown[]): void {
-        console.warn(message, ...args);
-    }
-    error(message: string, ...args: unknown[]): void {
-        console.error(message, ...args);
+    setLogCallback(log: (message: LogMessage) => void): void {
+        this.log = log;
+        this.log({ level: 'info', message: 'Logger initialised', timestamp: new Date() });
     }
 }
 
-export class SimpleLoggerPlugin extends Plugin {}
+export class SimpleLoggerPlugin extends Plugin {
+}

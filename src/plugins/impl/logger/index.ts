@@ -1,34 +1,44 @@
 import { Plugin } from '../../types';
 
+export type LogMessage = {
+    level: 'trace' | 'debug' | 'info' | 'warn' | 'error';
+    message: string;
+    timestamp: Date;
+    args?: unknown[];
+};
+
 /**
  * Logger extension point.
  *
  * Extensions for this extension point will need to implement these methods.
  */
 export interface LoggerExtensionPoint {
-    log(message: string, ...args: unknown[]): void;
-    info(message: string, ...args: unknown[]): void;
-    debug(message: string, ...args: unknown[]): void;
-    warn(message: string, ...args: unknown[]): void;
-    error(message: string, ...args: unknown[]): void;
+    getSubSystemName(): string;
+    setLogCallback(log: (message: LogMessage) => void): void;
 }
 
-export class LoggerPlugin extends Plugin {}
+export class LoggerPlugin extends Plugin {
+    start(): void {
+        this.getConnectedExtensions('logger').forEach((extension) => {
+            const loggerExtension = extension.extensionImpl as LoggerExtensionPoint;
+            loggerExtension.setLogCallback((message: LogMessage) => {
+                console.log(
+                    `${message.timestamp.toISOString()} [${message.level.toUpperCase()}] [${loggerExtension.getSubSystemName()
+                    }] ${message.message}`
+                );
+            });
+        });
+    }
+    stop(): void { }
+}
 
 export class SimpleLoggerExtension implements LoggerExtensionPoint {
-    log(message: string, ...args: unknown[]): void {
-        console.log(message, ...args);
+    private log?: (message: LogMessage) => void;
+    getSubSystemName(): string {
+        return 'Composaic Framework';
     }
-    info(message: string, ...args: unknown[]): void {
-        console.log(message, ...args);
-    }
-    debug(message: string, ...args: unknown[]): void {
-        console.debug(message, ...args);
-    }
-    warn(message: string, ...args: unknown[]): void {
-        console.warn(message, ...args);
-    }
-    error(message: string, ...args: unknown[]): void {
-        console.error(message, ...args);
+    setLogCallback(log: (message: LogMessage) => void): void {
+        this.log = log;
+        this.log({ level: 'info', message: 'Logger initialised', timestamp: new Date() });
     }
 }
