@@ -1,6 +1,8 @@
 import { PluginDescriptor, PluginManifest } from '../plugins/types';
 
-export const convertManifestToPluginDescriptor = (manifest: PluginManifest): PluginDescriptor[] => {
+export const convertManifestToPluginDescriptor = (
+    manifest: PluginManifest
+): PluginDescriptor[] => {
     return manifest.plugins.flatMap((plugin) => {
         return plugin.definitions.map((definition) => {
             return {
@@ -10,12 +12,14 @@ export const convertManifestToPluginDescriptor = (manifest: PluginManifest): Plu
                 plugin: definition.plugin,
                 version: definition.version,
                 description: definition.description,
-                extensionPoints: definition.extensionPoints.map((extensionPoint) => {
-                    return {
-                        id: extensionPoint.id,
-                        type: extensionPoint.type,
-                    };
-                }),
+                extensionPoints: definition.extensionPoints.map(
+                    (extensionPoint) => {
+                        return {
+                            id: extensionPoint.id,
+                            type: extensionPoint.type,
+                        };
+                    }
+                ),
                 extensions: definition.extensions.map((extension) => {
                     return {
                         plugin: extension.plugin,
@@ -26,4 +30,4 @@ export const convertManifestToPluginDescriptor = (manifest: PluginManifest): Plu
             };
         });
     });
-}
+};
