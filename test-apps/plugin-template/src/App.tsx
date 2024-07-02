@@ -6,10 +6,15 @@ import manifest from '../manifest.json';
 const loadModule = async (moduleName: string, pkg: string) => {
     const module = await import(`./plugins/${pkg}/${moduleName}.ts`);
     return module;
-}
+};
 
 function App() {
-    return <DevContainer manifest={manifest} loadModule={loadModule} ></DevContainer >;
+    return (
+        <DevContainer
+            manifest={manifest}
+            loadModule={loadModule}
+        ></DevContainer>
+    );
 }
 
 export default App;

@@ -11,7 +11,10 @@ interface DevContainerProps {
     loadModule(moduleName: string, pkg: string): Promise<object>;
 }
 
-export const DevContainer: FC<DevContainerProps> = ({ manifest, loadModule }) => {
+export const DevContainer: FC<DevContainerProps> = ({
+    manifest,
+    loadModule,
+}) => {
     console.log('DevContainer', JSON.stringify(manifest));
     return (
         <div>
@@ -19,4 +22,3 @@ export const DevContainer: FC<DevContainerProps> = ({ manifest, loadModule }) =>
         </div>
     );
 };
-
