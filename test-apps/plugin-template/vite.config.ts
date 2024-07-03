@@ -11,10 +11,8 @@ export default defineConfig({
     plugins: [
         react({
             babel: {
-                plugins: [
-                    '@babel/plugin-syntax-import-attributes',
-                ],
-            }
+                plugins: ['@babel/plugin-syntax-import-attributes'],
+            },
         }),
         alias({
             entries: [

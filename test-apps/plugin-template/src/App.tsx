@@ -13,7 +13,7 @@ const loadModule = async (moduleName: string, pkg: string) => {
 };
 
 function App() {
-    return <DevContainer manifest={{}} loadModule={loadModule} ></DevContainer >;
+    return <DevContainer manifest={{}} loadModule={loadModule}></DevContainer>;
 }
 
 export default App;
