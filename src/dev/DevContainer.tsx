@@ -1,4 +1,4 @@
-import React, { FC, useEffect } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import { PluginManager } from '../plugins/PluginManager';
 // @ts-expect-error - this is not working in VScode
 import corePlugins from '../plugins/core-plugins.json';
@@ -12,10 +12,17 @@ interface DevContainerProps {
 }
 
 export const DevContainer: FC<DevContainerProps> = ({
-    manifest,
     loadModule,
 }) => {
-    console.log('DevContainer', JSON.stringify(manifest));
+    const [manifest, setManifest] = useState({});
+    useEffect(() => {
+        fetch('/manifest.json').then((response) => {
+            response.json().then((json) => {
+                console.log('setting manifest', json);
+                setManifest(json);
+            })
+        });
+    }, []);
     return (
         <div>
             <h1>Hello, world!</h1>
