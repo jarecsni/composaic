@@ -11,16 +11,14 @@ interface DevContainerProps {
     loadModule(moduleName: string, pkg: string): Promise<object>;
 }
 
-export const DevContainer: FC<DevContainerProps> = ({
-    loadModule,
-}) => {
+export const DevContainer: FC<DevContainerProps> = ({ loadModule }) => {
     const [manifest, setManifest] = useState({});
     useEffect(() => {
         fetch('/manifest.json').then((response) => {
             response.json().then((json) => {
                 console.log('setting manifest', json);
                 setManifest(json);
-            })
+            });
         });
     }, []);
     return (

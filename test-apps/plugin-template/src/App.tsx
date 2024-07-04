@@ -16,7 +16,6 @@ import { DevContainer } from '@composaic/dev/DevContainer';
 //     })
 //     .catch((error) => console.error('Failed to load manifest:', error));
 
-
 const loadModule = async (moduleName: string, pkg: string) => {
     const module = await import(`./plugins/${pkg}/${moduleName}.ts`);
     return module;
@@ -32,7 +31,7 @@ function App() {
     //         })
     //     });
     // }, []);
-    return <DevContainer loadModule={loadModule} ></DevContainer >;
+    return <DevContainer loadModule={loadModule}></DevContainer>;
 }
 
 export default App;
