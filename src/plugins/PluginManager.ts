@@ -60,7 +60,7 @@ export class PluginManager {
         }
         pluginDescriptor.loadedClass =
             pluginDescriptor.loadedModule![
-            pluginDescriptor.class as keyof typeof pluginDescriptor.loadedModule
+                pluginDescriptor.class as keyof typeof pluginDescriptor.loadedModule
             ];
         if (pluginDescriptor.extensions) {
             for (const extension of pluginDescriptor.extensions) {
@@ -102,7 +102,11 @@ export class PluginManager {
         });
 
         pluginDescriptor.extensions?.forEach((extension) => {
-            plugin.setExtensionImplementation(extension.plugin, extension.id, extension.impl!);
+            plugin.setExtensionImplementation(
+                extension.plugin,
+                extension.id,
+                extension.impl!
+            );
         });
 
         plugin.init(pluginDescriptor);

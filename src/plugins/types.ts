@@ -72,8 +72,8 @@ export abstract class Plugin {
         [id: string]: object;
     } = {};
 
-    start(): void { }
-    stop(): void { }
+    start(): void {}
+    stop(): void {}
     init(pluginDescriptor: PluginDescriptor): void {
         if (this.initialised) {
             throw new Error('Plugin already initialised');
@@ -101,7 +101,11 @@ export abstract class Plugin {
     ): { plugin: string; extensionImpl: object }[] {
         return this.extensionsPoints[extensionPointId];
     }
-    setExtensionImplementation(plugin: string, extensionPointId: string, extensionImpl: object): void {
+    setExtensionImplementation(
+        plugin: string,
+        extensionPointId: string,
+        extensionImpl: object
+    ): void {
         if (this.initialised) {
             throw new Error('Plugin already initialised');
         }
