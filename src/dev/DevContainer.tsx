@@ -23,27 +23,18 @@ const processManifest = async (
         );
     }
     PluginManager.getInstance().addPluginDefinitions(pluginDescriptors);
-    const logger =
-        await PluginManager.getInstance().getPlugin('@composaic/logger');
-    logger.start();
-    (
-        await PluginManager.getInstance().getPlugin(
-            '@composaic-tests/simple-logger'
-        )
-    ).start();
-
-    const simpleLoggerPlugin = await PluginManager.getInstance().getPlugin(
-        '@composaic-tests/simple-logger'
-    );
-    // @ts-expect-error
-    simpleLoggerPlugin.log('Hello, world from SimpleLoggerPlugin!');
+    (await PluginManager.getInstance().getPlugin('@composaic/logger')).start();
+    (await PluginManager.getInstance().getPlugin('@composaic-tests/simple-logger')).start();
 };
 
 export const DevContainer: FC<DevContainerProps> = ({ loadModule }) => {
     useEffect(() => {
         fetch('/manifest.json').then((response) => {
-            response.json().then((json) => {
-                processManifest(json, loadModule);
+            response.json().then(async (json) => {
+                await processManifest(json, loadModule);
+                const simpleLoggerPlugin = await PluginManager.getInstance().getPlugin('@composaic-tests/simple-logger');
+                // @ts-expect-error
+                simpleLoggerPlugin.log('Hello, world from SimpleLoggerPlugin!');
             });
         });
     }, []);
