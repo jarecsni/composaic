@@ -12,7 +12,7 @@ export const convertManifestToPluginDescriptor = (
                 plugin: definition.plugin,
                 version: definition.version,
                 description: definition.description,
-                extensionPoints: definition.extensionPoints.map(
+                extensionPoints: definition.extensionPoints?.map(
                     (extensionPoint) => {
                         return {
                             id: extensionPoint.id,
@@ -20,7 +20,7 @@ export const convertManifestToPluginDescriptor = (
                         };
                     }
                 ),
-                extensions: definition.extensions.map((extension) => {
+                extensions: definition.extensions?.map((extension) => {
                     return {
                         plugin: extension.plugin,
                         id: extension.id,
