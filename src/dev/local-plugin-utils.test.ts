@@ -94,7 +94,9 @@ describe('local-plugin-utils', () => {
         };
 
         // Act
-        const result = convertManifestToPluginDescriptor(manifestWithoutExtensions);
+        const result = convertManifestToPluginDescriptor(
+            manifestWithoutExtensions
+        );
 
         // Assert
         expect(result).toBeDefined();
@@ -118,7 +120,8 @@ describe('local-plugin-utils', () => {
                             class: 'test-class',
                             plugin: 'test-plugin',
                             version: '1.0.0',
-                            description: 'test-description without extensionPoints',
+                            description:
+                                'test-description without extensionPoints',
                             extensions: [
                                 {
                                     plugin: 'test-plugin',
@@ -134,7 +137,9 @@ describe('local-plugin-utils', () => {
         };
 
         // Act
-        const result = convertManifestToPluginDescriptor(manifestWithoutExtensionPoints);
+        const result = convertManifestToPluginDescriptor(
+            manifestWithoutExtensionPoints
+        );
 
         // Assert
         expect(result).toBeDefined();

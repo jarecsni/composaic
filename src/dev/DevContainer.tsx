@@ -11,10 +11,16 @@ interface DevContainerProps {
     loadModule(moduleName: string, pkg: string): Promise<object>;
 }
 
-const processManifest = async (manifest: PluginManifest, loadModule: DevContainerProps['loadModule']) => {
+const processManifest = async (
+    manifest: PluginManifest,
+    loadModule: DevContainerProps['loadModule']
+) => {
     const pluginDescriptors = convertManifestToPluginDescriptor(manifest);
     for (const pluginDescriptor of pluginDescriptors) {
-        pluginDescriptor.loadedModule = await loadModule(pluginDescriptor.module, pluginDescriptor.package);
+        pluginDescriptor.loadedModule = await loadModule(
+            pluginDescriptor.module,
+            pluginDescriptor.package
+        );
     }
     PluginManager.getInstance().addPluginDefinitions(pluginDescriptors);
 };
