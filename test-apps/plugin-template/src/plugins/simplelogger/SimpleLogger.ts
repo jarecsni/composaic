@@ -7,7 +7,7 @@ import {
 import { Plugin } from '@composaic/plugins/types';
 
 export class SimpleLoggerExtension implements LoggerExtensionPoint {
-    private log?: (message: LogMessage) => void;
+    log?: (message: LogMessage) => void;
     getSubSystemName(): string {
         return 'Test Plugin';
     }
@@ -21,4 +21,19 @@ export class SimpleLoggerExtension implements LoggerExtensionPoint {
     }
 }
 
-export class SimpleLoggerPlugin extends Plugin {}
+export class SimpleLoggerPlugin extends Plugin {
+    extension?: SimpleLoggerExtension;
+    start(): void {
+        // @ts-expect-error - resolution not working
+        this.extension = this.getExtensionImpl('@composaic/logger', 'logger');
+    }
+    log(message: string) {
+        if (this.extension !== undefined) {
+            this.extension.log!({
+                level: 'info',
+                message,
+                timestamp: new Date(),
+            });
+        }
+    }
+}

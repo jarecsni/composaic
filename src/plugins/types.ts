@@ -12,6 +12,7 @@ export interface PluginDescriptor {
     plugin: string;
     version: string;
     description: string;
+    pluginInstance?: Plugin;
     extensionPoints?: {
         id: string;
         type: string;
@@ -64,11 +65,15 @@ export type PluginManifest = {
 export abstract class Plugin {
     initialised = false;
     pluginDescriptor: PluginDescriptor = {} as PluginDescriptor;
-    extensions: {
+    extensionsPoints: {
         [extensionPointId: string]: { plugin: string; extensionImpl: object }[];
     } = {};
-    start(): void {}
-    stop(): void {}
+    extensions: {
+        [id: string]: object;
+    } = {};
+
+    start(): void { }
+    stop(): void { }
     init(pluginDescriptor: PluginDescriptor): void {
         if (this.initialised) {
             throw new Error('Plugin already initialised');
@@ -89,12 +94,21 @@ export abstract class Plugin {
         if (this.initialised) {
             throw new Error('Plugin already initialised');
         }
-        this.extensions[extensionPointId] = extensions;
+        this.extensionsPoints[extensionPointId] = extensions;
     }
     protected getConnectedExtensions(
         extensionPointId: string
     ): { plugin: string; extensionImpl: object }[] {
-        return this.extensions[extensionPointId];
+        return this.extensionsPoints[extensionPointId];
+    }
+    setExtensionImplementation(plugin: string, extensionPointId: string, extensionImpl: object): void {
+        if (this.initialised) {
+            throw new Error('Plugin already initialised');
+        }
+        this.extensions[plugin + '::' + extensionPointId] = extensionImpl;
+    }
+    protected getExtensionImpl(plugin: string, extensionId: string): object {
+        return this.extensions[plugin + '::' + extensionId];
     }
 }
 

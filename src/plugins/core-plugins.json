@@ -3,7 +3,7 @@
         "plugin": "@composaic/logger",
         "version": "0.1.0",
         "description": "Logger Plugin",
-        "module": "./index",
+        "module": "index",
         "package": "logger",
         "class": "LoggerPlugin",
         "extensionPoints": [
@@ -15,7 +15,7 @@
         "extensions": [
             {
                 "plugin": "self",
-                "id": "logger-epoint",
+                "id": "logger",
                 "className": "SimpleLoggerExtension"
             }
         ]

@@ -60,7 +60,7 @@ export class PluginManager {
         }
         pluginDescriptor.loadedClass =
             pluginDescriptor.loadedModule![
-                pluginDescriptor.class as keyof typeof pluginDescriptor.loadedModule
+            pluginDescriptor.class as keyof typeof pluginDescriptor.loadedModule
             ];
         if (pluginDescriptor.extensions) {
             for (const extension of pluginDescriptor.extensions) {
@@ -101,7 +101,12 @@ export class PluginManager {
             plugin.connectExtensions(extensionPoint.id, extensionPoint.impl!);
         });
 
+        pluginDescriptor.extensions?.forEach((extension) => {
+            plugin.setExtensionImplementation(extension.plugin, extension.id, extension.impl!);
+        });
+
         plugin.init(pluginDescriptor);
+        pluginDescriptor.pluginInstance = plugin;
         return plugin;
     }
 
@@ -111,8 +116,15 @@ export class PluginManager {
      * @param pluginName
      * @returns the plugin instance. If the plugin is not loaded, it will be loaded.
      */
-    getPlugin(pluginName: string): PluginDescriptor {
-        return PluginManager.registry[pluginName];
+    async getPlugin(pluginName: string): Plugin {
+        const pluginDescriptor = PluginManager.registry[pluginName];
+        if (!pluginDescriptor) {
+            throw new Error(`Plugin with ID ${pluginName} not found`);
+        }
+        if (!pluginDescriptor.pluginInstance) {
+            await this.loadPlugin(pluginName);
+        }
+        return pluginDescriptor.pluginInstance!;
     }
 
     clear() {
