@@ -37,17 +37,21 @@ describe('PluginManager', () => {
                     },
                 ],
             });
-            const pluginBaz =
-                (await PluginManager.getInstance().getPlugin('@foo/baz')).pluginDescriptor;
+            const pluginBaz = (
+                await PluginManager.getInstance().getPlugin('@foo/baz')
+            ).pluginDescriptor;
             expect(pluginBaz).toBeDefined();
             expect(pluginBaz.extensions![0].id).toBe('MyCoolExtension');
             expect(pluginBaz.extensions![0].plugin).toBe('@foo/bar');
             expect(pluginBaz.extensions![0].className).toBe(
                 'BazCoolExtensionImpl'
             );
-            expect((pluginBaz.dependencies![0] as PluginDescriptor).plugin).toEqual('@foo/bar');
-            const pluginBar =
-                (await PluginManager.getInstance().getPlugin('@foo/bar')).pluginDescriptor;
+            expect(
+                (pluginBaz.dependencies![0] as PluginDescriptor).plugin
+            ).toEqual('@foo/bar');
+            const pluginBar = (
+                await PluginManager.getInstance().getPlugin('@foo/bar')
+            ).pluginDescriptor;
             expect(pluginBar.dependencies!).toHaveLength(1);
             expect(
                 (pluginBar.dependencies![0] as PluginDescriptor).plugin

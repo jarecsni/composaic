@@ -45,7 +45,10 @@ export class PluginManager {
         PluginManager.registry[pluginDescriptor.plugin] = pluginDescriptor;
     }
 
-    async loadPlugin(pluginName: string, dependingPlugin?: string): Promise<Plugin> {
+    async loadPlugin(
+        pluginName: string,
+        dependingPlugin?: string
+    ): Promise<Plugin> {
         const pluginDescriptor = PluginManager.registry[pluginName];
         if (!pluginDescriptor) {
             throw new Error(`Plugin with ID ${pluginName} not found`);
@@ -57,7 +60,10 @@ export class PluginManager {
                     console.log('load: ignoring self dependency', pluginToLoad);
                     continue;
                 }
-                const dependencyPlugin = await this.loadPlugin((dependency as PluginDescriptor).plugin, pluginDescriptor.plugin);
+                const dependencyPlugin = await this.loadPlugin(
+                    (dependency as PluginDescriptor).plugin,
+                    pluginDescriptor.plugin
+                );
             }
         }
         if (!pluginDescriptor.loadedModule) {
@@ -67,7 +73,7 @@ export class PluginManager {
         }
         pluginDescriptor.loadedClass =
             pluginDescriptor.loadedModule![
-            pluginDescriptor.class as keyof typeof pluginDescriptor.loadedModule
+                pluginDescriptor.class as keyof typeof pluginDescriptor.loadedModule
             ];
         if (pluginDescriptor.extensions) {
             for (const extension of pluginDescriptor.extensions) {
@@ -127,10 +133,16 @@ export class PluginManager {
             for (const dependency of plugin.pluginDescriptor.dependencies) {
                 const pluginToLoad = (dependency as PluginDescriptor).plugin;
                 if (pluginToLoad === dependingPlugin?.pluginDescriptor.plugin) {
-                    console.log('start: ignoring self dependency', pluginToLoad);
+                    console.log(
+                        'start: ignoring self dependency',
+                        pluginToLoad
+                    );
                     continue;
                 }
-                const dependencyPlugin = await this.startPlugin((dependency as PluginDescriptor).pluginInstance!, plugin);
+                const dependencyPlugin = await this.startPlugin(
+                    (dependency as PluginDescriptor).pluginInstance!,
+                    plugin
+                );
             }
         }
         plugin.start();
