@@ -29,7 +29,7 @@ export class LoggerPlugin extends Plugin {
             });
         });
     }
-    async stop() { }
+    async stop() {}
 }
 
 export class SimpleLoggerExtension implements LoggerExtensionPoint {
