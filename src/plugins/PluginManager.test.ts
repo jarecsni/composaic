@@ -96,7 +96,7 @@ describe('PluginManager', () => {
             });
 
             const loadedPlugin =
-                await PluginManager.getInstance().loadPlugin('@foo/bar');
+                await PluginManager.getInstance().getPlugin('@foo/bar');
             expect(loadedPlugin).toBeDefined();
             expect(loadedPlugin.getPluginDescriptor().extensions![0].id).toBe(
                 'MyCoolExtension'
@@ -180,7 +180,7 @@ describe('PluginManager', () => {
         });
         it('should add a plugin with a loaded module', async () => {
             const loadedPlugin =
-                await PluginManager.getInstance().loadPlugin('@foo/bar');
+                await PluginManager.getInstance().getPlugin('@foo/bar');
             expect(loadedPlugin).toBeDefined();
             expect(loadedPlugin.getPluginDescriptor().extensions![0].id).toBe(
                 'MyCoolExtension'

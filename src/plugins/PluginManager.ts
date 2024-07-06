@@ -45,13 +45,15 @@ export class PluginManager {
         PluginManager.registry[pluginDescriptor.plugin] = pluginDescriptor;
     }
 
-    async loadPlugin(
-        pluginName: string,
-        dependingPlugin?: string
-    ): Promise<Plugin> {
+    private async loadPlugin(pluginName: string, dependingPlugin?: string): Promise<Plugin> {
+        console.log('loadPlugin', 'request to load plugin', pluginName, dependingPlugin);
         const pluginDescriptor = PluginManager.registry[pluginName];
         if (!pluginDescriptor) {
             throw new Error(`Plugin with ID ${pluginName} not found`);
+        }
+        if (pluginDescriptor.pluginInstance) {
+            console.log('loadPlugin', 'plugin already loaded', pluginName, dependingPlugin);
+            return pluginDescriptor.pluginInstance;
         }
         if (pluginDescriptor.dependencies) {
             for (const dependency of pluginDescriptor.dependencies) {
@@ -73,7 +75,7 @@ export class PluginManager {
         }
         pluginDescriptor.loadedClass =
             pluginDescriptor.loadedModule![
-                pluginDescriptor.class as keyof typeof pluginDescriptor.loadedModule
+            pluginDescriptor.class as keyof typeof pluginDescriptor.loadedModule
             ];
         if (pluginDescriptor.extensions) {
             for (const extension of pluginDescriptor.extensions) {
@@ -128,7 +130,7 @@ export class PluginManager {
         return plugin;
     }
 
-    async startPlugin(plugin: Plugin, dependingPlugin?: Plugin) {
+    private async startPlugin(plugin: Plugin, dependingPlugin?: Plugin) {
         if (plugin.pluginDescriptor.dependencies) {
             for (const dependency of plugin.pluginDescriptor.dependencies) {
                 const pluginToLoad = (dependency as PluginDescriptor).plugin;
