@@ -38,19 +38,26 @@ export class PluginManager {
                 const targetPluginDescriptor =
                     PluginManager.registry[extension.plugin];
                 targetPluginDescriptor.dependencies!.push(pluginDescriptor);
+                // Also add the plugin offering the extension point as a dependency to this plugin
+                pluginDescriptor.dependencies!.push(targetPluginDescriptor);
             }
         });
         PluginManager.registry[pluginDescriptor.plugin] = pluginDescriptor;
     }
 
-    async loadPlugin(pluginName: string): Promise<Plugin> {
+    async loadPlugin(pluginName: string, dependingPlugin?: string): Promise<Plugin> {
         const pluginDescriptor = PluginManager.registry[pluginName];
         if (!pluginDescriptor) {
             throw new Error(`Plugin with ID ${pluginName} not found`);
         }
         if (pluginDescriptor.dependencies) {
             for (const dependency of pluginDescriptor.dependencies) {
-                await this.loadPlugin((dependency as PluginDescriptor).plugin);
+                const pluginToLoad = (dependency as PluginDescriptor).plugin;
+                if (pluginToLoad === dependingPlugin) {
+                    console.log('load: ignoring self dependency', pluginToLoad);
+                    continue;
+                }
+                const dependencyPlugin = await this.loadPlugin((dependency as PluginDescriptor).plugin, pluginDescriptor.plugin);
             }
         }
         if (!pluginDescriptor.loadedModule) {
@@ -60,7 +67,7 @@ export class PluginManager {
         }
         pluginDescriptor.loadedClass =
             pluginDescriptor.loadedModule![
-                pluginDescriptor.class as keyof typeof pluginDescriptor.loadedModule
+            pluginDescriptor.class as keyof typeof pluginDescriptor.loadedModule
             ];
         if (pluginDescriptor.extensions) {
             for (const extension of pluginDescriptor.extensions) {
@@ -111,7 +118,22 @@ export class PluginManager {
 
         plugin.init(pluginDescriptor);
         pluginDescriptor.pluginInstance = plugin;
+
         return plugin;
+    }
+
+    async startPlugin(plugin: Plugin, dependingPlugin?: Plugin) {
+        if (plugin.pluginDescriptor.dependencies) {
+            for (const dependency of plugin.pluginDescriptor.dependencies) {
+                const pluginToLoad = (dependency as PluginDescriptor).plugin;
+                if (pluginToLoad === dependingPlugin?.pluginDescriptor.plugin) {
+                    console.log('start: ignoring self dependency', pluginToLoad);
+                    continue;
+                }
+                const dependencyPlugin = await this.startPlugin((dependency as PluginDescriptor).pluginInstance!, plugin);
+            }
+        }
+        plugin.start();
     }
 
     /**
@@ -120,7 +142,7 @@ export class PluginManager {
      * @param pluginName
      * @returns the plugin instance. If the plugin is not loaded, it will be loaded.
      */
-    async getPlugin(pluginName: string): Plugin {
+    async getPlugin(pluginName: string): Promise<Plugin> {
         const pluginDescriptor = PluginManager.registry[pluginName];
         if (!pluginDescriptor) {
             throw new Error(`Plugin with ID ${pluginName} not found`);
@@ -128,6 +150,7 @@ export class PluginManager {
         if (!pluginDescriptor.pluginInstance) {
             await this.loadPlugin(pluginName);
         }
+        this.startPlugin(pluginDescriptor.pluginInstance!);
         return pluginDescriptor.pluginInstance!;
     }
 

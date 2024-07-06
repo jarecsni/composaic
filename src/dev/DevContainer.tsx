@@ -23,12 +23,6 @@ const processManifest = async (
         );
     }
     PluginManager.getInstance().addPluginDefinitions(pluginDescriptors);
-    (await PluginManager.getInstance().getPlugin('@composaic/logger')).start();
-    (
-        await PluginManager.getInstance().getPlugin(
-            '@composaic-tests/simple-logger'
-        )
-    ).start();
 };
 
 export const DevContainer: FC<DevContainerProps> = ({ loadModule }) => {
