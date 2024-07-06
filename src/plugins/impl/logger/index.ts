@@ -18,7 +18,7 @@ export interface LoggerExtensionPoint {
 }
 
 export class LoggerPlugin extends Plugin {
-    start(): void {
+    async start() {
         this.getConnectedExtensions('logger').forEach((extension) => {
             const loggerExtension =
                 extension.extensionImpl as LoggerExtensionPoint;
@@ -29,7 +29,7 @@ export class LoggerPlugin extends Plugin {
             });
         });
     }
-    stop(): void {}
+    async stop() { }
 }
 
 export class SimpleLoggerExtension implements LoggerExtensionPoint {
