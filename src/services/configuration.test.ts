@@ -1,7 +1,6 @@
 import ConfigurationService, {
     Configuration,
     NodeEnv,
-    getConfiguration,
 } from './configuration';
 
 describe('configuration', () => {
