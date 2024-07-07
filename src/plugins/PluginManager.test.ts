@@ -192,9 +192,78 @@ describe('PluginManager', () => {
             const ext2 =
                 loadedPlugin.getPluginDescriptor().extensionPoints![0].impl![1]
                     .extensionImpl;
-            // @ts-expect-error - we know this is a function
-            // connected extensions
             (loadedPlugin as BarPlugin).saySomethingCool();
+        });
+    });
+    describe('using resolved descriptors with dependencies', () => {
+        beforeEach(async () => {
+            PluginManager.getInstance().clear();
+            const barPlugin: PluginDescriptor = {
+                module: 'BarPluginModule',
+                package: 'bar',
+                class: 'BarPlugin',
+                plugin: '@foo/bar',
+                version: '1.0',
+                description: 'bar',
+                extensionPoints: [
+                    {
+                        id: 'MyCoolExtension',
+                        type: 'MyCoolExtensionType',
+                    },
+                ],
+                extensions: [
+                    {
+                        plugin: 'self',
+                        id: 'MyCoolExtension',
+                        className: 'SimpleCoolExtensionProvider',
+                    },
+                ],
+            };
+            barPlugin.loadedModule = await import(
+                `./impl/${barPlugin.package}/${barPlugin.module}.ts`
+            );
+
+            PluginManager.getInstance().addPlugin(barPlugin);
+            const bazPlugin: PluginDescriptor = {
+                module: 'BazPluginModule',
+                package: 'baz',
+                class: 'BazPlugin',
+                plugin: '@foo/baz',
+                version: '1.0',
+                description: 'baz',
+                extensions: [
+                    {
+                        plugin: '@foo/bar',
+                        id: 'MyCoolExtension',
+                        className: 'BazCoolExtensionImpl',
+                    },
+                ],
+            };
+            bazPlugin.loadedModule = await import(
+                `./impl/${bazPlugin.package}/${bazPlugin.module}.ts`
+            );
+
+            PluginManager.getInstance().addPlugin(bazPlugin);
+        });
+        it('should add a plugin with a loaded module', async () => {
+            const loadedPlugin =
+                await PluginManager.getInstance().getPlugin('@foo/baz');
+            expect(loadedPlugin).toBeDefined();
+            expect(loadedPlugin.getPluginDescriptor().extensions![0].id).toBe(
+                'MyCoolExtension'
+            );
+            expect(
+                loadedPlugin.getPluginDescriptor().extensions![0].plugin
+            ).toBe('@foo/bar');
+            const extensionImpl =
+                loadedPlugin.getPluginDescriptor().extensions![0].impl!;
+            // @ts-expect-error - we know this is a function
+            expect(extensionImpl.saySomethingCool).toBeDefined();
+            const barPlugin =
+                await PluginManager.getInstance().getPlugin('@foo/bar');
+            expect(
+                barPlugin.getPluginDescriptor().extensionPoints![0].impl
+            ).toHaveLength(2);
         });
     });
 });
