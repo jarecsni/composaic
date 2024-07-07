@@ -6,21 +6,22 @@ export interface MyCoolExtensionType {
 
 export class SimpleCoolExtensionProvider implements MyCoolExtensionType {
     saySomethingCool(): void {
-        console.log('Saying something cool - well, default cool that is');
+        // console.log('Saying something cool - well, default cool that is');
     }
 }
 
 export class BarPlugin extends Plugin implements MyCoolExtensionType {
-    start(): void {
-        console.log('BarPlugin started');
+    async start(): Promise<void> {
+        // console.log('BarPlugin started');
     }
-    stop(): void {
-        console.log('BarPlugin stopped');
+    async stop(): Promise<void> {
+        // console.log('BarPlugin stopped');
+        return Promise.resolve();
     }
     saySomethingCool(): void {
-        console.log('BarPlugin saying something cool is running');
+        // console.log('BarPlugin saying something cool is running');
         const extensions = this.getConnectedExtensions('MyCoolExtension');
-        console.log('connected extensions:', extensions.length);
+        // console.log('connected extensions:', extensions.length);
         if (extensions) {
             extensions.forEach((extension) => {
                 (

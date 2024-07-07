@@ -49,30 +49,30 @@ export class PluginManager {
         pluginName: string,
         dependingPlugin?: string
     ): Promise<Plugin> {
-        console.log(
-            'loadPlugin',
-            'request to load plugin',
-            pluginName,
-            dependingPlugin
-        );
+        // console.log(
+        //     'loadPlugin',
+        //     'request to load plugin',
+        //     pluginName,
+        //     dependingPlugin
+        // );
         const pluginDescriptor = PluginManager.registry[pluginName];
         if (!pluginDescriptor) {
             throw new Error(`Plugin with ID ${pluginName} not found`);
         }
         if (pluginDescriptor.pluginInstance) {
-            console.log(
-                'loadPlugin',
-                'plugin already loaded',
-                pluginName,
-                dependingPlugin
-            );
+            // console.log(
+            //     'loadPlugin',
+            //     'plugin already loaded',
+            //     pluginName,
+            //     dependingPlugin
+            // );
             return pluginDescriptor.pluginInstance;
         }
         if (pluginDescriptor.dependencies) {
             for (const dependency of pluginDescriptor.dependencies) {
                 const pluginToLoad = (dependency as PluginDescriptor).plugin;
                 if (pluginToLoad === dependingPlugin) {
-                    console.log('load: ignoring self dependency', pluginToLoad);
+                    // console.log('load: ignoring self dependency', pluginToLoad);
                     continue;
                 }
                 const dependencyPlugin = await this.loadPlugin(
@@ -88,7 +88,7 @@ export class PluginManager {
         }
         pluginDescriptor.loadedClass =
             pluginDescriptor.loadedModule![
-                pluginDescriptor.class as keyof typeof pluginDescriptor.loadedModule
+            pluginDescriptor.class as keyof typeof pluginDescriptor.loadedModule
             ];
         if (pluginDescriptor.extensions) {
             for (const extension of pluginDescriptor.extensions) {
@@ -148,10 +148,10 @@ export class PluginManager {
             for (const dependency of plugin.pluginDescriptor.dependencies) {
                 const pluginToLoad = (dependency as PluginDescriptor).plugin;
                 if (pluginToLoad === dependingPlugin?.pluginDescriptor.plugin) {
-                    console.log(
-                        'start: ignoring self dependency',
-                        pluginToLoad
-                    );
+                    // console.log(
+                    //     'start: ignoring self dependency',
+                    //     pluginToLoad
+                    // );
                     continue;
                 }
                 const dependencyPlugin = await this.startPlugin(

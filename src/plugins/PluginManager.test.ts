@@ -114,18 +114,9 @@ describe('PluginManager', () => {
             const ext1 =
                 loadedPlugin.getPluginDescriptor().extensionPoints![0].impl![0]
                     .extensionImpl;
-            // @ts-expect-error - we know this is a function
-            // ext1.saySomethingCool();
             const ext2 =
                 loadedPlugin.getPluginDescriptor().extensionPoints![0].impl![1]
                     .extensionImpl;
-            // @ts-expect-error - we know this is a function
-            // ext2.saySomethingCool();
-
-            // connected extensions
-            // loadedPlugin.getConnectedExtensions('MyCoolExtension').forEach((ext) => {
-            //     console.log(ext.plugin, ext.extensionImpl);
-            // })
         });
     });
     describe('using resolved descriptors', () => {
@@ -198,14 +189,10 @@ describe('PluginManager', () => {
             const ext1 =
                 loadedPlugin.getPluginDescriptor().extensionPoints![0].impl![0]
                     .extensionImpl;
-            // @ts-expect-error - we know this is a function
-            // ext1.saySomethingCool();
             const ext2 =
                 loadedPlugin.getPluginDescriptor().extensionPoints![0].impl![1]
                     .extensionImpl;
             // @ts-expect-error - we know this is a function
-            // ext2.saySomethingCool();
-
             // connected extensions
             (loadedPlugin as BarPlugin).saySomethingCool();
         });
