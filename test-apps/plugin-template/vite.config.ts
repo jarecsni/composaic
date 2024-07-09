@@ -42,6 +42,6 @@ export default defineConfig({
         port: 9000,
     },
     build: {
-        target: 'esnext'
-    }
+        target: 'esnext',
+    },
 });
