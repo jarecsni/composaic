@@ -4,6 +4,7 @@ import { PluginManager } from '../plugins/PluginManager';
 import corePlugins from '../plugins/core-plugins.json';
 import { PluginManifest } from '../plugins/types';
 import { convertManifestToPluginDescriptor } from './local-plugin-utils';
+import { App } from '../core/App';
 
 PluginManager.getInstance().addPluginDefinitions(corePlugins);
 
@@ -40,8 +41,6 @@ export const DevContainer: FC<DevContainerProps> = ({ loadModule }) => {
         });
     }, []);
     return (
-        <div>
-            <h1>Hello, world!</h1>
-        </div>
+        <App />
     );
 };
