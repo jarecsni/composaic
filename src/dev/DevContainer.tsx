@@ -40,7 +40,5 @@ export const DevContainer: FC<DevContainerProps> = ({ loadModule }) => {
             });
         });
     }, []);
-    return (
-        <App />
-    );
+    return <App />;
 };
