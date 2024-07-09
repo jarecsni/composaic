@@ -15,7 +15,7 @@ const environmentMap: { [key in NodeEnv]: ComposaicEnv } = {
     production: 'prd',
 };
 
-class ConfigurationService {
+export class ConfigurationService {
     private static instance: ConfigurationService;
     private static configuration: Configuration;
     private static env: NodeEnv;
@@ -40,4 +40,3 @@ class ConfigurationService {
     };
 }
 
-export default ConfigurationService;

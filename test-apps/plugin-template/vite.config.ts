@@ -3,7 +3,7 @@ import react from '@vitejs/plugin-react';
 import alias from '@rollup/plugin-alias';
 // import federation from '@originjs/vite-plugin-federation'
 import { resolve } from 'path';
-
+import federation from '@originjs/vite-plugin-federation';
 import { viteStaticCopy } from 'vite-plugin-static-copy';
 
 // https://vitejs.dev/config/
@@ -13,6 +13,14 @@ export default defineConfig({
             babel: {
                 plugins: ['@babel/plugin-syntax-import-attributes'],
             },
+        }),
+        federation({
+            name: 'TestPlugins',
+            filename: 'TestPlugins.js',
+            exposes: {
+                './SimpleLogger': './src/plugins/simplelogger/SimpleLogger.ts',
+            },
+            shared: ['react'],
         }),
         alias({
             entries: [
@@ -33,4 +41,7 @@ export default defineConfig({
     preview: {
         port: 9000,
     },
+    build: {
+        target: 'esnext'
+    }
 });

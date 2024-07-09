@@ -1,4 +1,4 @@
-import ConfigurationService, { Configuration, NodeEnv } from './configuration';
+import { ConfigurationService, Configuration, NodeEnv } from './configuration';
 
 describe('configuration', () => {
     const config: Configuration = {

@@ -1,6 +1,8 @@
 export const config = {
     dev: {
-        remotes: [],
+        remotes: [
+            'http://localhost:9000',
+        ],
     },
     prd: {
         remotes: [],
