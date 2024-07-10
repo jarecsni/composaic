@@ -4,8 +4,11 @@ export type LogMessage = {
     level: 'trace' | 'debug' | 'info' | 'warn' | 'error';
     message: string;
     timestamp: Date;
+    subSystemName: string;
     args?: unknown[];
 };
+
+export const ComposaicSubSystemName = 'Composaic Framework';
 
 /**
  * Logger extension point.
@@ -22,14 +25,15 @@ export class LoggerPlugin extends Plugin {
         this.getConnectedExtensions('logger').forEach((extension) => {
             const loggerExtension =
                 extension.extensionImpl as LoggerExtensionPoint;
-            loggerExtension.setLogCallback((message: LogMessage) => {
-                console.log(
-                    `${message.timestamp.toISOString()} [${message.level.toUpperCase()}] [${loggerExtension.getSubSystemName()}] ${message.message}`
-                );
-            });
+            loggerExtension.setLogCallback(this.log.bind(this));
         });
     }
-    async stop() {}
+    async stop() { }
+    log(message: LogMessage) {
+        console.log(
+            `${message.timestamp.toISOString()} [${message.level.toUpperCase()}] [${message.subSystemName}] ${message.message}`
+        );
+    }
 }
 
 export class SimpleLoggerExtension implements LoggerExtensionPoint {
@@ -43,6 +47,7 @@ export class SimpleLoggerExtension implements LoggerExtensionPoint {
             level: 'info',
             message: 'Logger initialised',
             timestamp: new Date(),
+            subSystemName: this.getSubSystemName(),
         });
     }
 }

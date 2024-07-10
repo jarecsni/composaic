@@ -1,7 +1,7 @@
 {
     "compilerOptions": {
-        "target": "es2016",
-        "module": "commonjs",
+        "target": "esnext",
+        "module": "esnext",
         "rootDir": "./src",
         "declaration": true,
         "outDir": "./lib",
@@ -10,8 +10,14 @@
         "strict": true,
         "skipLibCheck": true,
         "removeComments": true,
-        "jsx": "react-jsx"
+        "resolveJsonModule": true,
+        "jsx": "react-jsx",
     },
-    "include": ["src"],
-    "exclude": ["node_modules", "tests"]
+    "include": [
+        "src"
+    ],
+    "exclude": [
+        "node_modules",
+        "tests"
+    ]
 }

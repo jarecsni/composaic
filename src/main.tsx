@@ -7,9 +7,19 @@ import {
 } from '__federation__';
 import { App } from './core/App';
 import { ConfigurationService } from './services/configuration';
+import corePlugins from './plugins/core-plugins.json';
 import './index.css';
+import { LoggingService } from './services/LoggingService';
+import { PluginManager } from './plugins/PluginManager';
+import { createServices } from './services/ServiceManager';
 
-console.log('Env:', process.env.NODE_ENV);
+// Add core plugins
+PluginManager.getInstance().addPluginDefinitions(corePlugins);
+// Create and initialize services
+await createServices();
+
+LoggingService.getInstance().info('App started');
+
 ConfigurationService.getInstance()
     .getConfiguration()
     .remotes.forEach(async (remote) => {

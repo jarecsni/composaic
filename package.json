@@ -4,6 +4,7 @@
     "description": "A Composable Micro-Frontend Framework",
     "main": "./lib/index.js",
     "types": "./lib/index.d.ts",
+    "type": "module",
     "repository": {
         "type": "git",
         "url": "https://github.com/jarecsni/composaic.git"
