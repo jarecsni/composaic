@@ -11,13 +11,8 @@
         "skipLibCheck": true,
         "removeComments": true,
         "resolveJsonModule": true,
-        "jsx": "react-jsx",
+        "jsx": "react-jsx"
     },
-    "include": [
-        "src"
-    ],
-    "exclude": [
-        "node_modules",
-        "tests"
-    ]
+    "include": ["src"],
+    "exclude": ["node_modules", "tests"]
 }
