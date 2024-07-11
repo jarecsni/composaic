@@ -1,6 +1,5 @@
 import React, { FC, useEffect, useState } from 'react';
 import { PluginManager } from '../plugins/PluginManager';
-// @ts-expect-error - this is not working in VScode
 import corePlugins from '../plugins/core-plugins.json';
 import { PluginManifest } from '../plugins/types';
 import { convertManifestToPluginDescriptor } from './local-plugin-utils';

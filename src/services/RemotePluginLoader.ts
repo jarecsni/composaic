@@ -1,3 +1,7 @@
+import { convertManifestToPluginDescriptor } from '../dev/local-plugin-utils';
+import { PluginDescriptor } from '../plugins/types';
+import { LoggingService } from './LoggingService';
+
 export class RemotePluginLoader {
     private static instance: RemotePluginLoader;
 
@@ -14,9 +18,23 @@ export class RemotePluginLoader {
 
     loadManifests(remotes: string[]): void {
         remotes.forEach(async (remote) => {
-            console.log('Remote:', remote);
-            const manifest = await fetch(remote + '/manifest.json');
-            console.log('Manifest:', await manifest.json());
+            try {
+                const manifestRaw = await fetch(remote + '/manifest.json');
+                const manifest = await manifestRaw.json();
+                LoggingService.getInstance().info(
+                    `Loaded manifest from ${remote}: ${JSON.stringify(manifest)}`
+                );
+                const pluginDescriptor: PluginDescriptor[] =
+                    convertManifestToPluginDescriptor(manifest);
+                LoggingService.getInstance().info(
+                    `Converted manifest to plugin descriptor: ${JSON.stringify(pluginDescriptor)}`
+                );
+            } catch (error) {
+                console.error(
+                    'Error loading manifest:',
+                    (error as any).message
+                );
+            }
         });
     }
 }

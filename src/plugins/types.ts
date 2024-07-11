@@ -53,7 +53,6 @@ export type PluginManifestPluginDefinition = {
 export type PluginManifestPlugin = {
     remote: {
         name: string;
-        url: string;
     };
     definitions: PluginManifestPluginDefinition[];
 };
