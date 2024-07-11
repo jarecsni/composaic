@@ -8,7 +8,7 @@ export type LogMessage = {
     args?: unknown[];
 };
 
-export const ComposaicSubSystemName = 'Composaic Framework';
+export const ComposaicSubSystemName = 'Composaic';
 
 /**
  * Logger extension point.
@@ -28,7 +28,7 @@ export class LoggerPlugin extends Plugin {
             loggerExtension.setLogCallback(this.log.bind(this));
         });
     }
-    async stop() {}
+    async stop() { }
     log(message: LogMessage) {
         console.log(
             `${message.timestamp.toISOString()} [${message.level.toUpperCase()}] [${message.subSystemName}] ${message.message}`
@@ -39,7 +39,7 @@ export class LoggerPlugin extends Plugin {
 export class SimpleLoggerExtension implements LoggerExtensionPoint {
     private log?: (message: LogMessage) => void;
     getSubSystemName(): string {
-        return 'Composaic Framework';
+        return ComposaicSubSystemName;
     }
     setLogCallback(log: (message: LogMessage) => void): void {
         this.log = log;
