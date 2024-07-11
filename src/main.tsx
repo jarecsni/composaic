@@ -21,7 +21,9 @@ await createServices();
 
 LoggingService.getInstance().info('App started, loading remote manifests...');
 
-RemotePluginLoader.getInstance().loadManifests(ConfigurationService.getInstance().getConfiguration().remotes);
+RemotePluginLoader.getInstance().loadManifests(
+    ConfigurationService.getInstance().getConfiguration().remotes
+);
 
 // ConfigurationService.getInstance()
 //     .getConfiguration()
