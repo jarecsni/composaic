@@ -8,7 +8,6 @@ describe('local-plugin-utils', () => {
                 {
                     remote: {
                         name: 'test',
-                        url: 'http://test.com',
                     },
                     definitions: [
                         {
@@ -37,9 +36,11 @@ describe('local-plugin-utils', () => {
             ],
         };
         // Act
-        const result = convertManifestToPluginDescriptor(manifest);
+        const result = convertManifestToPluginDescriptor(manifest, 'http://localhost:9000');
         expect(result).toEqual([
             {
+                remoteName: 'test',
+                remoteURL: 'http://localhost:9000',
                 module: 'test-module',
                 package: 'test-package',
                 class: 'test-class',

@@ -1,11 +1,14 @@
 import { PluginDescriptor, PluginManifest } from '../plugins/types';
 
 export const convertManifestToPluginDescriptor = (
-    manifest: PluginManifest
+    manifest: PluginManifest,
+    remote: string
 ): PluginDescriptor[] => {
     return manifest.plugins.flatMap((plugin) => {
         return plugin.definitions.map((definition) => {
             return {
+                remoteName: plugin.remote.name,
+                remoteURL: remote,
                 module: definition.module,
                 package: definition.package,
                 class: definition.class,

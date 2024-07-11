@@ -4,6 +4,8 @@
  * In the initial implementation, we will use typescript objects, not json.
  */
 export interface PluginDescriptor {
+    remoteName?: string;
+    remoteURL?: string;
     module: string;
     package: string;
     class: string;
@@ -71,8 +73,8 @@ export abstract class Plugin {
         [id: string]: object;
     } = {};
 
-    async start(): Promise<void> {}
-    async stop(): Promise<void> {}
+    async start(): Promise<void> { }
+    async stop(): Promise<void> { }
     init(pluginDescriptor: PluginDescriptor): void {
         if (this.initialised) {
             throw new Error('Plugin already initialised');
