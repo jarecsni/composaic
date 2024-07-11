@@ -36,7 +36,10 @@ describe('local-plugin-utils', () => {
             ],
         };
         // Act
-        const result = convertManifestToPluginDescriptor(manifest, 'http://localhost:9000');
+        const result = convertManifestToPluginDescriptor(
+            manifest,
+            'http://localhost:9000'
+        );
         expect(result).toEqual([
             {
                 remoteName: 'test',

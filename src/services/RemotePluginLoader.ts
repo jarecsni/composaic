@@ -19,26 +19,29 @@ export class RemotePluginLoader {
 
     async loadManifests(remotes: string[]): Promise<void> {
         try {
-            await Promise.all(remotes.map(async (remote) => {
-                const manifestRaw = await fetch(remote + '/manifest.json');
-                const manifest = await manifestRaw.json();
-                LoggingService.getInstance().info(
-                    `Loaded manifest from ${remote}: ${JSON.stringify(manifest)}`
-                );
-                const pluginDescriptor: PluginDescriptor[] =
-                    convertManifestToPluginDescriptor(manifest, remote);
-                LoggingService.getInstance().info(
-                    `Converted manifest to plugin descriptor: ${JSON.stringify(pluginDescriptor)}`
-                );
-                PluginManager.getInstance().addPluginDefinitions(pluginDescriptor);
-            }));
-        } catch (error) {
-            console.error(
-                'Error loading manifest:',
-                (error as any).message
+            await Promise.all(
+                remotes.map(async (remote) => {
+                    const manifestRaw = await fetch(remote + '/manifest.json');
+                    const manifest = await manifestRaw.json();
+                    LoggingService.getInstance().info(
+                        `Loaded manifest from ${remote}: ${JSON.stringify(manifest)}`
+                    );
+                    const pluginDescriptor: PluginDescriptor[] =
+                        convertManifestToPluginDescriptor(manifest, remote);
+                    LoggingService.getInstance().info(
+                        `Converted manifest to plugin descriptor: ${JSON.stringify(pluginDescriptor)}`
+                    );
+                    PluginManager.getInstance().addPluginDefinitions(
+                        pluginDescriptor
+                    );
+                })
             );
+        } catch (error) {
+            console.error('Error loading manifest:', (error as any).message);
         } finally {
-            LoggingService.getInstance().info(`Done loading manifests from ${remotes.length} remotes.`);
+            LoggingService.getInstance().info(
+                `Done loading manifests from ${remotes.length} remotes.`
+            );
         }
     }
 }

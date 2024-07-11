@@ -24,10 +24,7 @@ LoggingService.getInstance().info('App started, loading remote manifests...');
 await RemotePluginLoader.getInstance().loadManifests(
     ConfigurationService.getInstance().getConfiguration().remotes
 );
-LoggingService.getInstance().info(
-    `Initialisation done.`
-);
-
+LoggingService.getInstance().info(`Initialisation done.`);
 
 // ConfigurationService.getInstance()
 //     .getConfiguration()
