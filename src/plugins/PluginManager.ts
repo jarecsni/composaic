@@ -69,7 +69,6 @@ export class PluginManager {
             for (const dependency of pluginDescriptor.dependencies) {
                 const pluginToLoad = (dependency as PluginDescriptor).plugin;
                 if (pluginToLoad === dependingPlugin) {
-                    // console.log('load: ignoring self dependency', pluginToLoad);
                     continue;
                 }
                 const dependencyPlugin = await this.loadPlugin(
@@ -145,10 +144,6 @@ export class PluginManager {
             for (const dependency of plugin.pluginDescriptor.dependencies) {
                 const pluginToLoad = (dependency as PluginDescriptor).plugin;
                 if (pluginToLoad === dependingPlugin?.pluginDescriptor.plugin) {
-                    // console.log(
-                    //     'start: ignoring self dependency',
-                    //     pluginToLoad
-                    // );
                     continue;
                 }
                 const dependencyPlugin = await this.startPlugin(
