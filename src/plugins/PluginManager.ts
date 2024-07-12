@@ -1,5 +1,9 @@
 import { ClassConstructor, Plugin, PluginDescriptor } from './types';
 
+/**
+ * The `PluginManager` class is responsible for managing plugins in the application.
+ * It provides methods to add, load, start, and get plugins.
+ */
 export class PluginManager {
     private static instance: PluginManager;
 
@@ -45,27 +49,20 @@ export class PluginManager {
         PluginManager.registry[pluginDescriptor.plugin] = pluginDescriptor;
     }
 
+    /**
+     * Load a plugin by name
+     * @param pluginName - the name of the plugin to load
+     * @param dependingPlugin - the name of the plugin that depends on the plugin to load
+     */
     private async loadPlugin(
         pluginName: string,
         dependingPlugin?: string
     ): Promise<Plugin> {
-        // console.log(
-        //     'loadPlugin',
-        //     'request to load plugin',
-        //     pluginName,
-        //     dependingPlugin
-        // );
         const pluginDescriptor = PluginManager.registry[pluginName];
         if (!pluginDescriptor) {
             throw new Error(`Plugin with ID ${pluginName} not found`);
         }
         if (pluginDescriptor.pluginInstance) {
-            // console.log(
-            //     'loadPlugin',
-            //     'plugin already loaded',
-            //     pluginName,
-            //     dependingPlugin
-            // );
             return pluginDescriptor.pluginInstance;
         }
         if (pluginDescriptor.dependencies) {
@@ -88,7 +85,7 @@ export class PluginManager {
         }
         pluginDescriptor.loadedClass =
             pluginDescriptor.loadedModule![
-                pluginDescriptor.class as keyof typeof pluginDescriptor.loadedModule
+            pluginDescriptor.class as keyof typeof pluginDescriptor.loadedModule
             ];
         if (pluginDescriptor.extensions) {
             for (const extension of pluginDescriptor.extensions) {
