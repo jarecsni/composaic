@@ -1,4 +1,4 @@
-import { convertManifestToPluginDescriptor } from '../dev/local-plugin-utils';
+import { convertManifestToPluginDescriptor } from '../dev/plugin-utils';
 import { PluginManager } from '../plugins/PluginManager';
 import { PluginDescriptor } from '../plugins/types';
 import { LoggingService } from './LoggingService';

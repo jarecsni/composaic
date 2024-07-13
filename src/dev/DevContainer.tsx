@@ -2,7 +2,7 @@ import React, { FC, useEffect, useState } from 'react';
 import { PluginManager } from '../plugins/PluginManager';
 import corePlugins from '../plugins/core-plugins.json';
 import { PluginManifest } from '../plugins/types';
-import { convertManifestToPluginDescriptor } from './local-plugin-utils';
+import { convertManifestToPluginDescriptor } from './plugin-utils';
 import { App } from '../core/App';
 
 PluginManager.getInstance().addPluginDefinitions(corePlugins);

@@ -1,5 +1,5 @@
 import { PluginManager } from '../plugins/PluginManager';
-import { ComposaicSubSystemName, LoggerPlugin } from '../plugins/impl/logger';
+import { ComposaicSubSystemName, LogLevel, LoggerPlugin } from '../plugins/impl/logger';
 
 export class LoggingService {
     private static instance: LoggingService;
@@ -46,14 +46,39 @@ export class LoggingService {
         }
         return LoggingService.instance;
     }
+
+    public info(message: string): void {
+        this._log(message, 'info');
+    }
+
+    public error(message: string): void {
+        this._log(message, 'error');
+    }
+
+    public debug(message: string): void {
+        this._log(message, 'debug');
+    }
+
+    public warn(message: string): void {
+        this._log(message, 'warn');
+    }
+
+    public trace(message: string): void {
+        this._log(message, 'trace');
+    }
+
+    public fatal(message: string): void {
+        this._log(message, 'fatal');
+    }
+
     /**
      * Logs the specified message.
      * @param message - The message to be logged.
      */
-    public info(message: string): void {
+    private _log(message: string, level: LogLevel): void {
         // Your logging logic here
         this.loggerPlugin!.log({
-            level: 'info',
+            level,
             message: message,
             timestamp: new Date(),
             subSystemName: ComposaicSubSystemName,

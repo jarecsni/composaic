@@ -1,3 +1,5 @@
+import { loadRemotePluginModule } from '../dev/plugin-utils';
+import { LoggingService } from '../services/LoggingService';
 import { ClassConstructor, Plugin, PluginDescriptor } from './types';
 
 /**
@@ -57,7 +59,7 @@ export class PluginManager {
     private async loadPlugin(
         pluginName: string,
         dependingPlugin?: string
-    ): Promise<Plugin> {
+    ): Promise<Plugin | null> {
         const pluginDescriptor = PluginManager.registry[pluginName];
         if (!pluginDescriptor) {
             throw new Error(`Plugin with ID ${pluginName} not found`);
@@ -71,20 +73,30 @@ export class PluginManager {
                 if (pluginToLoad === dependingPlugin) {
                     continue;
                 }
-                const dependencyPlugin = await this.loadPlugin(
+                await this.loadPlugin(
                     (dependency as PluginDescriptor).plugin,
                     pluginDescriptor.plugin
                 );
             }
         }
         if (!pluginDescriptor.loadedModule) {
-            pluginDescriptor.loadedModule = await import(
-                `./impl/${pluginDescriptor.package}/${pluginDescriptor.module}.ts`
-            );
+            if (!pluginDescriptor.remoteURL) {
+                // load local module
+                pluginDescriptor.loadedModule = await import(
+                    `./impl/${pluginDescriptor.package}/${pluginDescriptor.module}.ts`
+                );
+            } else {
+                // load remote module using module federation 
+                pluginDescriptor.loadedModule = loadRemotePluginModule(pluginDescriptor.remoteURL, pluginDescriptor.remoteName!, pluginDescriptor.module);
+                if (pluginDescriptor.loadedModule === null) {
+                    LoggingService.getInstance().error(`Failed to load remote plugin ${pluginDescriptor.plugin}`);
+                    return null;
+                }
+            }
         }
         pluginDescriptor.loadedClass =
             pluginDescriptor.loadedModule![
-                pluginDescriptor.class as keyof typeof pluginDescriptor.loadedModule
+            pluginDescriptor.class as keyof typeof pluginDescriptor.loadedModule
             ];
         if (pluginDescriptor.extensions) {
             for (const extension of pluginDescriptor.extensions) {
@@ -146,7 +158,7 @@ export class PluginManager {
                 if (pluginToLoad === dependingPlugin?.pluginDescriptor.plugin) {
                     continue;
                 }
-                const dependencyPlugin = await this.startPlugin(
+                await this.startPlugin(
                     (dependency as PluginDescriptor).pluginInstance!,
                     plugin
                 );

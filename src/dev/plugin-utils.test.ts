@@ -1,4 +1,4 @@
-import { convertManifestToPluginDescriptor } from './local-plugin-utils';
+import { convertManifestToPluginDescriptor } from './plugin-utils';
 
 describe('local-plugin-utils', () => {
     it('should convert remote manifest to plugin descriptor', () => {

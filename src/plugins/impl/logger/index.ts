@@ -1,7 +1,9 @@
 import { Plugin } from '../../types';
 
+export type LogLevel = 'trace' | 'debug' | 'info' | 'warn' | 'error' | 'fatal';
+
 export type LogMessage = {
-    level: 'trace' | 'debug' | 'info' | 'warn' | 'error';
+    level: LogLevel,
     message: string;
     timestamp: Date;
     subSystemName: string;
@@ -28,7 +30,7 @@ export class LoggerPlugin extends Plugin {
             loggerExtension.setLogCallback(this.log.bind(this));
         });
     }
-    async stop() {}
+    async stop() { }
     log(message: LogMessage) {
         console.log(
             `${message.timestamp.toISOString()} [${message.level.toUpperCase()}] [${message.subSystemName}] ${message.message}`
