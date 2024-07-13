@@ -1,4 +1,3 @@
-import { loadRemotePluginModule } from '../dev/plugin-utils';
 import { LoggingService } from '../services/LoggingService';
 import { ClassConstructor, Plugin, PluginDescriptor } from './types';
 
@@ -7,11 +6,11 @@ import { ClassConstructor, Plugin, PluginDescriptor } from './types';
  * It provides methods to add, load, start, and get plugins.
  */
 export class PluginManager {
-    private static instance: PluginManager;
+    protected static instance: PluginManager;
 
-    private static registry: { [key: string]: PluginDescriptor } = {};
+    protected static registry: { [key: string]: PluginDescriptor } = {};
 
-    private constructor() {
+    protected constructor() {
         // Initialization code here
     }
 
@@ -56,7 +55,7 @@ export class PluginManager {
      * @param pluginName - the name of the plugin to load
      * @param dependingPlugin - the name of the plugin that depends on the plugin to load
      */
-    private async loadPlugin(
+    protected async loadPlugin(
         pluginName: string,
         dependingPlugin?: string
     ): Promise<Plugin | null> {
@@ -87,10 +86,11 @@ export class PluginManager {
                 );
             } else {
                 // load remote module using module federation
-                pluginDescriptor.loadedModule = loadRemotePluginModule(
+                pluginDescriptor.loadedModule = await this.loadRemotePluginModule(
                     pluginDescriptor.remoteURL,
                     pluginDescriptor.remoteName!,
-                    pluginDescriptor.module
+                    pluginDescriptor.bundleFile!,
+                    pluginDescriptor.remoteModuleName!
                 );
                 if (pluginDescriptor.loadedModule === null) {
                     LoggingService.getInstance().error(
@@ -102,7 +102,7 @@ export class PluginManager {
         }
         pluginDescriptor.loadedClass =
             pluginDescriptor.loadedModule![
-                pluginDescriptor.class as keyof typeof pluginDescriptor.loadedModule
+            pluginDescriptor.class as keyof typeof pluginDescriptor.loadedModule
             ];
         if (pluginDescriptor.extensions) {
             for (const extension of pluginDescriptor.extensions) {
@@ -157,7 +157,16 @@ export class PluginManager {
         return plugin;
     }
 
-    private async startPlugin(plugin: Plugin, dependingPlugin?: Plugin) {
+    async loadRemotePluginModule(
+        url: string,
+        name: string,
+        bundleFile: string,
+        moduleName: string
+    ): Promise<object | undefined> {
+        return undefined;
+    }
+
+    protected async startPlugin(plugin: Plugin, dependingPlugin?: Plugin) {
         if (plugin.pluginDescriptor.dependencies) {
             for (const dependency of plugin.pluginDescriptor.dependencies) {
                 const pluginToLoad = (dependency as PluginDescriptor).plugin;

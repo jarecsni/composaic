@@ -6,6 +6,8 @@
 export interface PluginDescriptor {
     remoteName?: string;
     remoteURL?: string;
+    bundleFile?: string;
+    remoteModuleName?: string;
     module: string;
     package: string;
     class: string;
@@ -55,6 +57,8 @@ export type PluginManifestPluginDefinition = {
 export type PluginManifestPlugin = {
     remote: {
         name: string;
+        bundleFile: string;
+        moduleName: string;
     };
     definitions: PluginManifestPluginDefinition[];
 };
@@ -73,8 +77,8 @@ export abstract class Plugin {
         [id: string]: object;
     } = {};
 
-    async start(): Promise<void> {}
-    async stop(): Promise<void> {}
+    async start(): Promise<void> { }
+    async stop(): Promise<void> { }
     init(pluginDescriptor: PluginDescriptor): void {
         if (this.initialised) {
             throw new Error('Plugin already initialised');

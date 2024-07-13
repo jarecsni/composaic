@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState } from 'react';
+import React, { FC, useEffect } from 'react';
 import { PluginManager } from '../plugins/PluginManager';
 import corePlugins from '../plugins/core-plugins.json';
 import { PluginManifest } from '../plugins/types';

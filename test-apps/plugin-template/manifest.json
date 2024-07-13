@@ -3,7 +3,9 @@
     "plugins": [
         {
             "remote": {
-                "name": "TestPlugins"
+                "name": "TestPlugins",
+                "bundleFile": "TestPlugins.js",
+                "moduleName": "./SimpleLogger"
             },
             "definitions": [
                 {
