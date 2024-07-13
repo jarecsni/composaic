@@ -86,17 +86,23 @@ export class PluginManager {
                     `./impl/${pluginDescriptor.package}/${pluginDescriptor.module}.ts`
                 );
             } else {
-                // load remote module using module federation 
-                pluginDescriptor.loadedModule = loadRemotePluginModule(pluginDescriptor.remoteURL, pluginDescriptor.remoteName!, pluginDescriptor.module);
+                // load remote module using module federation
+                pluginDescriptor.loadedModule = loadRemotePluginModule(
+                    pluginDescriptor.remoteURL,
+                    pluginDescriptor.remoteName!,
+                    pluginDescriptor.module
+                );
                 if (pluginDescriptor.loadedModule === null) {
-                    LoggingService.getInstance().error(`Failed to load remote plugin ${pluginDescriptor.plugin}`);
+                    LoggingService.getInstance().error(
+                        `Failed to load remote plugin ${pluginDescriptor.plugin}`
+                    );
                     return null;
                 }
             }
         }
         pluginDescriptor.loadedClass =
             pluginDescriptor.loadedModule![
-            pluginDescriptor.class as keyof typeof pluginDescriptor.loadedModule
+                pluginDescriptor.class as keyof typeof pluginDescriptor.loadedModule
             ];
         if (pluginDescriptor.extensions) {
             for (const extension of pluginDescriptor.extensions) {

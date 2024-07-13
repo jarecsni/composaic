@@ -1,5 +1,9 @@
 import { PluginManager } from '../plugins/PluginManager';
-import { ComposaicSubSystemName, LogLevel, LoggerPlugin } from '../plugins/impl/logger';
+import {
+    ComposaicSubSystemName,
+    LogLevel,
+    LoggerPlugin,
+} from '../plugins/impl/logger';
 
 export class LoggingService {
     private static instance: LoggingService;
