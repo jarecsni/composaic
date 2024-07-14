@@ -20,7 +20,9 @@ RemotePluginManager.getInstance().addPluginDefinitions(corePlugins);
 await createServices();
 
 LoggingService.getInstance().info('App started, loading remote manifests...');
-LoggingService.getInstance().info(`Configuration: ${JSON.stringify(ConfigurationService.getInstance().getConfiguration())}`);
+LoggingService.getInstance().info(
+    `Configuration: ${JSON.stringify(ConfigurationService.getInstance().getConfiguration())}`
+);
 
 await RemotePluginLoader.getInstance().loadManifests(
     ConfigurationService.getInstance().getConfiguration().remotes
