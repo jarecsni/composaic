@@ -8,6 +8,8 @@ describe('local-plugin-utils', () => {
                 {
                     remote: {
                         name: 'test',
+                        bundleFile: 'TestBundle.js',
+                        moduleName: './TestModule',
                     },
                     definitions: [
                         {
@@ -74,7 +76,8 @@ describe('local-plugin-utils', () => {
                 {
                     remote: {
                         name: 'test-no-extensions',
-                        url: 'http://test-no-extensions.com',
+                        bundleFile: 'TestBundle.js',
+                        moduleName: './TestModule',
                     },
                     definitions: [
                         {
@@ -115,7 +118,8 @@ describe('local-plugin-utils', () => {
                 {
                     remote: {
                         name: 'test-no-extensionPoints',
-                        url: 'http://test-no-extensionPoints.com',
+                        bundleFile: 'TestBundle.js',
+                        moduleName: './TestModule',
                     },
                     definitions: [
                         {
