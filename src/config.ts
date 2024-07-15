@@ -3,6 +3,6 @@ export const config = {
         remotes: ['http://localhost:9000'],
     },
     prd: {
-        remotes: [],
+        remotes: ['http://localhost:9000'],
     },
 };
