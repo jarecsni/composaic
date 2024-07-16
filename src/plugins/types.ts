@@ -1,4 +1,15 @@
-import { Boolean, Number, Optional, String, Literal, Array, Tuple, Record, Union, Static } from 'runtypes';
+import {
+    Boolean,
+    Number,
+    Optional,
+    String,
+    Literal,
+    Array,
+    Tuple,
+    Record,
+    Union,
+    Static,
+} from 'runtypes';
 
 /**
  * Describes a single plugin.
@@ -38,7 +49,9 @@ const PluginManifestExtensionPoints = Record({
     id: String,
     type: String,
 });
-export type PluginManifestExtensionPoints = Static<typeof PluginManifestExtensionPoints>;
+export type PluginManifestExtensionPoints = Static<
+    typeof PluginManifestExtensionPoints
+>;
 
 const PluginManifestExtension = Record({
     plugin: String,
@@ -57,7 +70,9 @@ const PluginManifestPluginDefinition = Record({
     extensionPoints: Optional(Array(PluginManifestExtensionPoints)),
     extensions: Optional(Array(PluginManifestExtension)),
 });
-export type PluginManifestPluginDefinition = Static<typeof PluginManifestPluginDefinition>;
+export type PluginManifestPluginDefinition = Static<
+    typeof PluginManifestPluginDefinition
+>;
 
 const PluginManifestPlugin = Record({
     remote: Record({
@@ -84,8 +99,8 @@ export abstract class Plugin {
         [id: string]: object;
     } = {};
 
-    async start(): Promise<void> { }
-    async stop(): Promise<void> { }
+    async start(): Promise<void> {}
+    async stop(): Promise<void> {}
     init(pluginDescriptor: PluginDescriptor): void {
         if (this.initialised) {
             throw new Error('Plugin already initialised');
