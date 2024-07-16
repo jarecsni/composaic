@@ -46,6 +46,8 @@ describe('local-plugin-utils', () => {
             {
                 remoteName: 'test',
                 remoteURL: 'http://localhost:9000',
+                bundleFile: 'TestBundle.js',
+                remoteModuleName: './TestModule',
                 module: 'test-module',
                 package: 'test-package',
                 class: 'test-class',

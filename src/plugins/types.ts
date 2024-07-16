@@ -1,3 +1,5 @@
+import { Boolean, Number, Optional, String, Literal, Array, Tuple, Record, Union, Static } from 'runtypes';
+
 /**
  * Describes a single plugin.
  * This will need to be validated by ajv.
@@ -32,40 +34,45 @@ export interface PluginDescriptor {
     dependencies?: (string | PluginDescriptor)[];
 }
 
-export type PluginManifestExtensionPoints = {
-    id: string;
-    type: string;
-};
+const PluginManifestExtensionPoints = Record({
+    id: String,
+    type: String,
+});
+export type PluginManifestExtensionPoints = Static<typeof PluginManifestExtensionPoints>;
 
-export type PluginManifestExtension = {
-    plugin: string;
-    id: string;
-    className: string;
-};
+const PluginManifestExtension = Record({
+    plugin: String,
+    id: String,
+    className: String,
+});
+export type PluginManifestExtension = Static<typeof PluginManifestExtension>;
 
-export type PluginManifestPluginDefinition = {
-    package: string;
-    module: string;
-    class: string;
-    plugin: string;
-    version: string;
-    description: string;
-    extensionPoints?: PluginManifestExtensionPoints[];
-    extensions?: PluginManifestExtension[];
-};
+const PluginManifestPluginDefinition = Record({
+    package: String,
+    module: String,
+    class: String,
+    plugin: String,
+    version: String,
+    description: String,
+    extensionPoints: Optional(Array(PluginManifestExtensionPoints)),
+    extensions: Optional(Array(PluginManifestExtension)),
+});
+export type PluginManifestPluginDefinition = Static<typeof PluginManifestPluginDefinition>;
 
-export type PluginManifestPlugin = {
-    remote: {
-        name: string;
-        bundleFile: string;
-        moduleName: string;
-    };
-    definitions: PluginManifestPluginDefinition[];
-};
+const PluginManifestPlugin = Record({
+    remote: Record({
+        name: String,
+        bundleFile: String,
+        moduleName: String,
+    }),
+    definitions: Array(PluginManifestPluginDefinition),
+});
+export type PluginManifestPlugin = Static<typeof PluginManifestPlugin>;
 
-export type PluginManifest = {
-    plugins: PluginManifestPlugin[];
-};
+const PluginManifest = Record({
+    plugins: Array(PluginManifestPlugin),
+});
+export type PluginManifest = Static<typeof PluginManifest>;
 
 export abstract class Plugin {
     initialised = false;
@@ -77,8 +84,8 @@ export abstract class Plugin {
         [id: string]: object;
     } = {};
 
-    async start(): Promise<void> {}
-    async stop(): Promise<void> {}
+    async start(): Promise<void> { }
+    async stop(): Promise<void> { }
     init(pluginDescriptor: PluginDescriptor): void {
         if (this.initialised) {
             throw new Error('Plugin already initialised');
