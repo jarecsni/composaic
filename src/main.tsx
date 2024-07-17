@@ -29,11 +29,11 @@ await RemotePluginLoader.getInstance().loadManifests(
 );
 LoggingService.getInstance().info(`Initialisation done.`);
 
-const simpleLoggerPlugin = await RemotePluginManager.getInstance().getPlugin(
-    '@composaic-tests/simple-logger'
-);
-// @ts-expect-error
-simpleLoggerPlugin.log('Hello, world from SimpleLoggerPlugin!');
+// const simpleLoggerPlugin = await RemotePluginManager.getInstance().getPlugin(
+//     '@composaic-tests/simple-logger'
+// );
+// // @ts-expect-error
+// simpleLoggerPlugin.log('Hello, world from SimpleLoggerPlugin!');
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
     <StrictMode>
