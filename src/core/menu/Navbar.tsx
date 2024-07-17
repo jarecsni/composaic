@@ -1,7 +1,14 @@
 // components/Navbar.tsx
 import React, { useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
-import { AppBar, Toolbar, Typography, Button, Menu, MenuItem } from '@mui/material';
+import {
+    AppBar,
+    Toolbar,
+    Typography,
+    Button,
+    Menu,
+    MenuItem,
+} from '@mui/material';
 
 const Navbar: React.FC = () => {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -33,10 +40,18 @@ const Navbar: React.FC = () => {
                     open={Boolean(anchorEl)}
                     onClose={handleClose}
                 >
-                    <MenuItem onClick={handleClose} component={RouterLink} to="/service1">
+                    <MenuItem
+                        onClick={handleClose}
+                        component={RouterLink}
+                        to="/service1"
+                    >
                         Service 1
                     </MenuItem>
-                    <MenuItem onClick={handleClose} component={RouterLink} to="/service2">
+                    <MenuItem
+                        onClick={handleClose}
+                        component={RouterLink}
+                        to="/service2"
+                    >
                         Service 2
                     </MenuItem>
                     {/* Add more submenus as needed */}
