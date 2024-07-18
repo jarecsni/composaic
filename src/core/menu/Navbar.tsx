@@ -1,5 +1,12 @@
 import React, { useState } from 'react';
-import { AppBar, Toolbar, Typography, Button, Menu, MenuItem } from '@mui/material';
+import {
+    AppBar,
+    Toolbar,
+    Typography,
+    Button,
+    Menu,
+    MenuItem,
+} from '@mui/material';
 import { Link as RouterLink } from 'react-router-dom';
 
 // Define the menu item model
@@ -25,7 +32,10 @@ const menuItems: MenuItemModel[] = [
 ];
 
 // Recursive Menu Item Component
-const RecursiveMenuItem: React.FC<{ item: MenuItemModel; handleClose: () => void }> = ({ item, handleClose }) => {
+const RecursiveMenuItem: React.FC<{
+    item: MenuItemModel;
+    handleClose: () => void;
+}> = ({ item, handleClose }) => {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
     const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -40,7 +50,16 @@ const RecursiveMenuItem: React.FC<{ item: MenuItemModel; handleClose: () => void
 
     return (
         <>
-            <Button color="inherit" component={RouterLink} to={item.path} onClick={(event: React.MouseEvent<HTMLButtonElement> | React.MouseEvent<HTMLAnchorElement>) => handleClick(event as React.MouseEvent<HTMLButtonElement>)}>
+            <Button
+                color="inherit"
+                component={RouterLink}
+                to={item.path}
+                onClick={(
+                    event:
+                        | React.MouseEvent<HTMLButtonElement>
+                        | React.MouseEvent<HTMLAnchorElement>
+                ) => handleClick(event as React.MouseEvent<HTMLButtonElement>)}
+            >
                 {item.label}
             </Button>
             {item.children && (
@@ -53,7 +72,11 @@ const RecursiveMenuItem: React.FC<{ item: MenuItemModel; handleClose: () => void
                 >
                     {item.children.map((child, index) => (
                         // Recursively call RecursiveMenuItem for each child
-                        <RecursiveMenuItem key={index} item={child} handleClose={handleCloseMenu} />
+                        <RecursiveMenuItem
+                            key={index}
+                            item={child}
+                            handleClose={handleCloseMenu}
+                        />
                     ))}
                 </Menu>
             )}
@@ -74,7 +97,11 @@ export const Navbar: React.FC = () => {
                     My Application
                 </Typography>
                 {menuItems.map((item, index) => (
-                    <RecursiveMenuItem key={index} item={item} handleClose={handleClose} />
+                    <RecursiveMenuItem
+                        key={index}
+                        item={item}
+                        handleClose={handleClose}
+                    />
                 ))}
             </Toolbar>
         </AppBar>
