@@ -1,7 +1,7 @@
 // App.tsx or your routes file
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import Navbar from './menu/Navbar';
+import { Navbar } from './menu/Navbar';
 import HomePage from './menu/HomePage';
 import Service1Page from './menu/Service1Page';
 import Service2Page from './menu/Service2Page';
