@@ -10,7 +10,11 @@ export const App: React.FC = () => {
             <Navbar />
             <Routes>
                 {menuItems.map((item, index) => (
-                    <Route key={index} path={item.path} element={React.createElement(item.component)} />
+                    <Route
+                        key={index}
+                        path={item.path}
+                        element={React.createElement(item.component)}
+                    />
                 ))}
             </Routes>
         </BrowserRouter>

@@ -61,10 +61,12 @@ const RecursiveMenuItem: React.FC<{
                 color="inherit"
                 component={RouterLink}
                 to={item.path}
-                onClick={
-                    (event: React.MouseEvent<HTMLButtonElement> | React.MouseEvent<HTMLAnchorElement>) =>
-                        handleClick(event as React.MouseEvent<HTMLButtonElement>)
-                }>
+                onClick={(
+                    event:
+                        | React.MouseEvent<HTMLButtonElement>
+                        | React.MouseEvent<HTMLAnchorElement>
+                ) => handleClick(event as React.MouseEvent<HTMLButtonElement>)}
+            >
                 {item.label}
             </Button>
             {item.children && (
