@@ -18,7 +18,9 @@ const RecursiveMenuItem: React.FC<{
 }> = ({ item, handleClose }) => {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
-    const handleClick = (event: React.MouseEvent<HTMLButtonElement | HTMLLIElement>) => {
+    const handleClick = (
+        event: React.MouseEvent<HTMLButtonElement | HTMLLIElement>
+    ) => {
         // Check if the item has children
         if (item.children && item.children.length > 0) {
             // Prevent default action and toggle submenu

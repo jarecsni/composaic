@@ -24,9 +24,7 @@ export const App: React.FC = () => {
         <BrowserRouter>
             <div>
                 <Navbar />
-                <Routes>
-                    {generateRoutes(menuItems)}
-                </Routes>
+                <Routes>{generateRoutes(menuItems)}</Routes>
             </div>
         </BrowserRouter>
     );
