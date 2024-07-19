@@ -2,21 +2,16 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Navbar } from './menu/Navbar';
-import HomePage from './menu/HomePage';
-import Service1Page from './menu/Service1Page';
-import Service2Page from './menu/Service2Page';
-import AboutPage from './menu/AboutPage';
+import { menuItems } from './menu/menuModel'; // Import the menu model
 
 export const App: React.FC = () => {
     return (
         <BrowserRouter>
             <Navbar />
             <Routes>
-                <Route path="/" element={<HomePage />} />
-                <Route path="/service1" element={<Service1Page />} />
-                <Route path="/service2" element={<Service2Page />} />
-                <Route path="/about" element={<AboutPage />} />
-                {/* Define more routes as needed */}
+                {menuItems.map((item, index) => (
+                    <Route key={index} path={item.path} element={React.createElement(item.component)} />
+                ))}
             </Routes>
         </BrowserRouter>
     );
