@@ -5,19 +5,25 @@ import { menuItems, MenuItemModel } from './menu/menuModel'; // Import the MenuI
 
 // Update the generateRoutes function to use the MenuItemModel type
 const generateRoutes = (items: MenuItemModel[]): JSX.Element[] => {
-    return items.flatMap((item, index) => [
-        item.component ? <Route key={index} path={item.path} element={React.createElement(item.component)} /> : null,
-        item.children ? generateRoutes(item.children) : null,
-    ]).filter(Boolean) as JSX.Element[];
+    return items
+        .flatMap((item, index) => [
+            item.component ? (
+                <Route
+                    key={index}
+                    path={item.path}
+                    element={React.createElement(item.component)}
+                />
+            ) : null,
+            item.children ? generateRoutes(item.children) : null,
+        ])
+        .filter(Boolean) as JSX.Element[];
 };
 
 export const App: React.FC = () => {
     return (
         <BrowserRouter>
             <Navbar />
-            <Routes>
-                {generateRoutes(menuItems)}
-            </Routes>
+            <Routes>{generateRoutes(menuItems)}</Routes>
         </BrowserRouter>
     );
 };
