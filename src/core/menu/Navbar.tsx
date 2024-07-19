@@ -9,6 +9,7 @@ import {
 } from '@mui/material';
 import { Link as RouterLink } from 'react-router-dom';
 import { menuItems, MenuItemModel } from './menuModel';
+import styles from './menu.module.scss';
 
 // Recursive Menu Item Component
 const RecursiveMenuItem: React.FC<{
@@ -17,7 +18,7 @@ const RecursiveMenuItem: React.FC<{
 }> = ({ item, handleClose }) => {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
-    const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    const handleClick = (event: React.MouseEvent<HTMLButtonElement | HTMLLIElement>) => {
         // Check if the item has children
         if (item.children && item.children.length > 0) {
             // Prevent default action and toggle submenu
@@ -36,18 +37,17 @@ const RecursiveMenuItem: React.FC<{
 
     return (
         <>
-            <Button
-                color="inherit"
+            <MenuItem
                 component={RouterLink}
                 to={item.path}
                 onClick={(
                     event:
-                        | React.MouseEvent<HTMLButtonElement>
+                        | React.MouseEvent<HTMLLIElement> // Adjusted for MenuItem
                         | React.MouseEvent<HTMLAnchorElement>
-                ) => handleClick(event as React.MouseEvent<HTMLButtonElement>)}
+                ) => handleClick(event as React.MouseEvent<HTMLLIElement>)} // Adjusted for MenuItem
             >
                 {item.label}
-            </Button>
+            </MenuItem>
             {item.children && (
                 <Menu
                     id={`submenu-${item.label}`}

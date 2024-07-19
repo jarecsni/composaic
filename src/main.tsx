@@ -8,7 +8,7 @@ import {
 import { App } from './core/App';
 import { ConfigurationService } from './services/configuration';
 import corePlugins from './plugins/core-plugins.json';
-import './index.css';
+import './index.scss';
 import { LoggingService } from './services/LoggingService';
 import { createServices } from './services/ServiceManager';
 import { RemotePluginLoader } from './services/RemotePluginLoader';
@@ -37,6 +37,7 @@ LoggingService.getInstance().info(`Initialisation done.`);
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
     <StrictMode>
+        <div>Alma</div>
         <App />
     </StrictMode>
 );

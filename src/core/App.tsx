@@ -22,8 +22,12 @@ const generateRoutes = (items: MenuItemModel[]): JSX.Element[] => {
 export const App: React.FC = () => {
     return (
         <BrowserRouter>
-            <Navbar />
-            <Routes>{generateRoutes(menuItems)}</Routes>
+            <div>
+                <Navbar />
+                <Routes>
+                    {generateRoutes(menuItems)}
+                </Routes>
+            </div>
         </BrowserRouter>
     );
 };
