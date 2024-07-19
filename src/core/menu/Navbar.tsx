@@ -8,28 +8,7 @@ import {
     MenuItem,
 } from '@mui/material';
 import { Link as RouterLink } from 'react-router-dom';
-
-// Define the menu item model
-interface MenuItemModel {
-    label: string;
-    path: string;
-    children?: MenuItemModel[];
-}
-
-// Sample menu model
-const menuItems: MenuItemModel[] = [
-    { label: 'Home', path: '/' },
-    {
-        label: 'Services',
-        path: '/services',
-        children: [
-            { label: 'Service 1', path: '/service1' },
-            { label: 'Service 2', path: '/service2' },
-            // Add more submenus as needed
-        ],
-    },
-    { label: 'About', path: '/about' },
-];
+import { menuItems, MenuItemModel } from './menuModel';
 
 // Recursive Menu Item Component
 const RecursiveMenuItem: React.FC<{
