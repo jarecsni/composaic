@@ -24,7 +24,8 @@ export class NavbarPlugin extends Plugin {
     async start() {
         // Collect navbar items from all connected extensions
         this.getConnectedExtensions('navbar').forEach((extension) => {
-            const navbarExtension = extension.extensionImpl as NavbarExtensionPoint;
+            const navbarExtension =
+                extension.extensionImpl as NavbarExtensionPoint;
             this.navbarItems.push(...navbarExtension.getNavbarItems());
         });
     }
@@ -37,7 +38,6 @@ export class NavbarPlugin extends Plugin {
 
 export class SimpleNavbarExtension implements NavbarExtensionPoint {
     getNavbarItems(): NavbarItem[] {
-        return [
-        ];
+        return [];
     }
 }
