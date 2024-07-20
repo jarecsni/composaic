@@ -27,8 +27,15 @@ LoggingService.getInstance().info(
 await RemotePluginLoader.getInstance().loadManifests(
     ConfigurationService.getInstance().getConfiguration().remotes
 );
-LoggingService.getInstance().info(`Initialisation done, ${RemotePluginManager.getInstance().getNumberOfPlugins()} plugins in total`);
-LoggingService.getInstance().info(`Plugins: ${RemotePluginManager.getInstance().getPluginIds().map((plugin) => plugin).join(', ')}`);
+LoggingService.getInstance().info(
+    `Initialisation done, ${RemotePluginManager.getInstance().getNumberOfPlugins()} plugins in total`
+);
+LoggingService.getInstance().info(
+    `Plugins: ${RemotePluginManager.getInstance()
+        .getPluginIds()
+        .map((plugin) => plugin)
+        .join(', ')}`
+);
 
 // const simpleLoggerPlugin = await RemotePluginManager.getInstance().getPlugin(
 //     '@composaic-tests/simple-logger'

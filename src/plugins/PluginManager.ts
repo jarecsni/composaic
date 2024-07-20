@@ -111,7 +111,7 @@ export class PluginManager {
         }
         pluginDescriptor.loadedClass =
             pluginDescriptor.loadedModule![
-            pluginDescriptor.class as keyof typeof pluginDescriptor.loadedModule
+                pluginDescriptor.class as keyof typeof pluginDescriptor.loadedModule
             ];
         if (pluginDescriptor.extensions) {
             for (const extension of pluginDescriptor.extensions) {
@@ -219,7 +219,7 @@ export class PluginManager {
 
     /**
      * Retrieves an array of plugin IDs registered in the PluginManager.
-     * 
+     *
      * @returns An array of plugin IDs.
      */
     public getPluginIds() {
