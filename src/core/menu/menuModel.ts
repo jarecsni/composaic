@@ -15,7 +15,6 @@ interface MenuItemWithComponent {
 // Define a type where children is required and component is omitted
 interface MenuItemWithChildren {
     label: string;
-    path: string;
     component?: never; // Explicitly stating that component should not be used here
     children: MenuItemModel[]; // Recursive type reference
 }
@@ -28,7 +27,6 @@ export const menuItems: MenuItemModel[] = [
     { label: 'Home', path: '/', component: HomePage },
     {
         label: 'Services',
-        path: '/services',
         children: [
             { label: 'Service 1', path: '/service1', component: Service1Page },
             { label: 'Service 2', path: '/service2', component: Service2Page },

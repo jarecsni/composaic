@@ -23,7 +23,7 @@ export class NavbarPlugin extends Plugin {
 
     async start() {
         // Collect navbar items from all connected extensions
-        this.getConnectedExtensions('navbar').forEach((extension) => {
+        this.getConnectedExtensions('navbarItem').forEach((extension) => {
             const navbarExtension =
                 extension.extensionImpl as NavbarExtensionPoint;
             this.navbarItems.push(...navbarExtension.getNavbarItems());

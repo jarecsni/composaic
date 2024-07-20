@@ -41,6 +41,7 @@ export interface PluginDescriptor {
         id: string;
         className: string;
         impl?: object;
+        meta?: object;
     }[];
     dependencies?: (string | PluginDescriptor)[];
 }
@@ -99,8 +100,8 @@ export abstract class Plugin {
         [id: string]: object;
     } = {};
 
-    async start(): Promise<void> {}
-    async stop(): Promise<void> {}
+    async start(): Promise<void> { }
+    async stop(): Promise<void> { }
     init(pluginDescriptor: PluginDescriptor): void {
         if (this.initialised) {
             throw new Error('Plugin already initialised');

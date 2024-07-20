@@ -37,7 +37,24 @@
             {
                 "plugin": "self",
                 "id": "navbarItem",
-                "className": "NavbarCoreExtension"
+                "className": "SimpleNavbarExtension",
+                "meta": [
+                    {
+                        "label": "Examples",
+                        "children": [
+                            {
+                                "label": "Example 1",
+                                "path": "/example1",
+                                "component": "Example1Page"
+                            },
+                            {
+                                "label": "Example 2",
+                                "path": "/example2",
+                                "component": "Example2Page"
+                            }
+                        ]
+                    }
+                ]
             }
         ]
     }

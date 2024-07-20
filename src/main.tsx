@@ -6,46 +6,10 @@ import {
     // @ts-expect-error: this is a private API
 } from '__federation__';
 import { App } from './core/App';
-import { ConfigurationService } from './services/configuration';
-import corePlugins from './plugins/core-plugins.json';
 import './index.scss';
-import { LoggingService } from './services/LoggingService';
-import { createServices } from './services/ServiceManager';
-import { RemotePluginLoader } from './services/RemotePluginLoader';
-import { RemotePluginManager } from './plugins/RemotePluginManager';
-
-// // Add core plugins
-RemotePluginManager.getInstance().addPluginDefinitions(corePlugins);
-// // Create and initialize services
-await createServices();
-
-LoggingService.getInstance().info('App started, loading remote manifests...');
-LoggingService.getInstance().info(
-    `Configuration: ${JSON.stringify(ConfigurationService.getInstance().getConfiguration())}`
-);
-
-await RemotePluginLoader.getInstance().loadManifests(
-    ConfigurationService.getInstance().getConfiguration().remotes
-);
-LoggingService.getInstance().info(
-    `Initialisation done, ${RemotePluginManager.getInstance().getNumberOfPlugins()} plugins in total`
-);
-LoggingService.getInstance().info(
-    `Plugins: ${RemotePluginManager.getInstance()
-        .getPluginIds()
-        .map((plugin) => plugin)
-        .join(', ')}`
-);
-
-// const simpleLoggerPlugin = await RemotePluginManager.getInstance().getPlugin(
-//     '@composaic-tests/simple-logger'
-// );
-// // @ts-expect-error
-// simpleLoggerPlugin.log('Hello, world from SimpleLoggerPlugin!');
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
     <StrictMode>
-        <div>Alma</div>
         <App />
     </StrictMode>
 );
