@@ -19,5 +19,26 @@
                 "className": "SimpleLoggerExtension"
             }
         ]
+    },
+    {
+        "plugin": "@composaic/navbar",
+        "version": "0.1.0",
+        "description": "Navbar Plugin",
+        "module": "index",
+        "package": "navbar",
+        "class": "NavbarPlugin",
+        "extensionPoints": [
+            {
+                "id": "navbarItem",
+                "type": "NavbarExtensionPoint"
+            }
+        ],
+        "extensions": [
+            {
+                "plugin": "self",
+                "id": "navbarItem",
+                "className": "NavbarCoreExtension"
+            }
+        ]
     }
 ]
