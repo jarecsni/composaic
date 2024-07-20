@@ -5,6 +5,14 @@ import { ClassConstructor, Plugin, PluginDescriptor } from './types';
  * The `PluginManager` class is responsible for managing plugins in the application.
  * It provides methods to add, load, start, and get plugins.
  */
+/**
+ * The `PluginManager` class is responsible for managing plugins in the application.
+ * It provides methods to add, load, and retrieve plugins, as well as start and clear the plugin registry.
+ */
+/**
+ * The `PluginManager` class is responsible for managing plugins in the application.
+ * It provides methods to add, load, and retrieve plugins, as well as start and clear the plugin registry.
+ */
 export class PluginManager {
     protected static instance: PluginManager;
 
@@ -103,7 +111,7 @@ export class PluginManager {
         }
         pluginDescriptor.loadedClass =
             pluginDescriptor.loadedModule![
-                pluginDescriptor.class as keyof typeof pluginDescriptor.loadedModule
+            pluginDescriptor.class as keyof typeof pluginDescriptor.loadedModule
             ];
         if (pluginDescriptor.extensions) {
             for (const extension of pluginDescriptor.extensions) {
@@ -203,5 +211,18 @@ export class PluginManager {
 
     clear() {
         PluginManager.registry = {};
+    }
+
+    public getNumberOfPlugins() {
+        return Object.keys(PluginManager.registry).length;
+    }
+
+    /**
+     * Retrieves an array of plugin IDs registered in the PluginManager.
+     * 
+     * @returns An array of plugin IDs.
+     */
+    public getPluginIds() {
+        return Object.keys(PluginManager.registry);
     }
 }
