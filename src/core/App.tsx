@@ -23,8 +23,15 @@ LoggingService.getInstance().info(
 await RemotePluginLoader.getInstance().loadManifests(
     ConfigurationService.getInstance().getConfiguration().remotes
 );
-LoggingService.getInstance().info(`Initialisation done, ${RemotePluginManager.getInstance().getNumberOfPlugins()} plugins in total`);
-LoggingService.getInstance().info(`Plugins: ${RemotePluginManager.getInstance().getPluginIds().map((plugin) => plugin).join(', ')}`);
+LoggingService.getInstance().info(
+    `Initialisation done, ${RemotePluginManager.getInstance().getNumberOfPlugins()} plugins in total`
+);
+LoggingService.getInstance().info(
+    `Plugins: ${RemotePluginManager.getInstance()
+        .getPluginIds()
+        .map((plugin) => plugin)
+        .join(', ')}`
+);
 
 // const simpleLoggerPlugin = await RemotePluginManager.getInstance().getPlugin(
 //     '@composaic-tests/simple-logger'
@@ -32,8 +39,8 @@ LoggingService.getInstance().info(`Plugins: ${RemotePluginManager.getInstance().
 // // @ts-expect-error
 // simpleLoggerPlugin.log('Hello, world from SimpleLoggerPlugin!');
 
-const navBarPlugin = await PluginManager.getInstance().getPlugin('@composaic/navbar');
-
+const navBarPlugin =
+    await PluginManager.getInstance().getPlugin('@composaic/navbar');
 
 // Update the generateRoutes function to use the MenuItemModel type
 const generateRoutes = (items: MenuItemModel[]): JSX.Element[] => {
