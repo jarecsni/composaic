@@ -19,14 +19,13 @@ export interface NavbarExtensionPoint {
 }
 
 export class NavbarPlugin extends Plugin {
-    private navbarItems: NavbarItem[] = [];
+    private navbarItems: object[] = [];
 
     async start() {
         // Collect navbar items from all connected extensions
         this.getConnectedExtensions('navbarItem').forEach((extension) => {
-            const navbarExtension =
-                extension.extensionImpl as NavbarExtensionPoint;
-            this.navbarItems.push(...navbarExtension.getNavbarItems());
+            const navBarMeta = extension.meta!;
+            this.navbarItems.push(navBarMeta);
         });
     }
 

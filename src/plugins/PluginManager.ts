@@ -111,7 +111,7 @@ export class PluginManager {
         }
         pluginDescriptor.loadedClass =
             pluginDescriptor.loadedModule![
-                pluginDescriptor.class as keyof typeof pluginDescriptor.loadedModule
+            pluginDescriptor.class as keyof typeof pluginDescriptor.loadedModule
             ];
         if (pluginDescriptor.extensions) {
             for (const extension of pluginDescriptor.extensions) {
@@ -135,6 +135,7 @@ export class PluginManager {
                     extensionPoint!.impl!.push({
                         plugin: pluginDescriptor.plugin,
                         extensionImpl: extension.impl!,
+                        meta: extension.meta,
                     });
                 } else {
                     console.warn(

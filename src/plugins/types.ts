@@ -34,7 +34,7 @@ export interface PluginDescriptor {
         id: string;
         type: string;
         singleton?: boolean;
-        impl?: { plugin: string; extensionImpl: object }[];
+        impl?: { plugin: string; extensionImpl: object, meta?: object }[];
     }[];
     extensions?: {
         plugin: string;
@@ -126,7 +126,7 @@ export abstract class Plugin {
     }
     protected getConnectedExtensions(
         extensionPointId: string
-    ): { plugin: string; extensionImpl: object }[] {
+    ): { plugin: string; extensionImpl: object, meta?: object }[] {
         return this.extensionsPoints[extensionPointId];
     }
     setExtensionImplementation(
