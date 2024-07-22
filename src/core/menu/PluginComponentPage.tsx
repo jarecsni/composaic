@@ -4,7 +4,9 @@ interface PluginComponentPageProps {
     title: string;
 }
 
-export const PluginComponentPage: React.FC<PluginComponentPageProps> = ({ title }) => {
+export const PluginComponentPage: React.FC<PluginComponentPageProps> = ({
+    title,
+}) => {
     return (
         <div>
             <h1>{title}</h1>
@@ -12,5 +14,3 @@ export const PluginComponentPage: React.FC<PluginComponentPageProps> = ({ title 
         </div>
     );
 };
-
-

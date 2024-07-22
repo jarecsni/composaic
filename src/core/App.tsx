@@ -41,8 +41,9 @@ LoggingService.getInstance().info(
 // // @ts-expect-error
 // simpleLoggerPlugin.log('Hello, world from SimpleLoggerPlugin!');
 
-
-const transformNavBarItemsToMenuItems = (navBarItems: NavbarItem[]): MenuItem[] => {
+const transformNavBarItemsToMenuItems = (
+    navBarItems: NavbarItem[]
+): MenuItem[] => {
     return navBarItems.map((item: NavbarItem): MenuItem => {
         // Base transformation for items without children
         const menuItem: MenuItem = {
@@ -53,7 +54,8 @@ const transformNavBarItemsToMenuItems = (navBarItems: NavbarItem[]): MenuItem[] 
 
         // Recursively transform children if they exist
         if (item.children && item.children.length > 0) {
-            (menuItem as unknown as MenuItemWithChildren).children = transformNavBarItemsToMenuItems(item.children);
+            (menuItem as unknown as MenuItemWithChildren).children =
+                transformNavBarItemsToMenuItems(item.children);
         }
 
         return menuItem;
@@ -80,8 +82,9 @@ export const App: React.FC = () => {
     const [routes, setRoutes] = useState<JSX.Element[]>([]);
 
     useEffect(() => {
-        const navBarPlugin =
-            PluginManager.getInstance().getPlugin('@composaic/navbar').then((plugin) => {
+        const navBarPlugin = PluginManager.getInstance()
+            .getPlugin('@composaic/navbar')
+            .then((plugin) => {
                 const navbarItems = (plugin as NavbarPlugin).getNavbarItems();
                 const items = transformNavBarItemsToMenuItems(navbarItems);
                 for (const item of items) {
@@ -90,7 +93,7 @@ export const App: React.FC = () => {
                 const generatedRoutes = generateRoutes(menuItems);
                 setRoutes(generatedRoutes);
             });
-    }, [])
+    }, []);
     return (
         <BrowserRouter>
             <div>
