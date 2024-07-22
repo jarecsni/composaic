@@ -8,12 +8,16 @@ import {
     MenuItem,
 } from '@mui/material';
 import { Link as RouterLink } from 'react-router-dom';
-import { menuItems, MenuItemModel } from './menuModel';
+import {
+    menuItems,
+    MenuItem as MenuItemType,
+    MenuItemWithComponent,
+} from './menuModel';
 import styles from './menu.module.scss';
 
 // Recursive Menu Item Component
 const RecursiveMenuItem: React.FC<{
-    item: MenuItemModel;
+    item: MenuItemType;
     handleClose: () => void;
 }> = ({ item, handleClose }) => {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -41,7 +45,7 @@ const RecursiveMenuItem: React.FC<{
         <>
             <MenuItem
                 component={RouterLink}
-                to={item.path}
+                to={(item as MenuItemWithComponent).path}
                 onClick={(
                     event:
                         | React.MouseEvent<HTMLLIElement> // Adjusted for MenuItem

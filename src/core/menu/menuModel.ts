@@ -5,7 +5,7 @@ import Service2Page from './Service2Page';
 import AboutPage from './AboutPage';
 
 // Define a type where component is required and children is omitted
-interface MenuItemWithComponent {
+export interface MenuItemWithComponent {
     label: string;
     path: string;
     component: React.ComponentType;

@@ -1,7 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Navbar } from './menu/Navbar';
-import { menuItems, MenuItem, MenuItemWithChildren } from './menu/menuModel'; // Import the MenuItemModel and menuItems
+import {
+    menuItems,
+    MenuItem,
+    MenuItemWithChildren,
+    MenuItemWithComponent,
+} from './menu/menuModel'; // Import the MenuItemModel and menuItems
 import { PluginManager } from '../plugins/PluginManager';
 import { LoggingService } from '../services/LoggingService';
 import { createServices } from '../services/ServiceManager';
@@ -44,22 +49,28 @@ LoggingService.getInstance().info(
 const transformNavBarItemsToMenuItems = (
     navBarItems: NavbarItem[]
 ): MenuItem[] => {
-    return navBarItems.map((item: NavbarItem): MenuItem => {
-        // Base transformation for items without children
-        const menuItem: MenuItem = {
-            label: item.label,
-            path: item.path,
-            component: Example1Page,
-        };
+    return navBarItems.map(
+        (item: NavbarItem): MenuItemWithChildren | MenuItem => {
+            // Base transformation for items without children
+            const menuItem: MenuItem = {
+                label: item.label,
+                path: item.path,
+                component: Example1Page,
+            };
+            if (!item.component) {
+                (menuItem as unknown as MenuItemWithChildren).component =
+                    undefined;
+            }
 
-        // Recursively transform children if they exist
-        if (item.children && item.children.length > 0) {
-            (menuItem as unknown as MenuItemWithChildren).children =
-                transformNavBarItemsToMenuItems(item.children);
+            // Recursively transform children if they exist
+            if (item.children && item.children.length > 0) {
+                (menuItem as unknown as MenuItemWithChildren).children =
+                    transformNavBarItemsToMenuItems(item.children);
+            }
+
+            return menuItem;
         }
-
-        return menuItem;
-    });
+    );
 };
 
 // Update the generateRoutes function to use the MenuItemModel type
