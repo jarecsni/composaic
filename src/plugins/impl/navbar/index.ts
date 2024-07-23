@@ -23,6 +23,7 @@ export class NavbarPlugin extends Plugin {
 
     async start() {
         // Collect navbar items from all connected extensions
+        this.navbarItems = [];
         this.getConnectedExtensions('navbarItem').forEach((extension) => {
             const navBarMeta = extension.meta! as NavbarItem[];
             for (const item of navBarMeta) {

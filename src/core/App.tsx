@@ -93,7 +93,7 @@ export const App: React.FC = () => {
     const [routes, setRoutes] = useState<JSX.Element[]>([]);
 
     useEffect(() => {
-        const navBarPlugin = PluginManager.getInstance()
+        PluginManager.getInstance()
             .getPlugin('@composaic/navbar')
             .then((plugin) => {
                 const navbarItems = (plugin as NavbarPlugin).getNavbarItems();
