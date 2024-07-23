@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Navbar } from './menu/Navbar';
 import {
@@ -91,19 +91,23 @@ const generateRoutes = (items: MenuItem[]): JSX.Element[] => {
 
 export const App: React.FC = () => {
     const [routes, setRoutes] = useState<JSX.Element[]>([]);
+    const menuItemsLoaded = useRef(false);
 
     useEffect(() => {
-        PluginManager.getInstance()
-            .getPlugin('@composaic/navbar')
-            .then((plugin) => {
-                const navbarItems = (plugin as NavbarPlugin).getNavbarItems();
-                const items = transformNavBarItemsToMenuItems(navbarItems);
-                for (const item of items) {
-                    menuItems.push(item);
-                }
-                const generatedRoutes = generateRoutes(menuItems);
-                setRoutes(generatedRoutes);
-            });
+        if (!menuItemsLoaded.current) {
+            menuItemsLoaded.current = true;
+            PluginManager.getInstance()
+                .getPlugin('@composaic/navbar')
+                .then((plugin) => {
+                    const navbarItems = (plugin as NavbarPlugin).getNavbarItems();
+                    const items = transformNavBarItemsToMenuItems(navbarItems);
+                    for (const item of items) {
+                        menuItems.push(item);
+                    }
+                    const generatedRoutes = generateRoutes(menuItems);
+                    setRoutes(generatedRoutes);
+                });
+        }
     }, []);
     return (
         <BrowserRouter>
