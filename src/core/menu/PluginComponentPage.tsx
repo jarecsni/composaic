@@ -15,4 +15,4 @@ const PluginComponentPage: React.FC<PluginComponentPageProps> = ({
     );
 };
 
-export default PluginComponentPage
+export default PluginComponentPage;
