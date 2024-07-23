@@ -1,16 +1,18 @@
 import React from 'react';
 
 interface PluginComponentPageProps {
-    title: string;
+    label: string;
 }
 
-export const PluginComponentPage: React.FC<PluginComponentPageProps> = ({
-    title,
+const PluginComponentPage: React.FC<PluginComponentPageProps> = ({
+    label = 'Plugin Component Page',
 }) => {
     return (
         <div>
-            <h1>{title}</h1>
+            <h1>{label}</h1>
             <p>This page will load the component for this route.</p>
         </div>
     );
 };
+
+export default PluginComponentPage

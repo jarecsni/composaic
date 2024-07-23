@@ -5,22 +5,12 @@ import Service2Page from './Service2Page';
 import AboutPage from './AboutPage';
 
 // Define a type where component is required and children is omitted
-export interface MenuItemWithComponent {
+export interface MenuItem {
     label: string;
-    path: string;
-    component: React.ComponentType;
-    children?: never; // Explicitly stating that children should not be used here
+    path?: string;
+    component?: React.ComponentType;
+    children?: MenuItem[];
 }
-
-// Define a type where children is required and component is omitted
-export interface MenuItemWithChildren {
-    label: string;
-    component?: never; // Explicitly stating that component should not be used here
-    children: MenuItem[]; // Recursive type reference
-}
-
-// Use a union type to combine both cases
-export type MenuItem = MenuItemWithComponent | MenuItemWithChildren;
 
 // Sample menu model
 export const menuItems: MenuItem[] = [
