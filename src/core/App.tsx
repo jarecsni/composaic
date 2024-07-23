@@ -99,7 +99,9 @@ export const App: React.FC = () => {
             PluginManager.getInstance()
                 .getPlugin('@composaic/navbar')
                 .then((plugin) => {
-                    const navbarItems = (plugin as NavbarPlugin).getNavbarItems();
+                    const navbarItems = (
+                        plugin as NavbarPlugin
+                    ).getNavbarItems();
                     const items = transformNavBarItemsToMenuItems(navbarItems);
                     for (const item of items) {
                         menuItems.push(item);
