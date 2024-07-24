@@ -7,7 +7,7 @@ interface PluginComponentPageProps {
 
 const PluginComponentPage: React.FC<PluginComponentPageProps> = ({
     plugin,
-    component
+    component,
 }) => {
     return (
         <div>

@@ -54,7 +54,10 @@ const transformNavBarItemsToMenuItems = (
         // Create a wrapper component to pass props to the lazy-loaded component
         const ComponentWithProps = () => (
             <Suspense fallback={<div>Loading...</div>}>
-                <LazyComponent component={item.component} plugin={plugin || item.plugin} />
+                <LazyComponent
+                    component={item.component}
+                    plugin={plugin || item.plugin}
+                />
             </Suspense>
         );
 
