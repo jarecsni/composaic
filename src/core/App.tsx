@@ -42,7 +42,8 @@ LoggingService.getInstance().info(
 // simpleLoggerPlugin.log('Hello, world from SimpleLoggerPlugin!');
 
 const transformNavBarItemsToMenuItems = (
-    navBarItems: NavbarItem[]
+    navBarItems: NavbarItem[],
+    plugin?: string
 ): MenuItem[] => {
     return navBarItems.map((item: NavbarItem): MenuItem => {
         // Base transformation for items without children
@@ -53,7 +54,7 @@ const transformNavBarItemsToMenuItems = (
         // Create a wrapper component to pass props to the lazy-loaded component
         const ComponentWithProps = () => (
             <Suspense fallback={<div>Loading...</div>}>
-                <LazyComponent label={item.path} />
+                <LazyComponent component={item.component} plugin={plugin || item.plugin} />
             </Suspense>
         );
 
@@ -62,7 +63,7 @@ const transformNavBarItemsToMenuItems = (
             path: item.path,
             component: item.component ? ComponentWithProps : undefined,
             children: item.children
-                ? transformNavBarItemsToMenuItems(item.children)
+                ? transformNavBarItemsToMenuItems(item.children, item.plugin)
                 : undefined,
         };
         return menuItem;

@@ -1,15 +1,17 @@
 import React from 'react';
 
 interface PluginComponentPageProps {
-    label: string;
+    component: string;
+    plugin: string;
 }
 
 const PluginComponentPage: React.FC<PluginComponentPageProps> = ({
-    label = 'Plugin Component Page',
+    plugin,
+    component
 }) => {
     return (
         <div>
-            <h1>{label}</h1>
+            <h1>{plugin + ':' + component}</h1>
             <p>This page will load the component for this route.</p>
         </div>
     );

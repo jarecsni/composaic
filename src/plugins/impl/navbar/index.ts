@@ -7,6 +7,7 @@ export type NavbarItem = {
     path: string;
     component: string;
     children: NavbarItem[];
+    plugin: string;
 };
 
 /**
@@ -27,6 +28,7 @@ export class NavbarPlugin extends Plugin {
         this.getConnectedExtensions('navbarItem').forEach((extension) => {
             const navBarMeta = extension.meta! as NavbarItem[];
             for (const item of navBarMeta) {
+                item.plugin = extension.plugin;
                 this.navbarItems.push(item);
             }
         });
