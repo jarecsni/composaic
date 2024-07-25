@@ -3,7 +3,7 @@ import { PluginManager } from '../plugins/PluginManager';
 import corePlugins from '../plugins/core-plugins.json';
 import { PluginManifest } from '../plugins/types';
 import { convertManifestToPluginDescriptor } from './plugin-utils';
-import { App } from '../core/App';
+import { App } from './App';
 
 PluginManager.getInstance().addPluginDefinitions(corePlugins);
 

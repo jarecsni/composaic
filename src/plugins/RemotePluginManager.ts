@@ -4,7 +4,6 @@ import {
     // @ts-expect-error: this is a private API
 } from '__federation__';
 import { PluginManager } from './PluginManager';
-import { Plugin } from './types';
 import { LoggingService } from '../services/LoggingService';
 
 export class RemotePluginManager extends PluginManager {

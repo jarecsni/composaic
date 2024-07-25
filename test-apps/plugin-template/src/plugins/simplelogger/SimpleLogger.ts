@@ -17,6 +17,7 @@ export class SimpleLoggerExtension implements LoggerExtensionPoint {
             level: 'info',
             message: 'Logger initialised',
             timestamp: new Date(),
+            subSystemName: this.getSubSystemName()
         });
     }
 }
@@ -33,6 +34,7 @@ export class SimpleLoggerPlugin extends Plugin {
                 level: 'info',
                 message,
                 timestamp: new Date(),
+                subSystemName: this.extension.getSubSystemName()
             });
         }
     }

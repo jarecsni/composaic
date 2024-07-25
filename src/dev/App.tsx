@@ -1,19 +1,18 @@
 import React, { Suspense, useEffect, useRef, useState } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { Navbar } from './menu/Navbar';
-import { menuItems, MenuItem } from './menu/menuModel'; // Import the MenuItemModel and menuItems
+import { Navbar } from '../core/menu/Navbar';
+import { menuItems, MenuItem } from '../core/menu/menuModel'; // Import the MenuItemModel and menuItems
 import { PluginManager } from '../plugins/PluginManager';
 import { LoggingService } from '../services/LoggingService';
 import { createServices } from '../services/ServiceManager';
 import { RemotePluginLoader } from '../services/RemotePluginLoader';
-import { RemotePluginManager } from '../plugins/RemotePluginManager';
 import { ConfigurationService } from '../services/configuration';
 import corePlugins from '../plugins/core-plugins.json';
 import { NavbarItem, NavbarPlugin } from '../plugins/impl/navbar';
-import ErrorBoundary from './ErrorBoundary';
+import ErrorBoundary from '../core/ErrorBoundary';
 
 // // Add core plugins
-RemotePluginManager.getInstance().addPluginDefinitions(corePlugins);
+PluginManager.getInstance().addPluginDefinitions(corePlugins);
 // // Create and initialize services
 await createServices();
 
@@ -26,20 +25,20 @@ await RemotePluginLoader.getInstance().loadManifests(
     ConfigurationService.getInstance().getConfiguration().remotes
 );
 LoggingService.getInstance().info(
-    `Initialisation done, ${RemotePluginManager.getInstance().getNumberOfPlugins()} plugins in total`
+    `Initialisation done, ${PluginManager.getInstance().getNumberOfPlugins()} plugins in total`
 );
 LoggingService.getInstance().info(
-    `Plugins: ${RemotePluginManager.getInstance()
+    `Plugins: ${PluginManager.getInstance()
         .getPluginIds()
         .map((plugin) => plugin)
         .join(', ')}`
 );
 
-const simpleLoggerPlugin = await RemotePluginManager.getInstance().getPlugin(
-    '@composaic-tests/simple-logger'
-);
-// @ts-expect-error
-simpleLoggerPlugin.log('Hello, world from SimpleLoggerPlugin!');
+// const simpleLoggerPlugin = await PluginManager.getInstance().getPlugin(
+//     '@composaic-tests/simple-logger'
+// );
+// // @ts-expect-error
+// simpleLoggerPlugin.log('Hello, world from SimpleLoggerPlugin!');
 
 const transformNavBarItemsToMenuItems = (
     navBarItems: NavbarItem[],
@@ -54,10 +53,7 @@ const transformNavBarItemsToMenuItems = (
         // Create a wrapper component to pass props to the lazy-loaded component
         const ComponentWithProps = () => (
             <Suspense fallback={<div>Loading...</div>}>
-                <LazyComponent
-                    component={item.component}
-                    plugin={plugin || item.plugin}
-                />
+                <LazyComponent component={item.component} plugin={plugin || item.plugin} />
             </Suspense>
         );
 
