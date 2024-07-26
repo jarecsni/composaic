@@ -48,7 +48,7 @@ const transformNavBarItemsToMenuItems = (
         // Base transformation for items without children
         const componentPath = 'PluginComponentPage';
         const LazyComponent = React.lazy(
-            () => import(`./menu/${componentPath}.tsx`)
+            () => import(`../core/menu/${componentPath}.tsx`)
         );
         // Create a wrapper component to pass props to the lazy-loaded component
         const ComponentWithProps = () => (
