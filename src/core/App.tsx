@@ -36,9 +36,10 @@ LoggingService.getInstance().info(
 );
 
 try {
-    const simpleLoggerPlugin = await RemotePluginManager.getInstance().getPlugin(
-        '@composaic-tests/simple-logger'
-    );
+    const simpleLoggerPlugin =
+        await RemotePluginManager.getInstance().getPlugin(
+            '@composaic-tests/simple-logger'
+        );
     // @ts-expect-error
     simpleLoggerPlugin.log('Hello, world from SimpleLoggerPlugin!');
 } catch (error) {
