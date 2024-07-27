@@ -97,6 +97,7 @@ export class PluginManager {
                 } catch (error) {
                     // To support local development, when the plugin project installs composaic as an npm package
                     pluginDescriptor.loadedModule = await import(
+                        /* @vite-ignore */
                         `/node_modules/composaic/lib/plugins/impl/${pluginDescriptor.package}/${pluginDescriptor.module}.js`
                     );
                 }

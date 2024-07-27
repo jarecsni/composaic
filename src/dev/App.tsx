@@ -48,7 +48,10 @@ const transformNavBarItemsToMenuItems = (
         // Base transformation for items without children
         const componentPath = 'PluginComponentPage';
         const LazyComponent = React.lazy(
-            () => import(`../core/menu/${componentPath}.tsx`)
+            () =>
+                import(
+                    /* @vite-ignore */ `/node_modules/composaic/lib/core/menu/${componentPath}.tsx`
+                )
         );
         // Create a wrapper component to pass props to the lazy-loaded component
         const ComponentWithProps = () => (
