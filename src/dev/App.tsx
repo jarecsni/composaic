@@ -10,6 +10,7 @@ import { ConfigurationService } from '../services/configuration';
 import corePlugins from '../plugins/core-plugins.json';
 import { NavbarItem, NavbarPlugin } from '../plugins/impl/navbar';
 import ErrorBoundary from '../core/ErrorBoundary';
+import PluginComponentPage from '../core/menu/PluginComponentPage';
 
 // // Add core plugins
 PluginManager.getInstance().addPluginDefinitions(corePlugins);
@@ -46,17 +47,28 @@ const transformNavBarItemsToMenuItems = (
 ): MenuItem[] => {
     return navBarItems.map((item: NavbarItem): MenuItem => {
         // Base transformation for items without children
-        const componentPath = 'PluginComponentPage';
-        const LazyComponent = React.lazy(
-            () =>
-                import(
-                    /* @vite-ignore */ `/node_modules/composaic/lib/core/menu/${componentPath}.tsx`
-                )
-        );
+        // const componentPath = 'PluginComponentPage';
+        // const LazyComponent = React.lazy(() => {
+        //     try {
+        //         return import(`../core/menu/${componentPath}.tsx`);
+        //     } catch (error) {
+        //         return import(
+        //             /* @vite-ignore */ `/node_modules/composaic/lib/core/menu/${componentPath}.`
+        //         );
+        //     }
+        // });
+        // } catch (error) {
+        //     LazyComponent = React.lazy(
+        //         () =>
+        //             import(
+        //                 /* @vite-ignore */ `/node_modules/composaic/lib/core/menu/${componentPath}.tsx`
+        //             )
+        //     );
+        // }
         // Create a wrapper component to pass props to the lazy-loaded component
         const ComponentWithProps = () => (
             <Suspense fallback={<div>Loading...</div>}>
-                <LazyComponent
+                <PluginComponentPage
                     component={item.component}
                     plugin={plugin || item.plugin}
                 />
