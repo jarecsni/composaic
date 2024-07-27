@@ -89,9 +89,17 @@ export class PluginManager {
         if (!pluginDescriptor.loadedModule) {
             if (!pluginDescriptor.remoteURL) {
                 // load local module
-                pluginDescriptor.loadedModule = await import(
-                    `./impl/${pluginDescriptor.package}/${pluginDescriptor.module}.ts`
-                );
+                try {
+                    // Production mode where we run the composaic project as the main web application
+                    pluginDescriptor.loadedModule = await import(
+                        `./impl/${pluginDescriptor.package}/${pluginDescriptor.module}.ts`
+                    );
+                } catch (error) {
+                    // To support local development, when the plugin project installs composaic as an npm package
+                    pluginDescriptor.loadedModule = await import(
+                        `/node_modules/composaic/lib/plugins/impl/${pluginDescriptor.package}/${pluginDescriptor.module}.js`
+                    );
+                }
             } else {
                 // load remote module using module federation
                 pluginDescriptor.loadedModule =
@@ -111,7 +119,7 @@ export class PluginManager {
         }
         pluginDescriptor.loadedClass =
             pluginDescriptor.loadedModule![
-                pluginDescriptor.class as keyof typeof pluginDescriptor.loadedModule
+            pluginDescriptor.class as keyof typeof pluginDescriptor.loadedModule
             ];
         if (pluginDescriptor.extensions) {
             for (const extension of pluginDescriptor.extensions) {
