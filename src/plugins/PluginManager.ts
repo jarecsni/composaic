@@ -35,7 +35,13 @@ export class PluginManager {
      */
     addPluginDefinitions(plugins: PluginDescriptor[]) {
         plugins.forEach((plugin) => {
-            this.addPlugin(plugin);
+            if (!PluginManager.registry[plugin.plugin]) {
+                this.addPlugin(plugin);
+            } else {
+                console.log(
+                    `Plugin with ID ${plugin.plugin} already exists, ignoring request to add it again to the registry`
+                );
+            }
         });
     }
 

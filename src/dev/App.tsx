@@ -3,43 +3,42 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Navbar } from '../core/menu/Navbar';
 import { menuItems, MenuItem } from '../core/menu/menuModel'; // Import the MenuItemModel and menuItems
 import { PluginManager } from '../plugins/PluginManager';
-import { LoggingService } from '../services/LoggingService';
-import { createServices } from '../services/ServiceManager';
-import { RemotePluginLoader } from '../services/RemotePluginLoader';
-import { ConfigurationService } from '../services/configuration';
-import corePlugins from '../plugins/core-plugins.json';
 import { NavbarItem, NavbarPlugin } from '../plugins/impl/navbar';
 import ErrorBoundary from '../core/ErrorBoundary';
 import PluginComponentPage from '../core/menu/PluginComponentPage';
+import { LoggingService } from '../services/LoggingService';
+import { RemotePluginLoader } from '../services/RemotePluginLoader';
+import { ConfigurationService } from '../services/configuration';
+import { createServices } from '../services/ServiceManager';
+import corePlugins from '../plugins/core-plugins.json';
 
-// // Add core plugins
-PluginManager.getInstance().addPluginDefinitions(corePlugins);
-// // Create and initialize services
-await createServices();
+const initCore = async () => {
+    PluginManager.getInstance().clear();
+    // // Add core plugins
+    PluginManager.getInstance().addPluginDefinitions(corePlugins);
+    // // Create and initialize services
+    await createServices();
 
-LoggingService.getInstance().info('App started, loading remote manifests...');
-LoggingService.getInstance().info(
-    `Configuration: ${JSON.stringify(ConfigurationService.getInstance().getConfiguration())}`
-);
+    LoggingService.getInstance().info(
+        'App started, loading remote manifests...'
+    );
+    LoggingService.getInstance().info(
+        `Configuration: ${JSON.stringify(ConfigurationService.getInstance().getConfiguration())}`
+    );
 
-await RemotePluginLoader.getInstance().loadManifests(
-    ConfigurationService.getInstance().getConfiguration().remotes
-);
-LoggingService.getInstance().info(
-    `Initialisation done, ${PluginManager.getInstance().getNumberOfPlugins()} plugins in total`
-);
-LoggingService.getInstance().info(
-    `Plugins: ${PluginManager.getInstance()
-        .getPluginIds()
-        .map((plugin) => plugin)
-        .join(', ')}`
-);
-
-// const simpleLoggerPlugin = await PluginManager.getInstance().getPlugin(
-//     '@composaic-tests/simple-logger'
-// );
-// // @ts-expect-error
-// simpleLoggerPlugin.log('Hello, world from SimpleLoggerPlugin!');
+    await RemotePluginLoader.getInstance().loadManifests(
+        ConfigurationService.getInstance().getConfiguration().remotes
+    );
+    LoggingService.getInstance().info(
+        `Initialisation done, ${PluginManager.getInstance().getNumberOfPlugins()} plugins in total`
+    );
+    LoggingService.getInstance().info(
+        `Plugins: ${PluginManager.getInstance()
+            .getPluginIds()
+            .map((plugin) => plugin)
+            .join(', ')}`
+    );
+};
 
 const transformNavBarItemsToMenuItems = (
     navBarItems: NavbarItem[],
@@ -89,19 +88,22 @@ export const App: React.FC = () => {
     useEffect(() => {
         if (!menuItemsLoaded.current) {
             menuItemsLoaded.current = true;
-            PluginManager.getInstance()
-                .getPlugin('@composaic/navbar')
-                .then((plugin) => {
-                    const navbarItems = (
-                        plugin as NavbarPlugin
-                    ).getNavbarItems();
-                    const items = transformNavBarItemsToMenuItems(navbarItems);
-                    for (const item of items) {
-                        menuItems.push(item);
-                    }
-                    const generatedRoutes = generateRoutes(menuItems);
-                    setRoutes(generatedRoutes);
-                });
+            initCore().then(() => {
+                PluginManager.getInstance()
+                    .getPlugin('@composaic/navbar')
+                    .then((plugin) => {
+                        const navbarItems = (
+                            plugin as NavbarPlugin
+                        ).getNavbarItems();
+                        const items =
+                            transformNavBarItemsToMenuItems(navbarItems);
+                        for (const item of items) {
+                            menuItems.push(item);
+                        }
+                        const generatedRoutes = generateRoutes(menuItems);
+                        setRoutes(generatedRoutes);
+                    });
+            });
         }
     }, []);
     return (

@@ -6,16 +6,26 @@ import {
 // @ts-expect-error - resolution not working
 import { Plugin } from '@composaic/plugins/types';
 
+let idCounter = 0;
+
 export class SimpleLoggerExtension implements LoggerExtensionPoint {
+    objId = 0;
+    constructor() {
+        idCounter += 1;
+        this.objId = idCounter;
+    }
     log?: (message: LogMessage) => void;
     getSubSystemName(): string {
         return 'Test Plugin';
     }
     setLogCallback(log: (message: LogMessage) => void): void {
         this.log = log;
+        console.log(
+            `SimpleLoggerExtension setLogCallback called (ID=${this.objId})`
+        );
         this.log({
             level: 'info',
-            message: 'Logger initialised',
+            message: `Logger initialised with ${log}`,
             timestamp: new Date(),
             subSystemName: this.getSubSystemName(),
         });

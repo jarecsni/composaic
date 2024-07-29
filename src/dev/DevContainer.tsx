@@ -1,11 +1,9 @@
-import React, { FC, useEffect } from 'react';
+import React, { FC, useEffect, useRef } from 'react';
 import { PluginManager } from '../plugins/PluginManager';
-import corePlugins from '../plugins/core-plugins.json';
 import { PluginManifest } from '../plugins/types';
 import { convertManifestToPluginDescriptor } from './plugin-utils';
-import { App } from './App';
 
-PluginManager.getInstance().addPluginDefinitions(corePlugins);
+import { App } from './App';
 
 interface DevContainerProps {
     loadModule(moduleName: string, pkg: string): Promise<object>;
@@ -26,6 +24,8 @@ const processManifest = async (
 };
 
 export const DevContainer: FC<DevContainerProps> = ({ loadModule }) => {
+    const isInitialized = useRef(false);
+
     useEffect(() => {
         fetch('/manifest.json').then((response) => {
             response.json().then(async (json) => {
@@ -38,6 +38,7 @@ export const DevContainer: FC<DevContainerProps> = ({ loadModule }) => {
                 simpleLoggerPlugin.log('Hello, world from SimpleLoggerPlugin!');
             });
         });
+        isInitialized.current = true;
     }, []);
     return <App />;
 };

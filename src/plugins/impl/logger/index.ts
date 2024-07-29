@@ -24,6 +24,12 @@ export interface LoggerExtensionPoint {
 
 export class LoggerPlugin extends Plugin {
     async start() {
+        this.log({
+            level: 'info',
+            message: '@composaic/logger plugin started',
+            timestamp: new Date(),
+            subSystemName: ComposaicSubSystemName,
+        });
         this.getConnectedExtensions('logger').forEach((extension) => {
             const loggerExtension =
                 extension.extensionImpl as LoggerExtensionPoint;

@@ -1,3 +1,4 @@
+//import { DevContainer } from '@composaic/dev/DevContainer';
 import { DevContainer } from 'composaic';
 
 const loadModule = async (moduleName: string, pkg: string) => {
