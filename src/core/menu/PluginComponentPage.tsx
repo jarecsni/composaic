@@ -10,14 +10,18 @@ const PluginComponentPage: React.FC<PluginComponentPageProps> = ({
     plugin,
     component,
 }) => {
-    const [PluginComponent, setPluginComponent] = useState<React.FC>(() => () => <div>Loading...</div>);
+    const [PluginComponent, setPluginComponent] = useState<React.FC>(
+        () => () => <div>Loading...</div>
+    );
 
     useEffect(() => {
-        PluginManager.getInstance().getPlugin(plugin).then((plugin) => {
-            const loadedComponent = plugin.getModule(component);
-            // @ts-ignore
-            setPluginComponent(() => loadedComponent);
-        });
+        PluginManager.getInstance()
+            .getPlugin(plugin)
+            .then((plugin) => {
+                const loadedComponent = plugin.getModule(component);
+                // @ts-ignore
+                setPluginComponent(() => loadedComponent);
+            });
     }, [plugin, component]);
     return (
         <div>
