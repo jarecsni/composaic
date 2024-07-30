@@ -25,7 +25,7 @@ export interface PluginDescriptor {
     package: string;
     class: string;
     loadedClass?: object;
-    loadedModule?: object;
+    loadedModule?: { [exportedModule: string]: object };
     plugin: string;
     version: string;
     description: string;
@@ -100,8 +100,8 @@ export abstract class Plugin {
         [id: string]: object;
     } = {};
 
-    async start(): Promise<void> {}
-    async stop(): Promise<void> {}
+    async start(): Promise<void> { }
+    async stop(): Promise<void> { }
     init(pluginDescriptor: PluginDescriptor): void {
         if (this.initialised) {
             throw new Error('Plugin already initialised');
@@ -141,6 +141,9 @@ export abstract class Plugin {
     }
     protected getExtensionImpl(plugin: string, extensionId: string): object {
         return this.extensions[plugin + '::' + extensionId];
+    }
+    getModule(moduleName: string): object {
+        return this.pluginDescriptor.loadedModule![moduleName];
     }
 }
 

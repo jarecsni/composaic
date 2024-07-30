@@ -1,6 +1,10 @@
 // Assuming necessary imports based on the LoggerPlugin example
 import { Plugin } from '../../types';
 
+// Components exposed by this plugin module
+export { Example1Page } from './Example1Page';
+export { Example2Page } from './Example2Page';
+
 // Define a hypothetical NavbarItem type for demonstration
 export type NavbarItem = {
     label: string;
