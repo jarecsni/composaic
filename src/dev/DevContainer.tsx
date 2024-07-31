@@ -103,7 +103,6 @@ const generateRoutes = (items: MenuItem[]): JSX.Element[] => {
         .filter(Boolean) as JSX.Element[];
 };
 
-
 export const DevContainer: FC<DevContainerProps> = ({ loadModule }) => {
     const isInitialized = useRef(false);
     const menuItemsLoaded = useRef(false);
@@ -116,7 +115,10 @@ export const DevContainer: FC<DevContainerProps> = ({ loadModule }) => {
                 fetch('/manifest.json').then((response) => {
                     response.json().then(async (json) => {
                         await processManifest(json, loadModule);
-                        const plugin = await PluginManager.getInstance().getPlugin('@composaic/navbar');
+                        const plugin =
+                            await PluginManager.getInstance().getPlugin(
+                                '@composaic/navbar'
+                            );
                         const navbarItems = (
                             plugin as NavbarPlugin
                         ).getNavbarItems();
@@ -132,19 +134,23 @@ export const DevContainer: FC<DevContainerProps> = ({ loadModule }) => {
                                 '@composaic-tests/simple-logger'
                             );
                         // @ts-expect-error
-                        simpleLoggerPlugin.log('Hello, world from SimpleLoggerPlugin!');
+                        simpleLoggerPlugin.log(
+                            'Hello, world from SimpleLoggerPlugin!'
+                        );
                     });
                 });
                 isInitialized.current = true;
             });
         }
     }, []);
-    return (<BrowserRouter>
-        <div>
-            <Navbar />
-            <ErrorBoundary fallback={<div>Something went wrong</div>}>
-                <Routes>{routes}</Routes>
-            </ErrorBoundary>
-        </div>
-    </BrowserRouter>);
+    return (
+        <BrowserRouter>
+            <div>
+                <Navbar />
+                <ErrorBoundary fallback={<div>Something went wrong</div>}>
+                    <Routes>{routes}</Routes>
+                </ErrorBoundary>
+            </div>
+        </BrowserRouter>
+    );
 };
