@@ -32,6 +32,9 @@ export const convertManifestToPluginDescriptor = (
                         plugin: extension.plugin,
                         id: extension.id,
                         className: extension.className,
+                        meta: extension.meta?.map((meta) => {
+                            return { ...(meta as object) };
+                        }),
                     };
                 }),
             };
@@ -39,7 +42,7 @@ export const convertManifestToPluginDescriptor = (
                 result.remoteName = plugin.remote.name;
                 result.remoteURL = remote;
                 result.bundleFile = plugin.remote.bundleFile;
-                result.remoteModuleName = plugin.remote.moduleName;
+                result.remoteModuleName = './' + definition.module;
             }
             return result;
         });

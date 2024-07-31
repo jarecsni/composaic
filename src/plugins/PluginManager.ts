@@ -109,6 +109,8 @@ export class PluginManager {
                 }
             } else {
                 // load remote module using module federation
+                // FIXME
+                // @ts-expect-error - we'll clear this up
                 pluginDescriptor.loadedModule =
                     await this.loadRemotePluginModule(
                         pluginDescriptor.remoteURL,
@@ -116,7 +118,7 @@ export class PluginManager {
                         pluginDescriptor.bundleFile!,
                         pluginDescriptor.remoteModuleName!
                     );
-                if (pluginDescriptor.loadedModule === null) {
+                if (!pluginDescriptor.loadedModule) {
                     LoggingService.getInstance().error(
                         `Failed to load remote plugin ${pluginDescriptor.plugin}`
                     );
@@ -126,7 +128,7 @@ export class PluginManager {
         }
         pluginDescriptor.loadedClass =
             pluginDescriptor.loadedModule![
-                pluginDescriptor.class as keyof typeof pluginDescriptor.loadedModule
+            pluginDescriptor.class as keyof typeof pluginDescriptor.loadedModule
             ];
         if (pluginDescriptor.extensions) {
             for (const extension of pluginDescriptor.extensions) {

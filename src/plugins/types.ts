@@ -9,6 +9,7 @@ import {
     Record,
     Union,
     Static,
+    Unknown,
 } from 'runtypes';
 
 /**
@@ -58,6 +59,7 @@ const PluginManifestExtension = Record({
     plugin: String,
     id: String,
     className: String,
+    meta: Optional(Array(Unknown)),
 });
 export type PluginManifestExtension = Static<typeof PluginManifestExtension>;
 
@@ -79,7 +81,6 @@ const PluginManifestPlugin = Record({
     remote: Record({
         name: String,
         bundleFile: String,
-        moduleName: String,
     }),
     definitions: Array(PluginManifestPluginDefinition),
 });

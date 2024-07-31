@@ -101,7 +101,7 @@ export const App: React.FC = () => {
     useEffect(() => {
         if (!menuItemsLoaded.current) {
             menuItemsLoaded.current = true;
-            PluginManager.getInstance()
+            RemotePluginManager.getInstance()
                 .getPlugin('@composaic/navbar')
                 .then((plugin) => {
                     const navbarItems = (

@@ -19,6 +19,8 @@ export default defineConfig({
             filename: 'TestPlugins.js',
             exposes: {
                 './SimpleLogger': './src/plugins/simplelogger/SimpleLogger.ts',
+                './NavbarExtension':
+                    './src/plugins/navbar/NavbarExtension.ts',
             },
             shared: ['react'],
         }),

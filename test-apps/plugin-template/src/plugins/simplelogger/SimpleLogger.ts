@@ -3,8 +3,8 @@ import {
     LogMessage,
     // @ts-expect-error - resolution not working
 } from '@composaic/plugins/impl/logger';
-// @ts-expect-error - resolution not working
-import { Plugin } from '@composaic/plugins/types';
+
+import { Plugin } from 'composaic';
 
 let idCounter = 0;
 
@@ -34,7 +34,7 @@ export class SimpleLoggerExtension implements LoggerExtensionPoint {
 
 export class SimpleLoggerPlugin extends Plugin {
     extension?: SimpleLoggerExtension;
-    start(): void {
+    async start() {
         // @ts-expect-error - resolution not working
         this.extension = this.getExtensionImpl('@composaic/logger', 'logger');
     }

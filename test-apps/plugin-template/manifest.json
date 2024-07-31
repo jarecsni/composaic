@@ -4,8 +4,7 @@
         {
             "remote": {
                 "name": "TestPlugins",
-                "bundleFile": "TestPlugins.js",
-                "moduleName": "./SimpleLogger"
+                "bundleFile": "TestPlugins.js"
             },
             "definitions": [
                 {
@@ -20,6 +19,33 @@
                             "plugin": "@composaic/logger",
                             "id": "logger",
                             "className": "SimpleLoggerExtension"
+                        }
+                    ]
+                },
+                {
+                    "package": "navbar",
+                    "module": "NavbarExtension",
+                    "class": "NavbarExtensionPlugin",
+                    "plugin": "@composaic-tests/navbar",
+                    "version": "1.0",
+                    "description": "Extension for the @composaic/navbar plugin",
+                    "extensions": [
+                        {
+                            "plugin": "@composaic/navbar",
+                            "id": "navbarItem",
+                            "className": "NavbarItemExtension",
+                            "meta": [
+                                {
+                                    "label": "Remote Examples",
+                                    "children": [
+                                        {
+                                            "label": "Remote Example",
+                                            "path": "/remoteexample",
+                                            "component": "RemoteExamplePage"
+                                        }
+                                    ]
+                                }
+                            ]
                         }
                     ]
                 }
