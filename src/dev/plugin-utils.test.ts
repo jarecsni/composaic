@@ -14,7 +14,7 @@ describe('local-plugin-utils', () => {
                     definitions: [
                         {
                             package: 'test-package',
-                            module: 'test-module',
+                            module: 'TestModule',
                             class: 'test-class',
                             plugin: 'test-plugin',
                             version: '1.0.0',
@@ -48,7 +48,7 @@ describe('local-plugin-utils', () => {
                 remoteURL: 'http://localhost:9000',
                 bundleFile: 'TestBundle.js',
                 remoteModuleName: './TestModule',
-                module: 'test-module',
+                module: 'TestModule',
                 package: 'test-package',
                 class: 'test-class',
                 plugin: 'test-plugin',
