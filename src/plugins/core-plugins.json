@@ -40,6 +40,7 @@
                 "className": "SimpleNavbarExtension",
                 "meta": [
                     {
+                        "id": "root.Examples",
                         "label": "Examples",
                         "children": [
                             {
@@ -53,6 +54,11 @@
                                 "component": "Example2Page"
                             }
                         ]
+                    },
+                    {
+                        "id": "root.Profile",
+                        "label": "Profile",
+                        "children": []
                     }
                 ]
             }

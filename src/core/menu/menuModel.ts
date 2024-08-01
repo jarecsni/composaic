@@ -6,6 +6,7 @@ import AboutPage from './AboutPage';
 
 // Define a type where component is required and children is omitted
 export interface MenuItem {
+    id: string
     label: string;
     path?: string;
     component?: React.ComponentType;
@@ -14,13 +15,14 @@ export interface MenuItem {
 
 // Sample menu model
 export const menuItems: MenuItem[] = [
-    { label: 'Home', path: '/', component: HomePage },
+    { id: 'root.Home', label: 'Home', path: '/', component: HomePage },
     {
+        id: 'root.Services',
         label: 'Services',
         children: [
-            { label: 'Service 1', path: '/service1', component: Service1Page },
-            { label: 'Service 2', path: '/service2', component: Service2Page },
+            { id: 'services.ServiceOne', label: 'Service 1', path: '/service1', component: Service1Page },
+            { id: 'services.ServiceTwo', label: 'Service 2', path: '/service2', component: Service2Page },
         ],
     },
-    { label: 'About', path: '/about', component: AboutPage },
+    { id: 'root.About', label: 'About', path: '/about', component: AboutPage },
 ];

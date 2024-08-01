@@ -36,6 +36,7 @@
                             "className": "NavbarItemExtension",
                             "meta": [
                                 {
+                                    "id": "test.RemoteExamples",
                                     "label": "Remote Examples",
                                     "children": [
                                         {
