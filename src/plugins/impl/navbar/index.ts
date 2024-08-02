@@ -48,7 +48,9 @@ export class NavbarPlugin extends Plugin {
         this.navbarItems.forEach((item) => {
             if (item.mountAt) {
                 // Find the parent item by the mountAt (id) attribute
-                const parentItem = this.navbarItems.find(parent => parent.id === item.mountAt);
+                const parentItem = this.navbarItems.find(
+                    (parent) => parent.id === item.mountAt
+                );
 
                 if (parentItem) {
                     // Initialize children array if it doesn't exist
@@ -61,13 +63,17 @@ export class NavbarPlugin extends Plugin {
                     itemsToRemove.push(item);
                 } else {
                     // Log error if no matching parent item is found
-                    console.error(`Error: No element found with id '${item.mountAt}' to mount '${item.label}'`);
+                    console.error(
+                        `Error: No element found with id '${item.mountAt}' to mount '${item.label}'`
+                    );
                 }
             }
         });
 
         // Remove items that have been reassigned to a parent from the main array
-        this.navbarItems = this.navbarItems.filter(item => !itemsToRemove.includes(item));
+        this.navbarItems = this.navbarItems.filter(
+            (item) => !itemsToRemove.includes(item)
+        );
     }
 
     async stop() {
