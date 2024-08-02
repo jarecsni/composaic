@@ -7,6 +7,8 @@ export { Example2Page } from './Example2Page';
 
 // Define a hypothetical NavbarItem type for demonstration
 export type NavbarItem = {
+    id: string;
+    mountAt?: string;
     label: string;
     path: string;
     component: string;
@@ -35,7 +37,37 @@ export class NavbarPlugin extends Plugin {
                 item.plugin = extension.plugin;
                 this.navbarItems.push(item);
             }
+            this.mountItems();
         });
+    }
+
+    mountItems() {
+        // Temporary array to hold items that need to be removed after reassignment
+        const itemsToRemove: NavbarItem[] = [];
+
+        this.navbarItems.forEach((item) => {
+            if (item.mountAt) {
+                // Find the parent item by the mountAt (id) attribute
+                const parentItem = this.navbarItems.find(parent => parent.id === item.mountAt);
+
+                if (parentItem) {
+                    // Initialize children array if it doesn't exist
+                    if (!parentItem.children) {
+                        parentItem.children = [];
+                    }
+                    // Add the current item as a child of the found parent item
+                    parentItem.children.push(item);
+                    // Mark the current item for removal from the main array
+                    itemsToRemove.push(item);
+                } else {
+                    // Log error if no matching parent item is found
+                    console.error(`Error: No element found with id '${item.mountAt}' to mount '${item.label}'`);
+                }
+            }
+        });
+
+        // Remove items that have been reassigned to a parent from the main array
+        this.navbarItems = this.navbarItems.filter(item => !itemsToRemove.includes(item));
     }
 
     async stop() {

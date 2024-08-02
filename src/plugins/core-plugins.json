@@ -41,6 +41,7 @@
                 "meta": [
                     {
                         "id": "root.Examples",
+                        "mountAt": "root.Profile",
                         "label": "Examples",
                         "children": [
                             {

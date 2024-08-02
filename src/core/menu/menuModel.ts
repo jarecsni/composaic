@@ -7,6 +7,7 @@ import AboutPage from './AboutPage';
 // Define a type where component is required and children is omitted
 export interface MenuItem {
     id: string;
+    mountAt?: string;
     label: string;
     path?: string;
     component?: React.ComponentType;
