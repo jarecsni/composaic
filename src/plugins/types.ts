@@ -106,7 +106,7 @@ export abstract class Plugin {
         return this._started;
     }
     async start(): Promise<void> {
-        this._started = true
+        this._started = true;
     }
     async stop(): Promise<void> {
         this.stopped = true;
