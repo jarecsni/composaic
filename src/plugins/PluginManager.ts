@@ -128,7 +128,7 @@ export class PluginManager {
         }
         pluginDescriptor.loadedClass =
             pluginDescriptor.loadedModule![
-                pluginDescriptor.class as keyof typeof pluginDescriptor.loadedModule
+            pluginDescriptor.class as keyof typeof pluginDescriptor.loadedModule
             ];
         if (pluginDescriptor.extensions) {
             for (const extension of pluginDescriptor.extensions) {
@@ -200,6 +200,9 @@ export class PluginManager {
     }
 
     protected async startPlugin(plugin: Plugin, dependingPlugin?: Plugin) {
+        if (plugin.started) {
+            return;
+        }
         if (plugin.pluginDescriptor.dependencies) {
             for (const dependency of plugin.pluginDescriptor.dependencies) {
                 const pluginToLoad = (dependency as PluginDescriptor).plugin;

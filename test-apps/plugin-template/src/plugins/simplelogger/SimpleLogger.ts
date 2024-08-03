@@ -35,6 +35,7 @@ export class SimpleLoggerExtension implements LoggerExtensionPoint {
 export class SimpleLoggerPlugin extends Plugin {
     extension?: SimpleLoggerExtension;
     async start() {
+        super.start();
         // @ts-expect-error - resolution not working
         this.extension = this.getExtensionImpl('@composaic/logger', 'logger');
     }

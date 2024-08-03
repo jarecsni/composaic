@@ -24,6 +24,7 @@ export interface LoggerExtensionPoint {
 
 export class LoggerPlugin extends Plugin {
     async start() {
+        super.start();
         this.log({
             level: 'info',
             message: '@composaic/logger plugin started',
@@ -36,7 +37,7 @@ export class LoggerPlugin extends Plugin {
             loggerExtension.setLogCallback(this.log.bind(this));
         });
     }
-    async stop() {}
+    async stop() { }
     log(message: LogMessage) {
         console.log(
             `${message.timestamp.toISOString()} [${message.level.toUpperCase()}] [${message.subSystemName}] ${message.message}`

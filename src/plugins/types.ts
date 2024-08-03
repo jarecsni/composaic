@@ -93,6 +93,8 @@ export type PluginManifest = Static<typeof PluginManifest>;
 
 export abstract class Plugin {
     initialised = false;
+    _started = false;
+    stopped = false;
     pluginDescriptor: PluginDescriptor = {} as PluginDescriptor;
     extensionsPoints: {
         [extensionPointId: string]: { plugin: string; extensionImpl: object }[];
@@ -100,9 +102,15 @@ export abstract class Plugin {
     extensions: {
         [id: string]: object;
     } = {};
-
-    async start(): Promise<void> {}
-    async stop(): Promise<void> {}
+    get started(): boolean {
+        return this._started;
+    }
+    async start(): Promise<void> {
+        this._started = true
+    }
+    async stop(): Promise<void> {
+        this.stopped = true;
+    }
     init(pluginDescriptor: PluginDescriptor): void {
         if (this.initialised) {
             throw new Error('Plugin already initialised');
