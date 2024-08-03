@@ -67,6 +67,7 @@ const transformNavBarItemsToMenuItems = (
         );
 
         const menuItem: MenuItem = {
+            id: item.id,
             label: item.label,
             path: item.path,
             component: item.component ? ComponentWithProps : undefined,
