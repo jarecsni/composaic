@@ -37,8 +37,8 @@ export class NavbarPlugin extends Plugin {
                 item.plugin = extension.plugin;
                 this.navbarItems.push(item);
             }
-            this.mountItems();
         });
+        this.mountItems();
     }
 
     mountItems() {

@@ -38,6 +38,7 @@
                                 {
                                     "id": "test.RemoteExamples",
                                     "label": "Remote Examples",
+                                    "mountAt": "root.Profile",
                                     "children": [
                                         {
                                             "label": "Remote Example",
