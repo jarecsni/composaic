@@ -27,6 +27,7 @@
                     "module": "NavbarExtension",
                     "class": "NavbarExtensionPlugin",
                     "plugin": "@composaic-tests/navbar",
+                    "load": "deferred",
                     "version": "1.0",
                     "description": "Extension for the @composaic/navbar plugin",
                     "extensions": [

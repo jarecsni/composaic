@@ -28,6 +28,7 @@ export interface PluginDescriptor {
     loadedClass?: object;
     loadedModule?: { [exportedModule: string]: object };
     plugin: string;
+    load?: 'deferred';
     version: string;
     description: string;
     pluginInstance?: Plugin;
@@ -68,6 +69,7 @@ const PluginManifestPluginDefinition = Record({
     module: String,
     class: String,
     plugin: String,
+    load: Optional(Literal('deferred')),
     version: String,
     description: String,
     extensionPoints: Optional(Array(PluginManifestExtensionPoints)),

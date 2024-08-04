@@ -17,6 +17,7 @@ export const convertManifestToPluginDescriptor = (
                 package: definition.package,
                 class: definition.class,
                 plugin: definition.plugin,
+                load: definition.load,
                 version: definition.version,
                 description: definition.description,
                 extensionPoints: definition.extensionPoints?.map(
