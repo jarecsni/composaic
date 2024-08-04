@@ -33,7 +33,9 @@ export class NavbarPlugin extends Plugin {
         // Collect navbar items from all connected extensions
         this.navbarItems = [];
         this.getConnectedExtensions('navbarItem').forEach((extension) => {
-            const navBarMeta = extension.meta! as NavbarItem[];
+            // TODO fix typing
+            // @ts-expect-error - fix typing
+            const navBarMeta = extension.extensionImpl!.meta! as NavbarItem[];
             for (const item of navBarMeta) {
                 item.plugin = extension.plugin;
                 this.navbarItems.push(item);

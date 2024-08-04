@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { PluginManager } from '../../plugins/PluginManager';
+import { RemotePluginManager } from '../../plugins/RemotePluginManager';
 
 interface PluginComponentPageProps {
     component: string;
@@ -15,7 +16,7 @@ const PluginComponentPage: React.FC<PluginComponentPageProps> = ({
     );
 
     useEffect(() => {
-        PluginManager.getInstance()
+        RemotePluginManager.getInstance()
             .getPlugin(plugin)
             .then((plugin) => {
                 const loadedComponent = plugin.getModule(component);

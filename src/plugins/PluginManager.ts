@@ -73,7 +73,10 @@ export class PluginManager {
         pluginName: string,
         dependingPlugin?: string
     ): Promise<Plugin | null> {
-        const pluginDescriptor = PluginManager.registry[pluginName];
+        const pluginDescriptor: PluginDescriptor =
+            PluginManager.registry[pluginName];
+        const deferred =
+            pluginDescriptor.load === 'deferred' && !!dependingPlugin;
         if (!pluginDescriptor) {
             throw new Error(`Plugin with ID ${pluginName} not found`);
         }
@@ -92,50 +95,56 @@ export class PluginManager {
                 );
             }
         }
-        if (!pluginDescriptor.loadedModule) {
-            if (!pluginDescriptor.remoteURL) {
-                // load local module
-                try {
-                    // Production mode where we run the composaic project as the main web application
-                    pluginDescriptor.loadedModule = await import(
-                        `./impl/${pluginDescriptor.package}/${pluginDescriptor.module}.ts`
-                    );
-                } catch (error) {
-                    // To support local development, when the plugin project installs composaic as an npm package
-                    pluginDescriptor.loadedModule = await import(
-                        /* @vite-ignore */
-                        `/node_modules/composaic/lib/plugins/impl/${pluginDescriptor.package}/${pluginDescriptor.module}.js`
-                    );
-                }
-            } else {
-                // load remote module using module federation
-                // FIXME
-                // @ts-expect-error - we'll clear this up
-                pluginDescriptor.loadedModule =
-                    await this.loadRemotePluginModule(
-                        pluginDescriptor.remoteURL,
-                        pluginDescriptor.remoteName!,
-                        pluginDescriptor.bundleFile!,
-                        pluginDescriptor.remoteModuleName!
-                    );
-                if (!pluginDescriptor.loadedModule) {
-                    LoggingService.getInstance().error(
-                        `Failed to load remote plugin ${pluginDescriptor.plugin}`
-                    );
-                    return null;
+        if (deferred) {
+            console.log('Deferring loading of plugin', pluginName);
+        } else {
+            if (!pluginDescriptor.loadedModule) {
+                if (!pluginDescriptor.remoteURL) {
+                    // load local module
+                    try {
+                        // Production mode where we run the composaic project as the main web application
+                        pluginDescriptor.loadedModule = await import(
+                            `./impl/${pluginDescriptor.package}/${pluginDescriptor.module}.ts`
+                        );
+                    } catch (error) {
+                        // To support local development, when the plugin project installs composaic as an npm package
+                        pluginDescriptor.loadedModule = await import(
+                            /* @vite-ignore */
+                            `/node_modules/composaic/lib/plugins/impl/${pluginDescriptor.package}/${pluginDescriptor.module}.js`
+                        );
+                    }
+                } else {
+                    // load remote module using module federation
+                    // FIXME
+                    // @ts-expect-error - we'll clear this up
+                    pluginDescriptor.loadedModule =
+                        await this.loadRemotePluginModule(
+                            pluginDescriptor.remoteURL,
+                            pluginDescriptor.remoteName!,
+                            pluginDescriptor.bundleFile!,
+                            pluginDescriptor.remoteModuleName!
+                        );
+                    if (!pluginDescriptor.loadedModule) {
+                        LoggingService.getInstance().error(
+                            `Failed to load remote plugin ${pluginDescriptor.plugin}`
+                        );
+                        return null;
+                    }
                 }
             }
-        }
-        pluginDescriptor.loadedClass =
-            pluginDescriptor.loadedModule![
+            pluginDescriptor.loadedClass =
+                pluginDescriptor.loadedModule![
                 pluginDescriptor.class as keyof typeof pluginDescriptor.loadedModule
-            ];
+                ];
+        }
         if (pluginDescriptor.extensions) {
             for (const extension of pluginDescriptor.extensions) {
-                const ExtensionImpl = pluginDescriptor.loadedModule![
-                    extension.className as keyof typeof pluginDescriptor.loadedModule
-                ] as ClassConstructor;
-                extension.impl = new ExtensionImpl();
+                if (!deferred) {
+                    const ExtensionImpl = pluginDescriptor.loadedModule![
+                        extension.className as keyof typeof pluginDescriptor.loadedModule
+                    ] as ClassConstructor;
+                    extension.impl = new ExtensionImpl();
+                }
                 const targetPlugin =
                     extension.plugin === 'self'
                         ? pluginDescriptor
@@ -156,8 +165,10 @@ export class PluginManager {
                     ) {
                         extensionPoint!.impl!.push({
                             plugin: pluginDescriptor.plugin,
-                            extensionImpl: extension.impl!,
-                            meta: extension.meta,
+                            extensionImpl: {
+                                impl: extension.impl,
+                                meta: extension.meta,
+                            },
                         });
                     }
                 } else {
@@ -169,23 +180,31 @@ export class PluginManager {
                 }
             }
         }
-        const PluginClass = pluginDescriptor.loadedClass! as ClassConstructor;
-        const plugin = new PluginClass();
 
-        pluginDescriptor.extensionPoints?.forEach((extensionPoint) => {
-            plugin.connectExtensions(extensionPoint.id, extensionPoint.impl!);
-        });
+        let plugin: Plugin | null = null;
 
-        pluginDescriptor.extensions?.forEach((extension) => {
-            plugin.setExtensionImplementation(
-                extension.plugin,
-                extension.id,
-                extension.impl!
-            );
-        });
+        if (!deferred) {
+            const PluginClass =
+                pluginDescriptor.loadedClass! as ClassConstructor;
+            plugin = new PluginClass();
+            pluginDescriptor.extensionPoints?.forEach((extensionPoint) => {
+                plugin!.connectExtensions(
+                    extensionPoint.id,
+                    extensionPoint.impl!
+                );
+            });
 
-        plugin.init(pluginDescriptor);
-        pluginDescriptor.pluginInstance = plugin;
+            pluginDescriptor.extensions?.forEach((extension) => {
+                plugin!.setExtensionImplementation(
+                    extension.plugin,
+                    extension.id,
+                    extension.impl!
+                );
+            });
+
+            plugin!.init(pluginDescriptor);
+            pluginDescriptor.pluginInstance = plugin as Plugin;
+        }
 
         return plugin;
     }
@@ -205,6 +224,10 @@ export class PluginManager {
         }
         if (plugin.pluginDescriptor.dependencies) {
             for (const dependency of plugin.pluginDescriptor.dependencies) {
+                if ((dependency as PluginDescriptor).load === 'deferred') {
+                    console.log('Deferring starting of plugin with load=deferred', plugin.pluginDescriptor.plugin);
+                    continue;
+                }
                 const pluginToLoad = (dependency as PluginDescriptor).plugin;
                 if (pluginToLoad === dependingPlugin?.pluginDescriptor.plugin) {
                     continue;
