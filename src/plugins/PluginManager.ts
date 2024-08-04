@@ -134,7 +134,7 @@ export class PluginManager {
             }
             pluginDescriptor.loadedClass =
                 pluginDescriptor.loadedModule![
-                pluginDescriptor.class as keyof typeof pluginDescriptor.loadedModule
+                    pluginDescriptor.class as keyof typeof pluginDescriptor.loadedModule
                 ];
         }
         if (pluginDescriptor.extensions) {
@@ -225,7 +225,10 @@ export class PluginManager {
         if (plugin.pluginDescriptor.dependencies) {
             for (const dependency of plugin.pluginDescriptor.dependencies) {
                 if ((dependency as PluginDescriptor).load === 'deferred') {
-                    console.log('Deferring starting of plugin with load=deferred', plugin.pluginDescriptor.plugin);
+                    console.log(
+                        'Deferring starting of plugin with load=deferred',
+                        plugin.pluginDescriptor.plugin
+                    );
                     continue;
                 }
                 const pluginToLoad = (dependency as PluginDescriptor).plugin;
