@@ -32,8 +32,9 @@ export class LoggerPlugin extends Plugin {
             subSystemName: ComposaicSubSystemName,
         });
         this.getConnectedExtensions('logger').forEach((extension) => {
-            const loggerExtension =
-                extension.extensionImpl as LoggerExtensionPoint;
+            // @ts-expect-error need to fix this type
+            const loggerExtension = extension.extensionImpl
+                .impl as LoggerExtensionPoint;
             loggerExtension.setLogCallback(this.log.bind(this));
         });
     }
