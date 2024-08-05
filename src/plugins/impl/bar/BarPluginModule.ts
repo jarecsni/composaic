@@ -25,7 +25,9 @@ export class BarPlugin extends Plugin implements MyCoolExtensionType {
         if (extensions) {
             extensions.forEach((extension) => {
                 // @ts-expect-error fix this
-                (extension.extensionImpl.impl as MyCoolExtensionType).saySomethingCool();
+                (
+                    extension.extensionImpl.impl as MyCoolExtensionType
+                ).saySomethingCool();
             });
         }
     }
