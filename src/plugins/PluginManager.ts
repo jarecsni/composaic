@@ -165,10 +165,8 @@ export class PluginManager {
                     ) {
                         extensionPoint!.impl!.push({
                             plugin: pluginDescriptor.plugin,
-                            extensionImpl: {
-                                impl: extension.impl,
-                                meta: extension.meta,
-                            },
+                            extensionImpl: extension.impl,
+                            meta: extension.meta,
                         });
                     }
                 } else {

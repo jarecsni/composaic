@@ -77,7 +77,8 @@
     },
     "jest": {
         "modulePathIgnorePatterns": [
-            "/node_modules/"
+            "/node_modules/",
+            "/lib/"
         ]
     }
 }
