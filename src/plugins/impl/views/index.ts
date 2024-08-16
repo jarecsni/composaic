@@ -4,7 +4,7 @@ export type PluginViewDefinition = {
     container: string;
     components: string[];
     plugin: string;
-}
+};
 
 export type ViewDefinition = {
     container: string;
@@ -12,7 +12,7 @@ export type ViewDefinition = {
         component: string;
         plugin: string;
     }[];
-}
+};
 /**
  * Views extension point.
  */
@@ -37,30 +37,37 @@ export class ViewsPlugin extends Plugin {
         this.viewsDefinitons = this.consolidateViews(pluginViewsDefinitons);
     }
 
-    consolidateViews(pluginViewDefinitions: PluginViewDefinition[]): ViewDefinition[] {
+    consolidateViews(
+        pluginViewDefinitions: PluginViewDefinition[]
+    ): ViewDefinition[] {
         const viewDefinitions: ViewDefinition[] = [];
         pluginViewDefinitions.forEach((pluginViewDefinition) => {
-            const existingViewDefinition = viewDefinitions.find((viewDefinition) => viewDefinition.container === pluginViewDefinition.container);
+            const existingViewDefinition = viewDefinitions.find(
+                (viewDefinition) =>
+                    viewDefinition.container === pluginViewDefinition.container
+            );
             if (existingViewDefinition) {
                 pluginViewDefinition.components.forEach((component) => {
                     existingViewDefinition.components.push({
                         component: component,
-                        plugin: pluginViewDefinition.plugin
+                        plugin: pluginViewDefinition.plugin,
                     });
                 });
             } else {
                 viewDefinitions.push({
                     container: pluginViewDefinition.container,
-                    components: pluginViewDefinition.components.map((component) => {
-                        return {
-                            component: component,
-                            plugin: pluginViewDefinition.plugin
+                    components: pluginViewDefinition.components.map(
+                        (component) => {
+                            return {
+                                component: component,
+                                plugin: pluginViewDefinition.plugin,
+                            };
                         }
-                    })
+                    ),
                 });
             }
         });
-        return viewDefinitions
+        return viewDefinitions;
     }
 
     async stop() {
@@ -73,7 +80,7 @@ export class ViewsPlugin extends Plugin {
     }
 }
 
-// TODO: This is unnecessary as the information is provided by the manifest 
+// TODO: This is unnecessary as the information is provided by the manifest
 export class SimpleViewsExtension implements ViewExtensionPoint {
     getViewDefinitions(): ViewDefinition[] {
         return [];

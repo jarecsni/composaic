@@ -32,12 +32,16 @@ describe('ViewsPlugin', () => {
                 },
                 {
                     container: 'container2',
-                    components: [{ component: 'component3', plugin: 'plugin2' }],
+                    components: [
+                        { component: 'component3', plugin: 'plugin2' },
+                    ],
                 },
             ];
 
             const viewsPlugin = new ViewsPlugin();
-            const consolidatedViews = viewsPlugin.consolidateViews(pluginViewDefinitions);
+            const consolidatedViews = viewsPlugin.consolidateViews(
+                pluginViewDefinitions
+            );
 
             expect(consolidatedViews).toEqual(expectedViewDefinitions);
         });
