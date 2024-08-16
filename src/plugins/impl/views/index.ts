@@ -56,14 +56,10 @@ export class ViewsPlugin extends Plugin {
             } else {
                 viewDefinitions.push({
                     container: pluginViewDefinition.container,
-                    components: pluginViewDefinition.components.map(
-                        (component) => {
-                            return {
-                                component: component,
-                                plugin: pluginViewDefinition.plugin,
-                            };
-                        }
-                    ),
+                    components: pluginViewDefinition.components.map((component) => ({
+                        component,
+                        plugin: pluginViewDefinition.plugin,
+                    })),
                 });
             }
         });
