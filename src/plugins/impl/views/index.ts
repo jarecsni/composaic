@@ -85,8 +85,7 @@ export class ViewsPlugin extends Plugin {
      */
     public getViewDefinition(container: string): ViewDefinition | undefined {
         return this.viewsDefinitons.find(
-            (viewDefinition) =>
-                viewDefinition.container === container
+            (viewDefinition) => viewDefinition.container === container
         );
     }
 }
