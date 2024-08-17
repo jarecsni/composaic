@@ -10,7 +10,5 @@
         ],
         "@babel/preset-typescript"
     ],
-    "plugins": [
-        "@babel/plugin-transform-react-jsx"
-    ]
+    "plugins": ["@babel/plugin-transform-react-jsx"]
 }
