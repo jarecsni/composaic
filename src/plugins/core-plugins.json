@@ -64,5 +64,34 @@
                 ]
             }
         ]
+    },
+    {
+        "plugin": "@composaic/views",
+        "version": "0.1.0",
+        "description": "Views Plugin",
+        "module": "index",
+        "package": "views",
+        "class": "ViewsPlugin",
+        "extensionPoints": [
+            {
+                "id": "view",
+                "type": "ViewExtensionPoint"
+            }
+        ],
+        "extensions": [
+            {
+                "plugin": "self",
+                "id": "view",
+                "className": "SimpleViewsExtension",
+                "meta": [
+                    {
+                        "container": "sample.container",
+                        "components": [
+                            "SampleViewComponent"
+                        ]
+                    }
+                ]
+            }
+        ]
     }
 ]

@@ -1,5 +1,7 @@
 import { Plugin } from '../../types';
 
+export { SampleViewComponent } from './SampleViewComponent';
+
 export type PluginViewDefinition = {
     container: string;
     components: string[];
@@ -20,6 +22,9 @@ export interface ViewExtensionPoint {
     getViewDefinitions(): ViewDefinition[];
 }
 
+/**
+ * Represents a plugin that manages views in the application.
+ */
 export class ViewsPlugin extends Plugin {
     private viewsDefinitons: ViewDefinition[] = [];
 
@@ -73,8 +78,16 @@ export class ViewsPlugin extends Plugin {
         this.viewsDefinitons = [];
     }
 
-    public getViewDefinitions(): ViewDefinition[] {
-        return this.viewsDefinitons;
+    /**
+     * Retrieves the view definition for the specified container.
+     * @param container - The container name.
+     * @returns The view definition for the specified container, or undefined if not found.
+     */
+    public getViewDefinition(container: string): ViewDefinition | undefined {
+        return this.viewsDefinitons.find(
+            (viewDefinition) =>
+                viewDefinition.container === container
+        );
     }
 }
 
