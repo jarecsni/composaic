@@ -68,9 +68,7 @@
                             "meta": [
                                 {
                                     "container": "sample.container",
-                                    "components": [
-                                        "PluginTestComponent"
-                                    ]
+                                    "components": ["PluginTestComponent"]
                                 }
                             ]
                         }
