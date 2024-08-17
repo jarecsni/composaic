@@ -18,7 +18,7 @@ export type ViewDefinition = {
 /**
  * Views extension point.
  */
-export interface ViewExtensionPoint {
+export interface ViewsExtensionPoint {
     getViewDefinitions(): ViewDefinition[];
 }
 
@@ -91,7 +91,7 @@ export class ViewsPlugin extends Plugin {
 }
 
 // TODO: This is unnecessary as the information is provided by the manifest
-export class SimpleViewsExtension implements ViewExtensionPoint {
+export class SimpleViewsExtension implements ViewsExtensionPoint {
     getViewDefinitions(): ViewDefinition[] {
         return [];
     }

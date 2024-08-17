@@ -51,6 +51,30 @@
                             ]
                         }
                     ]
+                },
+                {
+                    "package": "views",
+                    "module": "ViewsExtension",
+                    "class": "ViewsExtensionPlugin",
+                    "plugin": "@composaic-tests/navbar",
+                    "load": "deferred",
+                    "version": "1.0",
+                    "description": "Extension for the @composaic/views plugin",
+                    "extensions": [
+                        {
+                            "plugin": "@composaic/view",
+                            "id": "views",
+                            "className": "ViewsExtension",
+                            "meta": [
+                                {
+                                    "container": "sample.container",
+                                    "components": [
+                                        "PluginTestComponent"
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
                 }
             ]
         }

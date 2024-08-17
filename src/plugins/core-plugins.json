@@ -74,19 +74,21 @@
         "class": "ViewsPlugin",
         "extensionPoints": [
             {
-                "id": "view",
-                "type": "ViewExtensionPoint"
+                "id": "views",
+                "type": "ViewsExtensionPoint"
             }
         ],
         "extensions": [
             {
                 "plugin": "self",
-                "id": "view",
+                "id": "views",
                 "className": "SimpleViewsExtension",
                 "meta": [
                     {
                         "container": "sample.container",
-                        "components": ["SampleViewComponent"]
+                        "components": [
+                            "SampleViewComponent"
+                        ]
                     }
                 ]
             }
