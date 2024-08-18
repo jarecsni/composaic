@@ -1,5 +1,5 @@
-import { LoggingService } from '../services/LoggingService';
 import { ClassConstructor, Plugin, PluginDescriptor } from './types';
+import { PluginRegistry } from './PluginRegistry';
 
 /**
  * The `PluginManager` class is responsible for managing plugins in the application.
@@ -16,10 +16,11 @@ import { ClassConstructor, Plugin, PluginDescriptor } from './types';
 export class PluginManager {
     protected static instance: PluginManager;
 
-    protected static registry: { [key: string]: PluginDescriptor } = {};
+    private pluginRegistry: PluginRegistry;
 
     protected constructor() {
         // Initialization code here
+        this.pluginRegistry = PluginRegistry.getInstance();
     }
 
     public static getInstance(): PluginManager {
@@ -35,7 +36,7 @@ export class PluginManager {
      */
     addPluginDefinitions(plugins: PluginDescriptor[]) {
         plugins.forEach((plugin) => {
-            if (!PluginManager.registry[plugin.plugin]) {
+            if (!this.pluginRegistry.get(plugin.plugin)) {
                 this.addPlugin(plugin);
             } else {
                 console.log(
@@ -55,13 +56,13 @@ export class PluginManager {
             if (extension.plugin !== 'self') {
                 // Add this plugin as a dependency to the plugin offering the extension point
                 const targetPluginDescriptor =
-                    PluginManager.registry[extension.plugin];
+                    this.pluginRegistry.get(extension.plugin);
                 targetPluginDescriptor.dependencies!.push(pluginDescriptor);
                 // Also add the plugin offering the extension point as a dependency to this plugin
                 pluginDescriptor.dependencies!.push(targetPluginDescriptor);
             }
         });
-        PluginManager.registry[pluginDescriptor.plugin] = pluginDescriptor;
+        this.pluginRegistry.add(pluginDescriptor.plugin, pluginDescriptor);
     }
 
     /**
@@ -74,7 +75,7 @@ export class PluginManager {
         dependingPlugin?: string
     ): Promise<Plugin | null> {
         const pluginDescriptor: PluginDescriptor =
-            PluginManager.registry[pluginName];
+            this.pluginRegistry.get(pluginName);
         const deferred =
             pluginDescriptor.load === 'deferred' && !!dependingPlugin;
         if (!pluginDescriptor) {
@@ -125,8 +126,8 @@ export class PluginManager {
                             pluginDescriptor.remoteModuleName!
                         );
                     if (!pluginDescriptor.loadedModule) {
-                        LoggingService.getInstance().error(
-                            `Failed to load remote plugin ${pluginDescriptor.plugin}`
+                        console.error(
+                            `[composaic] Failed to load remote plugin ${pluginDescriptor.plugin}`
                         );
                         return null;
                     }
@@ -134,7 +135,7 @@ export class PluginManager {
             }
             pluginDescriptor.loadedClass =
                 pluginDescriptor.loadedModule![
-                    pluginDescriptor.class as keyof typeof pluginDescriptor.loadedModule
+                pluginDescriptor.class as keyof typeof pluginDescriptor.loadedModule
                 ];
         }
         if (pluginDescriptor.extensions) {
@@ -148,10 +149,10 @@ export class PluginManager {
                 const targetPlugin =
                     extension.plugin === 'self'
                         ? pluginDescriptor
-                        : PluginManager.registry[extension.plugin];
+                        : this.pluginRegistry.get(extension.plugin);
                 // look up the extension point in the targetPlugin matching the extension.id
                 const extensionPoint = targetPlugin.extensionPoints!.find(
-                    (ep) => ep.id === extension.id
+                    (ep: any) => ep.id === extension.id
                 );
                 // add the extension.impl into the targetPlugins's extensionPoint.impl array initialising it if necessary
                 if (extensionPoint) {
@@ -160,7 +161,7 @@ export class PluginManager {
                     }
                     if (
                         !extensionPoint!.impl!.find(
-                            (e) => e.plugin === pluginDescriptor.plugin
+                            (e: any) => e.plugin === pluginDescriptor.plugin
                         )
                     ) {
                         extensionPoint!.impl!.push({
@@ -249,7 +250,7 @@ export class PluginManager {
      * @returns the plugin instance. If the plugin is not loaded, it will be loaded.
      */
     async getPlugin(pluginName: string): Promise<Plugin> {
-        const pluginDescriptor = PluginManager.registry[pluginName];
+        const pluginDescriptor = this.pluginRegistry.get(pluginName);
         if (!pluginDescriptor) {
             throw new Error(`Plugin with ID ${pluginName} not found`);
         }
@@ -261,11 +262,11 @@ export class PluginManager {
     }
 
     clear() {
-        PluginManager.registry = {};
+        this.pluginRegistry.clear();
     }
 
     public getNumberOfPlugins() {
-        return Object.keys(PluginManager.registry).length;
+        return this.pluginRegistry.getNumberOfPlugins();
     }
 
     /**
@@ -274,6 +275,6 @@ export class PluginManager {
      * @returns An array of plugin IDs.
      */
     public getPluginIds() {
-        return Object.keys(PluginManager.registry);
+        return this.pluginRegistry.getPluginIds();
     }
 }

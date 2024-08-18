@@ -1,7 +1,6 @@
 import { convertManifestToPluginDescriptor } from '../dev/plugin-utils';
 import { PluginManager } from '../plugins/PluginManager';
 import { PluginDescriptor } from '../plugins/types';
-import { LoggingService } from './LoggingService';
 
 export class RemotePluginLoader {
     private static instance: RemotePluginLoader;
@@ -23,13 +22,13 @@ export class RemotePluginLoader {
                 remotes.map(async (remote) => {
                     const manifestRaw = await fetch(remote + '/manifest.json');
                     const manifest = await manifestRaw.json();
-                    LoggingService.getInstance().info(
-                        `Loaded manifest from ${remote}: ${JSON.stringify(manifest)}`
+                    console.log(
+                        `[composaic] Loaded manifest from ${remote}: ${JSON.stringify(manifest)}`
                     );
                     const pluginDescriptor: PluginDescriptor[] =
                         convertManifestToPluginDescriptor(manifest, remote);
-                    LoggingService.getInstance().info(
-                        `Converted manifest to plugin descriptor: ${JSON.stringify(pluginDescriptor)}`
+                    console.log(
+                        `[composaic] Converted manifest to plugin descriptor: ${JSON.stringify(pluginDescriptor)}`
                     );
                     PluginManager.getInstance().addPluginDefinitions(
                         pluginDescriptor
@@ -37,10 +36,10 @@ export class RemotePluginLoader {
                 })
             );
         } catch (error) {
-            console.error('Error loading manifest:', (error as any).message);
+            console.error('[composaic] Error loading manifest:', (error as any).message);
         } finally {
-            LoggingService.getInstance().info(
-                `Done loading manifests from ${remotes.length} remotes.`
+            console.log(
+                `[composaic] Done loading manifests from ${remotes.length} remotes.`
             );
         }
     }

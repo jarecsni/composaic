@@ -14,17 +14,18 @@ import ErrorBoundary from './ErrorBoundary';
 
 // // Add core plugins
 RemotePluginManager.getInstance().addPluginDefinitions(corePlugins);
-// // Create and initialize services
-await createServices();
-
-LoggingService.getInstance().info('App started, loading remote manifests...');
-LoggingService.getInstance().info(
-    `Configuration: ${JSON.stringify(ConfigurationService.getInstance().getConfiguration())}`
-);
 
 await RemotePluginLoader.getInstance().loadManifests(
     ConfigurationService.getInstance().getConfiguration().remotes
 );
+
+// Create and initialize services
+await createServices();
+
+LoggingService.getInstance().info(
+    `Configuration: ${JSON.stringify(ConfigurationService.getInstance().getConfiguration())}`
+);
+
 LoggingService.getInstance().info(
     `Initialisation done, ${RemotePluginManager.getInstance().getNumberOfPlugins()} plugins in total`
 );

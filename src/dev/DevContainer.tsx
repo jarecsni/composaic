@@ -14,10 +14,13 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Navbar } from '../core/menu/Navbar';
 import ErrorBoundary from '../core/ErrorBoundary';
 
-const initCore = async () => {
+const resetCore = () => {
     PluginManager.getInstance().clear();
     // // Add core plugins
     PluginManager.getInstance().addPluginDefinitions(corePlugins);
+}
+
+const initCore = async () => {
     // // Create and initialize services
     await createServices();
 
@@ -52,12 +55,16 @@ const processManifest = async (
 ) => {
     const pluginDescriptors = convertManifestToPluginDescriptor(manifest);
     for (const pluginDescriptor of pluginDescriptors) {
-        // FIXME
-        // @ts-expect-error - we'll clear this up
-        pluginDescriptor.loadedModule = await loadModule(
-            pluginDescriptor.module,
-            pluginDescriptor.package
-        );
+        try {
+            // FIXME
+            // @ts-expect-error - we'll clear this up
+            pluginDescriptor.loadedModule = await loadModule(
+                pluginDescriptor.module,
+                pluginDescriptor.package
+            );
+        } catch (error) {
+            console.error('Error loading module:', error);
+        }
     }
     PluginManager.getInstance().addPluginDefinitions(pluginDescriptors);
 };
@@ -112,10 +119,11 @@ export const DevContainer: FC<DevContainerProps> = ({ loadModule }) => {
     useEffect(() => {
         if (!menuItemsLoaded.current) {
             menuItemsLoaded.current = true;
-            initCore().then(() => {
-                fetch('/manifest.json').then((response) => {
-                    response.json().then(async (json) => {
-                        await processManifest(json, loadModule);
+            resetCore();
+            fetch('/manifest.json').then((response) => {
+                response.json().then(async (json) => {
+                    await processManifest(json, loadModule);
+                    initCore().then(async () => {
                         const plugin =
                             await PluginManager.getInstance().getPlugin(
                                 '@composaic/navbar'
@@ -139,11 +147,13 @@ export const DevContainer: FC<DevContainerProps> = ({ loadModule }) => {
                             'Hello, world from SimpleLoggerPlugin!'
                         );
                     });
+
                 });
-                isInitialized.current = true;
             });
         }
+        isInitialized.current = true;
     }, []);
+
     return (
         <BrowserRouter>
             <div>
