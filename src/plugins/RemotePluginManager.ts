@@ -4,7 +4,6 @@ import {
     // @ts-expect-error: this is a private API
 } from '__federation__';
 import { PluginManager } from './PluginManager';
-import { LoggingService } from '../services/LoggingService';
 
 export class RemotePluginManager extends PluginManager {
     protected static instance: RemotePluginManager;
@@ -34,8 +33,8 @@ export class RemotePluginManager extends PluginManager {
         try {
             return await __federation_method_getRemote(name, moduleName);
         } catch (error) {
-            LoggingService.getInstance().error(
-                `Error fetching remote plugin module ${moduleName}, url=${url}, name=${name} : ${error}`
+            console.error(
+                `[composaic] Error fetching remote plugin module ${moduleName}, url=${url}, name=${name} : ${error}`
             );
             return undefined;
         }

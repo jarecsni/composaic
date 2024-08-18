@@ -42,8 +42,16 @@ export default defineConfig({
     preview: {
         port: 9000,
     },
+    resolve: {
+        alias: {
+            '__federation__': resolve(__dirname, './src/_federation-mock.ts'),
+        },
+    },
     build: {
         target: 'esnext',
+        rollupOptions: {
+            external: ['__federation__']
+        }
     },
     optimizeDeps: {
         esbuildOptions: {
