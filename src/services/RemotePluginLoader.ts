@@ -36,7 +36,10 @@ export class RemotePluginLoader {
                 })
             );
         } catch (error) {
-            console.error('[composaic] Error loading manifest:', (error as any).message);
+            console.error(
+                '[composaic] Error loading manifest:',
+                (error as any).message
+            );
         } finally {
             console.log(
                 `[composaic] Done loading manifests from ${remotes.length} remotes.`

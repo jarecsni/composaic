@@ -55,8 +55,9 @@ export class PluginManager {
         pluginDescriptor.extensions?.forEach((extension) => {
             if (extension.plugin !== 'self') {
                 // Add this plugin as a dependency to the plugin offering the extension point
-                const targetPluginDescriptor =
-                    this.pluginRegistry.get(extension.plugin);
+                const targetPluginDescriptor = this.pluginRegistry.get(
+                    extension.plugin
+                );
                 targetPluginDescriptor.dependencies!.push(pluginDescriptor);
                 // Also add the plugin offering the extension point as a dependency to this plugin
                 pluginDescriptor.dependencies!.push(targetPluginDescriptor);
@@ -135,7 +136,7 @@ export class PluginManager {
             }
             pluginDescriptor.loadedClass =
                 pluginDescriptor.loadedModule![
-                pluginDescriptor.class as keyof typeof pluginDescriptor.loadedModule
+                    pluginDescriptor.class as keyof typeof pluginDescriptor.loadedModule
                 ];
         }
         if (pluginDescriptor.extensions) {

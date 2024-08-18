@@ -18,7 +18,7 @@ const resetCore = () => {
     PluginManager.getInstance().clear();
     // // Add core plugins
     PluginManager.getInstance().addPluginDefinitions(corePlugins);
-}
+};
 
 const initCore = async () => {
     // // Create and initialize services
@@ -147,7 +147,6 @@ export const DevContainer: FC<DevContainerProps> = ({ loadModule }) => {
                             'Hello, world from SimpleLoggerPlugin!'
                         );
                     });
-
                 });
             });
         }

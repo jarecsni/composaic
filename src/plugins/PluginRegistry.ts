@@ -13,11 +13,13 @@ export class PluginRegistry {
         return PluginRegistry.instance;
     }
 
-    public add(pluginName: string, plugin: any): void { // Adjust the type as needed
+    public add(pluginName: string, plugin: any): void {
+        // Adjust the type as needed
         this.registry[pluginName] = plugin;
     }
 
-    public get(pluginName: string): any { // Adjust the type as needed
+    public get(pluginName: string): any {
+        // Adjust the type as needed
         return this.registry[pluginName];
     }
 
