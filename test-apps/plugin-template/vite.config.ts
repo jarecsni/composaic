@@ -44,14 +44,14 @@ export default defineConfig({
     },
     resolve: {
         alias: {
-            '__federation__': resolve(__dirname, './src/_federation-mock.ts'),
+            __federation__: resolve(__dirname, './src/_federation-mock.ts'),
         },
     },
     build: {
         target: 'esnext',
         rollupOptions: {
-            external: ['__federation__']
-        }
+            external: ['__federation__'],
+        },
     },
     optimizeDeps: {
         esbuildOptions: {
