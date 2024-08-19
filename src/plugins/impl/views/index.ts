@@ -83,7 +83,7 @@ export class ViewsPlugin extends Plugin {
      * @param container - The container name.
      * @returns The view definition for the specified container, or undefined if not found.
      */
-    public getViewDefinition(container: string): ViewDefinition | undefined {
+    public getViewsByContainer(container: string): ViewDefinition | undefined {
         return this.viewsDefinitons.find(
             (viewDefinition) => viewDefinition.container === container
         );
