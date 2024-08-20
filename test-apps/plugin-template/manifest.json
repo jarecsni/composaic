@@ -64,7 +64,7 @@
                         {
                             "plugin": "@composaic/views",
                             "id": "views",
-                            "className": "ViewsExtension",
+                            "className": "SimpleViewsExtension",
                             "meta": [
                                 {
                                     "container": "sample.container",
