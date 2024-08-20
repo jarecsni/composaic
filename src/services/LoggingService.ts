@@ -1,4 +1,4 @@
-import { PluginManager } from '../plugins/PluginManager';
+import { RemotePluginManager } from '../plugins/RemotePluginManager';
 import {
     ComposaicSubSystemName,
     LogLevel,
@@ -14,7 +14,7 @@ export class LoggingService {
     }
 
     private async initLoggerPlugin(): Promise<void> {
-        this.loggerPlugin = (await PluginManager.getInstance().getPlugin(
+        this.loggerPlugin = (await RemotePluginManager.getInstance().getPlugin(
             '@composaic/logger'
         )) as LoggerPlugin;
         this.loggerPlugin.log({

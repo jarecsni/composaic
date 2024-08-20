@@ -131,12 +131,16 @@ export class PluginManager {
                             `[composaic] Failed to load remote plugin ${pluginDescriptor.plugin}`
                         );
                         return null;
+                    } else {
+                        console.log(
+                            `[composaic] Loaded remote plugin ${pluginDescriptor.plugin}`
+                        );
                     }
                 }
             }
             pluginDescriptor.loadedClass =
                 pluginDescriptor.loadedModule![
-                    pluginDescriptor.class as keyof typeof pluginDescriptor.loadedModule
+                pluginDescriptor.class as keyof typeof pluginDescriptor.loadedModule
                 ];
         }
         if (pluginDescriptor.extensions) {
