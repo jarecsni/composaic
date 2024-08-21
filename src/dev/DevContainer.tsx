@@ -6,13 +6,15 @@ import { LoggingService } from '../services/LoggingService';
 import { RemotePluginLoader } from '../services/RemotePluginLoader';
 import { ConfigurationService } from '../services/configuration';
 import { createServices } from '../services/ServiceManager';
-import corePlugins from '../plugins/core-plugins.json';
 import PluginComponentPage from '../core/menu/PluginComponentPage';
 import { menuItems, MenuItem } from '../core/menu/menuModel'; // Import the MenuItemModel and menuItems
 import { NavbarItem, NavbarPlugin } from '../plugins/impl/navbar';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Navbar } from '../core/menu/Navbar';
 import ErrorBoundary from '../core/ErrorBoundary';
+import { loadPluginDefinitions } from '../plugins/manifest-util';
+
+const corePlugins = await loadPluginDefinitions();
 
 const resetCore = () => {
     PluginManager.getInstance().clear();

@@ -2,15 +2,16 @@ import React, { Suspense, useEffect, useRef, useState } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Navbar } from './menu/Navbar';
 import { menuItems, MenuItem } from './menu/menuModel'; // Import the MenuItemModel and menuItems
-import { PluginManager } from '../plugins/PluginManager';
 import { LoggingService } from '../services/LoggingService';
 import { createServices } from '../services/ServiceManager';
 import { RemotePluginLoader } from '../services/RemotePluginLoader';
 import { RemotePluginManager } from '../plugins/RemotePluginManager';
 import { ConfigurationService } from '../services/configuration';
-import corePlugins from '../plugins/core-plugins.json';
 import { NavbarItem, NavbarPlugin } from '../plugins/impl/navbar';
 import ErrorBoundary from './ErrorBoundary';
+import { loadPluginDefinitions } from '../plugins/manifest-util';
+
+const corePlugins = await loadPluginDefinitions();
 
 // // Add core plugins
 RemotePluginManager.getInstance().addPluginDefinitions(corePlugins);
