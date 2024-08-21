@@ -6,9 +6,7 @@
         "skipLibCheck": true,
         "baseUrl": ".",
         "paths": {
-            "@composaic": [
-                "../../src"
-            ]
+            "@composaic": ["../../src"]
         },
         /* Bundler mode */
         "moduleResolution": "bundler",
@@ -23,9 +21,7 @@
         "noUnusedParameters": true,
         "noFallthroughCasesInSwitch": true
     },
-    "include": [
-        "src"
-    ],
+    "include": ["src"],
     "references": [
         {
             "path": "./tsconfig.node.json"
