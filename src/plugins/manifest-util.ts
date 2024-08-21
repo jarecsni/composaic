@@ -7,7 +7,9 @@ export async function loadPluginDefinitions() {
         try {
             // Dynamically import each plugin JSON file based on its path in core-plugins.json
             const pathElements = pluginPath.split('/');
-            const plugin = await import(`./impl/${pathElements[0]}/${pathElements[1]}.json`);
+            const plugin = await import(
+                `./impl/${pathElements[0]}/${pathElements[1]}.json`
+            );
             // Assuming each plugin JSON file contains an "id" field at the top level
             plugins.push(plugin.default);
         } catch (error) {

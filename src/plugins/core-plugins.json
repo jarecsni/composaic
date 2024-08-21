@@ -1,5 +1,1 @@
-[
-    "logger/logger-plugin",
-    "navbar/navbar-plugin",
-    "views/views-plugin"
-]
+["logger/logger-plugin", "navbar/navbar-plugin", "views/views-plugin"]
