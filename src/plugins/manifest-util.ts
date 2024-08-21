@@ -1,4 +1,4 @@
-import corePlugins from './core-plugins.json' assert { type: 'json' };
+import corePlugins from './core-plugins.json' with { type: 'json' };
 
 export async function loadPluginDefinitions() {
     const plugins = [];
