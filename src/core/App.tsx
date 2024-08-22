@@ -3,50 +3,25 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Navbar } from './menu/Navbar';
 import { menuItems, MenuItem } from './menu/menuModel'; // Import the MenuItemModel and menuItems
 import { LoggingService } from '../services/LoggingService';
-import { createServices } from '../services/ServiceManager';
-import { RemotePluginLoader } from '../services/RemotePluginLoader';
 import { RemotePluginManager } from '../plugins/RemotePluginManager';
-import { ConfigurationService } from '../services/configuration';
 import { NavbarItem, NavbarPlugin } from '../plugins/impl/navbar';
 import ErrorBoundary from './ErrorBoundary';
-import { loadPluginDefinitions } from '../plugins/manifest-util';
+import { initPlugins } from './init';
 
-const corePlugins = await loadPluginDefinitions();
+// Initalise Plugin Framework
+await initPlugins();
 
-// // Add core plugins
-RemotePluginManager.getInstance().addPluginDefinitions(corePlugins);
-
-await RemotePluginLoader.getInstance().loadManifests(
-    ConfigurationService.getInstance().getConfiguration().remotes
-);
-
-// Create and initialize services
-await createServices();
-
-LoggingService.getInstance().info(
-    `Configuration: ${JSON.stringify(ConfigurationService.getInstance().getConfiguration())}`
-);
-
-LoggingService.getInstance().info(
-    `Initialisation done, ${RemotePluginManager.getInstance().getNumberOfPlugins()} plugins in total`
-);
-LoggingService.getInstance().info(
-    `Plugins: ${RemotePluginManager.getInstance()
-        .getPluginIds()
-        .map((plugin) => plugin)
-        .join(', ')}`
-);
-
-try {
-    const simpleLoggerPlugin =
-        await RemotePluginManager.getInstance().getPlugin(
-            '@composaic-tests/simple-logger'
-        );
-    // @ts-expect-error
-    simpleLoggerPlugin.log('Hello, world from SimpleLoggerPlugin!');
-} catch (error) {
-    LoggingService.getInstance().error(`Error occurred: ${error}`);
-}
+// Example to access a plugin
+// try {
+//     const simpleLoggerPlugin =
+//         await RemotePluginManager.getInstance().getPlugin(
+//             '@composaic-tests/simple-logger'
+//         );
+//     // @ts-expect-error
+//     simpleLoggerPlugin.log('Hello, world from SimpleLoggerPlugin!');
+// } catch (error) {
+//     LoggingService.getInstance().error(`Error occurred: ${error}`);
+// }
 
 const transformNavBarItemsToMenuItems = (
     navBarItems: NavbarItem[],
