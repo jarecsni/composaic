@@ -1,12 +1,12 @@
-import React, { Suspense, useEffect, useRef, useState } from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import React, { useEffect, useRef, useState } from 'react';
+import { BrowserRouter, Routes } from 'react-router-dom';
 import { Navbar } from './menu/Navbar';
-import { menuItems, MenuItem } from './menu/menuModel'; // Import the MenuItemModel and menuItems
-import { LoggingService } from '../services/LoggingService';
+import { menuItems } from './menu/menuModel'; // Import the MenuItemModel and menuItems
 import { RemotePluginManager } from '../plugins/RemotePluginManager';
-import { NavbarItem, NavbarPlugin } from '../plugins/impl/navbar';
+import { NavbarPlugin } from '../plugins/impl/navbar';
 import ErrorBoundary from './ErrorBoundary';
 import { initPlugins } from './init';
+import { generateRoutes, transformNavBarItemsToMenuItems } from './menu/menu-utils';
 
 // Initalise Plugin Framework
 await initPlugins();
@@ -22,55 +22,6 @@ await initPlugins();
 // } catch (error) {
 //     LoggingService.getInstance().error(`Error occurred: ${error}`);
 // }
-
-const transformNavBarItemsToMenuItems = (
-    navBarItems: NavbarItem[],
-    plugin?: string
-): MenuItem[] => {
-    return navBarItems.map((item: NavbarItem): MenuItem => {
-        // Base transformation for items without children
-        const componentPath = 'PluginComponentPage';
-        const LazyComponent = React.lazy(
-            () => import(`./menu/${componentPath}.tsx`)
-        );
-        // Create a wrapper component to pass props to the lazy-loaded component
-        const ComponentWithProps = () => (
-            <Suspense fallback={<div>Loading...</div>}>
-                <LazyComponent
-                    component={item.component}
-                    plugin={plugin || item.plugin}
-                />
-            </Suspense>
-        );
-
-        const menuItem: MenuItem = {
-            id: item.id,
-            label: item.label,
-            path: item.path,
-            component: item.component ? ComponentWithProps : undefined,
-            children: item.children
-                ? transformNavBarItemsToMenuItems(item.children, item.plugin)
-                : undefined,
-        };
-        return menuItem;
-    });
-};
-
-// Update the generateRoutes function to use the MenuItemModel type
-const generateRoutes = (items: MenuItem[]): JSX.Element[] => {
-    return items
-        .flatMap((item, index) => [
-            item.component ? (
-                <Route
-                    key={index}
-                    path={item.path}
-                    element={<item.component />} //React.createElement(item.component)}
-                />
-            ) : null,
-            item.children ? generateRoutes(item.children) : null,
-        ])
-        .filter(Boolean) as JSX.Element[];
-};
 
 export const App: React.FC = () => {
     const [routes, setRoutes] = useState<JSX.Element[]>([]);
