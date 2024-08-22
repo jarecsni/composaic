@@ -9,9 +9,7 @@ export const transformNavBarItemsToMenuItems = (
 ): MenuItem[] => {
     return navBarItems.map((item: NavbarItem): MenuItem => {
         // Base transformation for items without children
-        const LazyComponent = React.lazy(
-            () => import(`./PluginComponentPage`)
-        );
+        const LazyComponent = React.lazy(() => import(`./PluginComponentPage`));
         // Create a wrapper component to pass props to the lazy-loaded component
         const ComponentWithProps = () => (
             <Suspense fallback={<div>Loading...</div>}>

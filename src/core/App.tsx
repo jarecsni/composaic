@@ -6,7 +6,10 @@ import { RemotePluginManager } from '../plugins/RemotePluginManager';
 import { NavbarPlugin } from '../plugins/impl/navbar';
 import ErrorBoundary from './ErrorBoundary';
 import { initPlugins } from './init';
-import { generateRoutes, transformNavBarItemsToMenuItems } from './menu/menu-utils';
+import {
+    generateRoutes,
+    transformNavBarItemsToMenuItems,
+} from './menu/menu-utils';
 
 // Initalise Plugin Framework
 await initPlugins();
