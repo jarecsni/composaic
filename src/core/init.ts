@@ -31,5 +31,4 @@ export const initPlugins = async () => {
             .map((plugin) => plugin)
             .join(', ')}`
     );
-
-}
+};
