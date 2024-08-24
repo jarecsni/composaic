@@ -52,10 +52,9 @@ export const generateRoutes = (items: MenuItem[]): JSX.Element[] => {
 };
 
 export const getRoutes = async () => {
-    const navBarPlugin = await RemotePluginManager.getInstance().getPlugin('@composaic/navbar');
-    const navbarItems = (
-        navBarPlugin as NavbarPlugin
-    ).getNavbarItems();
+    const navBarPlugin =
+        await RemotePluginManager.getInstance().getPlugin('@composaic/navbar');
+    const navbarItems = (navBarPlugin as NavbarPlugin).getNavbarItems();
     const items = transformNavBarItemsToMenuItems(navbarItems);
     for (const item of items) {
         menuItems.push(item);
