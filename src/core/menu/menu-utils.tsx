@@ -1,7 +1,9 @@
 import React, { Suspense } from 'react';
-import { NavbarItem } from '../../plugins/impl/navbar';
+import { NavbarItem, NavbarPlugin } from '../../plugins/impl/navbar';
 import { MenuItem } from './menuModel'; // Import the MenuItemModel and menuItems
 import { Route } from 'react-router-dom';
+import { RemotePluginManager } from '../../plugins/RemotePluginManager';
+import { menuItems } from './menuModel'; // Import the MenuItemModel and menuItems
 
 export const transformNavBarItemsToMenuItems = (
     navBarItems: NavbarItem[],
@@ -47,4 +49,16 @@ export const generateRoutes = (items: MenuItem[]): JSX.Element[] => {
             item.children ? generateRoutes(item.children) : null,
         ])
         .filter(Boolean) as JSX.Element[];
+};
+
+export const getRoutes = async () => {
+    const navBarPlugin = await RemotePluginManager.getInstance().getPlugin('@composaic/navbar');
+    const navbarItems = (
+        navBarPlugin as NavbarPlugin
+    ).getNavbarItems();
+    const items = transformNavBarItemsToMenuItems(navbarItems);
+    for (const item of items) {
+        menuItems.push(item);
+    }
+    return generateRoutes(menuItems);
 };
