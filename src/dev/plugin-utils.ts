@@ -1,4 +1,4 @@
-import { RemotePluginManager } from '../plugins/RemotePluginManager';
+import { PluginManager } from '../plugins/PluginManager';
 import { PluginDescriptor, PluginManifest } from '../plugins/types';
 
 /**
@@ -73,7 +73,7 @@ export const processManifest = async (
             console.error('Error loading module:', error);
         }
     }
-    RemotePluginManager.getInstance().addPluginDefinitions(pluginDescriptors);
+    PluginManager.getInstance().addPluginDefinitions(pluginDescriptors);
 };
 
 export const addLocalPlugins = async (loadModule: LoadModuleFunction) => {
