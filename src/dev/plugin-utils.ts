@@ -1,3 +1,4 @@
+import { RemotePluginManager } from '../plugins/RemotePluginManager';
 import { PluginDescriptor, PluginManifest } from '../plugins/types';
 
 /**
@@ -48,4 +49,35 @@ export const convertManifestToPluginDescriptor = (
             return result;
         });
     });
+};
+
+export type LoadModuleFunction = (
+    module: string,
+    pkg: string
+) => Promise<object>;
+
+export const processManifest = async (
+    manifest: PluginManifest,
+    loadModule: LoadModuleFunction
+) => {
+    const pluginDescriptors = convertManifestToPluginDescriptor(manifest);
+    for (const pluginDescriptor of pluginDescriptors) {
+        try {
+            // FIXME
+            // @ts-expect-error - we'll clear this up
+            pluginDescriptor.loadedModule = await loadModule(
+                pluginDescriptor.module,
+                pluginDescriptor.package
+            );
+        } catch (error) {
+            console.error('Error loading module:', error);
+        }
+    }
+    RemotePluginManager.getInstance().addPluginDefinitions(pluginDescriptors);
+};
+
+export const addLocalPlugins = async (loadModule: LoadModuleFunction) => {
+    const response = await fetch('/manifest.json');
+    const json = await response.json();
+    await processManifest(json, loadModule);
 };

@@ -5,11 +5,13 @@ import { ConfigurationService } from '../services/configuration';
 import { RemotePluginManager } from '../plugins/RemotePluginManager';
 import { LoggingService } from '../services/LoggingService';
 
-export const initPlugins = async () => {
+export const initPlugins = async (addLocalPluginsFn?: () => void) => {
     const corePlugins = await loadPluginDefinitions();
 
     // // Add core plugins
     RemotePluginManager.getInstance().addPluginDefinitions(corePlugins);
+
+    await addLocalPluginsFn?.();
 
     await RemotePluginLoader.getInstance().loadManifests(
         ConfigurationService.getInstance().getConfiguration().remotes

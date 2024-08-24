@@ -8,7 +8,7 @@ const loadModule = async (moduleName: string, pkg: string) => {
 };
 
 function App() {
-    return <DevContainer loadModule={loadModule}></DevContainer>;
+    return <DevContainer loadModuleFn={loadModule}></DevContainer>;
 }
 
 export default App;
