@@ -20,9 +20,11 @@ export default defineConfig({
             exposes: {
                 './SimpleLogger': './src/plugins/simplelogger/SimpleLogger.ts',
                 './NavbarExtension': './src/plugins/navbar/NavbarExtension.ts',
+                './ViewsExtension': './src/plugins/views/ViewsExtension.ts',
             },
             shared: ['react'],
         }),
+        // @ts-expect-error - vite-plugin-alias problem with types
         alias({
             entries: [
                 {

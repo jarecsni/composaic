@@ -20,7 +20,7 @@ const PluginComponentPage: React.FC<PluginComponentPageProps> = ({
             .getPlugin(plugin)
             .then((plugin) => {
                 const loadedComponent = plugin.getModule(component);
-                // @ts-ignore
+                // @ts-expect-error - FIXME: This is a hack
                 setPluginComponent(() => loadedComponent);
             });
     }, [plugin, component]);

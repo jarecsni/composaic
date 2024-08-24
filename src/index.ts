@@ -1,3 +1,5 @@
-export { DevContainer } from './dev/DevContainer';
+// IMPORTANT DO NOT ADD DevContainer IMPORTS HERE!
+// Nothing should be exposed here which eventually hits vite's __federation__ module
+
 export { Plugin } from './plugins/types';
 export { LoggerExtensionPoint, LogMessage } from './plugins/impl/logger';
