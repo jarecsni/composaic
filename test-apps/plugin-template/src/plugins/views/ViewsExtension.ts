@@ -3,6 +3,6 @@ import { Plugin } from 'composaic';
 import { ViewsExtensionPoint } from '@composaic/plugins/views';
 export { PluginTestComponent } from './PluginTestComponent';
 
-export class ViewsExtensionPlugin extends Plugin { }
+export class ViewsExtensionPlugin extends Plugin {}
 
-export class SimpleViewsExtension implements ViewsExtensionPoint { }
+export class SimpleViewsExtension implements ViewsExtensionPoint {}
