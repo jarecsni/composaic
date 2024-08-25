@@ -35,16 +35,9 @@ export const Example1Page: React.FC = () => {
                         }
                     );
 
-                    Promise.all(componentPromises)
-                        .then((loadedComponents) => {
-                            // @ts-expect-error - FIXME: This is a hack
-                            setPluginComponents(
-                                loadedComponents.filter((c) => c)
-                            ); // Filter out any undefined components
-                        })
-                        .catch((error) =>
-                            console.error('Error loading components:', error)
-                        );
+                    Promise.all(componentPromises).then(loadedComponents => {
+                        setPluginComponents(loadedComponents.filter(c => c) as React.FC[]);
+                    }).catch(error => console.error("Error loading components:", error));
                 }
             });
     }, []); // Empty dependency array means this effect runs once on mount
