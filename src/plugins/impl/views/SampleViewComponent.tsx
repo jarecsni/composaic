@@ -10,8 +10,20 @@ interface Trade {
 }
 
 const trades: Trade[] = [
-    { id: 1, currencyPair: 'EUR/USD', tradeDate: '2023-04-01', notional: 1000000, price: 1.1 },
-    { id: 2, currencyPair: 'GBP/USD', tradeDate: '2023-04-02', notional: 2000000, price: 1.3 },
+    {
+        id: 1,
+        currencyPair: 'EUR/USD',
+        tradeDate: '2023-04-01',
+        notional: 1000000,
+        price: 1.1,
+    },
+    {
+        id: 2,
+        currencyPair: 'GBP/USD',
+        tradeDate: '2023-04-02',
+        notional: 2000000,
+        price: 1.3,
+    },
     // Add more sample trades...
 ];
 
@@ -43,7 +55,13 @@ export const SampleViewComponent: React.FC = () => {
                 </thead>
                 <tbody>
                     {trades.map((trade) => (
-                        <tr key={trade.id} onClick={() => handleSelectionChange(trade)} className={selectedTrade?.id === trade.id ? 'selected' : ''}>
+                        <tr
+                            key={trade.id}
+                            onClick={() => handleSelectionChange(trade)}
+                            className={
+                                selectedTrade?.id === trade.id ? 'selected' : ''
+                            }
+                        >
                             <td>{trade.currencyPair}</td>
                             <td>{trade.tradeDate}</td>
                             <td>{trade.notional.toLocaleString()}</td>
@@ -54,7 +72,8 @@ export const SampleViewComponent: React.FC = () => {
             </table>
             {selectedTrade && (
                 <div>
-                    Selected Trade: {selectedTrade.currencyPair} - {selectedTrade.tradeDate}
+                    Selected Trade: {selectedTrade.currencyPair} -{' '}
+                    {selectedTrade.tradeDate}
                 </div>
             )}
         </div>
