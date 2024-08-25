@@ -3,7 +3,7 @@ import { ViewsPlugin } from '../views';
 import { RemotePluginManager } from '../../RemotePluginManager';
 
 export const Example1Page: React.FC = () => {
-    const [pluginComponents, setPluginComponents] = useState<React.FC[]>([]);
+    const [pluginComponents, setPluginComponents] = useState<{ slot: string, component: React.FC }[]>([]);
 
     useEffect(() => {
         // Assuming PluginManager has a method getPlugin to get a plugin by name
@@ -30,16 +30,17 @@ export const Example1Page: React.FC = () => {
                                         );
                                     }
                                     // Assuming the plugin instance has a method to dynamically import components by identifier
-                                    return pluginInstance.getModule(component);
+                                    return {
+                                        slot: component.slot, component: pluginInstance.getModule(component.component) as React.FC
+                                    };
                                 });
                         }
                     );
 
                     Promise.all(componentPromises)
                         .then((loadedComponents) => {
-                            setPluginComponents(
-                                loadedComponents.filter((c) => c) as React.FC[]
-                            );
+                            const filteredComponents = loadedComponents.filter((component) => component.component !== null);
+                            setPluginComponents(filteredComponents);
                         })
                         .catch((error) =>
                             console.error('Error loading components:', error)
@@ -50,9 +51,21 @@ export const Example1Page: React.FC = () => {
 
     return (
         <div>
-            {pluginComponents.map((Component, index) => (
-                <Component key={index} />
-            ))}
+            {/* Render the "master" component */}
+            {pluginComponents && pluginComponents
+                .filter((Component) => Component.slot === "master")
+                .map((Component, index) => (
+                    <Component.component key={index} />
+                ))
+            }
+
+            {/* Render all "detail" components */}
+            {pluginComponents && pluginComponents
+                .filter((Component) => Component.slot === "detail")
+                .map((Component, index) => (
+                    <Component.component key={`detail-${index}`} />
+                ))
+            }
         </div>
     );
 };

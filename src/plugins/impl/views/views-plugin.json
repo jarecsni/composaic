@@ -19,7 +19,12 @@
             "meta": [
                 {
                     "container": "sample.container",
-                    "components": ["SampleViewComponent"]
+                    "components": [
+                        {
+                            "slot": "master",
+                            "component": "SampleViewComponent"
+                        }
+                    ]
                 }
             ]
         }

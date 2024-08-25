@@ -4,14 +4,14 @@ export { SampleViewComponent } from './SampleViewComponent';
 
 export type PluginViewDefinition = {
     container: string;
-    components: string[];
+    components: { slot: string, component: string }[];
     plugin: string;
 };
 
 export type ViewDefinition = {
     container: string;
     components: {
-        component: string;
+        component: { slot: string, component: string };
         plugin: string;
     }[];
 };
