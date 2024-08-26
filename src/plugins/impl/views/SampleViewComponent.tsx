@@ -32,21 +32,36 @@ export const SampleViewComponent: React.FC<{ events: LocalEventBus }> = ({
     events,
 }) => {
     const [selectedTrade, setSelectedTrade] = useState<Trade | null>(null);
-    // events.on('selectionChanged', (event) => {
-    //     console.log('Selection changed:', event);
-    // });
+    const [selectedReference, setSelectedReference] = useState<string>('');
+    const useReferenceHandler = (reference: string) => {
+        console.log('Using trade:', reference);
+        setSelectedReference(reference);
+    }
     useEffect(() => {
         // Automatically select the first trade on component mount
         if (trades.length > 0) {
             setSelectedTrade(trades[0]);
         }
-        events.emit('selectionChanged', selectedTrade);
-    }, []); // The empty array ensures this effect runs only once on mount
+        setTimeout(() => {
+            events.emit('selectedTradeChanged', trades[0]);
+        }, 0);
+
+        events.on('useReference', useReferenceHandler);
+
+        return () => {
+            events.off('useReference', useReferenceHandler);
+        };
+    }, [events]); // The empty array ensures this effect runs only once on mount
 
     const handleSelectionChange = (trade: Trade) => {
         setSelectedTrade(trade);
         // Additional actions on selection change...
-        events.emit('selectionChanged', trade);
+        events.emit('selectedTradeChanged', trade);
+        setSelectedReference('');
+    };
+
+    const handleReferenceChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setSelectedReference(event.target.value);
     };
 
     return (
@@ -77,12 +92,12 @@ export const SampleViewComponent: React.FC<{ events: LocalEventBus }> = ({
                     ))}
                 </tbody>
             </table>
-            {selectedTrade && (
-                <div>
-                    Selected Trade: {selectedTrade.currencyPair} -{' '}
-                    {selectedTrade.tradeDate}
-                </div>
-            )}
+            <input
+                type="text"
+                placeholder="Booking reference"
+                value={selectedReference || ''}
+                onChange={handleReferenceChange}
+            />
         </div>
     );
 };
