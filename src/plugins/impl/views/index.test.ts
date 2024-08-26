@@ -6,17 +6,17 @@ describe('ViewsPlugin', () => {
             const pluginViewDefinitions: PluginViewDefinition[] = [
                 {
                     container: 'container1',
-                    components: ['component1', 'component2'],
+                    components: [{ slot: 'main', component: 'component1' }, { slot: 'main', component: 'component2' }],
                     plugin: 'plugin1',
                 },
                 {
                     container: 'container2',
-                    components: ['component3'],
+                    components: [{ slot: 'footer', component: 'component3' }],
                     plugin: 'plugin2',
                 },
                 {
                     container: 'container1',
-                    components: ['component4'],
+                    components: [{ slot: 'slave', component: 'component4' }],
                     plugin: 'plugin3',
                 },
             ];
@@ -25,15 +25,15 @@ describe('ViewsPlugin', () => {
                 {
                     container: 'container1',
                     components: [
-                        { component: 'component1', plugin: 'plugin1' },
-                        { component: 'component2', plugin: 'plugin1' },
-                        { component: 'component4', plugin: 'plugin3' },
+                        { component: { slot: 'main', component: 'component1' }, plugin: 'plugin1' },
+                        { component: { slot: 'main', component: 'component2' }, plugin: 'plugin1' },
+                        { component: { slot: 'slave', component: 'component4' }, plugin: 'plugin3' },
                     ],
                 },
                 {
                     container: 'container2',
                     components: [
-                        { component: 'component3', plugin: 'plugin2' },
+                        { component: { slot: 'footer', component: 'component3' }, plugin: 'plugin2' },
                     ],
                 },
             ];
