@@ -28,7 +28,9 @@ const trades: Trade[] = [
     // Add more sample trades...
 ];
 
-export const SampleViewComponent: React.FC<{ events: LocalEventBus }> = ({ events }) => {
+export const SampleViewComponent: React.FC<{ events: LocalEventBus }> = ({
+    events,
+}) => {
     const [selectedTrade, setSelectedTrade] = useState<Trade | null>(null);
     // events.on('selectionChanged', (event) => {
     //     console.log('Selection changed:', event);
