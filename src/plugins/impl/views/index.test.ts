@@ -6,7 +6,10 @@ describe('ViewsPlugin', () => {
             const pluginViewDefinitions: PluginViewDefinition[] = [
                 {
                     container: 'container1',
-                    components: [{ slot: 'main', component: 'component1' }, { slot: 'main', component: 'component2' }],
+                    components: [
+                        { slot: 'main', component: 'component1' },
+                        { slot: 'main', component: 'component2' },
+                    ],
                     plugin: 'plugin1',
                 },
                 {
@@ -25,15 +28,39 @@ describe('ViewsPlugin', () => {
                 {
                     container: 'container1',
                     components: [
-                        { component: { slot: 'main', component: 'component1' }, plugin: 'plugin1' },
-                        { component: { slot: 'main', component: 'component2' }, plugin: 'plugin1' },
-                        { component: { slot: 'slave', component: 'component4' }, plugin: 'plugin3' },
+                        {
+                            component: {
+                                slot: 'main',
+                                component: 'component1',
+                            },
+                            plugin: 'plugin1',
+                        },
+                        {
+                            component: {
+                                slot: 'main',
+                                component: 'component2',
+                            },
+                            plugin: 'plugin1',
+                        },
+                        {
+                            component: {
+                                slot: 'slave',
+                                component: 'component4',
+                            },
+                            plugin: 'plugin3',
+                        },
                     ],
                 },
                 {
                     container: 'container2',
                     components: [
-                        { component: { slot: 'footer', component: 'component3' }, plugin: 'plugin2' },
+                        {
+                            component: {
+                                slot: 'footer',
+                                component: 'component3',
+                            },
+                            plugin: 'plugin2',
+                        },
                     ],
                 },
             ];
