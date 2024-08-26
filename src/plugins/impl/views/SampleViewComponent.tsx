@@ -36,7 +36,7 @@ export const SampleViewComponent: React.FC<{ events: LocalEventBus }> = ({
     const useReferenceHandler = (reference: string) => {
         console.log('Using trade:', reference);
         setSelectedReference(reference);
-    }
+    };
     useEffect(() => {
         // Automatically select the first trade on component mount
         if (trades.length > 0) {
@@ -60,7 +60,9 @@ export const SampleViewComponent: React.FC<{ events: LocalEventBus }> = ({
         setSelectedReference('');
     };
 
-    const handleReferenceChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const handleReferenceChange = (
+        event: React.ChangeEvent<HTMLInputElement>
+    ) => {
         setSelectedReference(event.target.value);
     };
 

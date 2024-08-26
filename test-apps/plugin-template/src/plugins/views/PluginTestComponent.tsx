@@ -9,19 +9,21 @@ import './PluginTestComponent.scss';
 type Trade = {
     currencyPair: string;
     tradeDate: string;
-}
+};
 interface TradeDetailViewProps {
-    trade: Trade
-    events: LocalEventBus // Event handler for when "Use trade" is clicked
+    trade: Trade;
+    events: LocalEventBus; // Event handler for when "Use trade" is clicked
 }
 
 const referenceNumberMap: { [key: string]: string } = {
     'EUR/USD': '12345',
     'GBP/USD': '67890',
     'USD/JPY': '54321',
-}
+};
 
-export const PluginTestComponent: React.FC<TradeDetailViewProps> = ({ events }): ReactNode => {
+export const PluginTestComponent: React.FC<TradeDetailViewProps> = ({
+    events,
+}): ReactNode => {
     const [selectedTrade, setSelectedTrade] = useState<Trade | null>(null);
     const [referenceNumber, setReferenceNumber] = useState<string>('');
 
@@ -41,15 +43,18 @@ export const PluginTestComponent: React.FC<TradeDetailViewProps> = ({ events }):
 
     const onUseTrade = () => {
         events.emit('useReference', referenceNumber);
-    }
+    };
 
     return (
         selectedTrade && (
-            <div className='plugin-test-view'>
+            <div className="plugin-test-view">
                 <p>Currency Pair: {selectedTrade.currencyPair}</p>
                 <p>Trade Date: {selectedTrade.tradeDate}</p>
-                <p>Reference Number: {referenceNumber} <button onClick={onUseTrade}>Use this ref</button></p>
+                <p>
+                    Reference Number: {referenceNumber}{' '}
+                    <button onClick={onUseTrade}>Use this ref</button>
+                </p>
             </div>
         )
     );
-}
+};
