@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { ViewsPlugin } from '../views';
 import { RemotePluginManager } from '../../RemotePluginManager';
+import { LocalEventBus } from '../views/LocalEventBus';
 
 export const Example1Page: React.FC = () => {
-    const [pluginComponents, setPluginComponents] = useState<
-        { slot: string; component: React.FC }[]
-    >([]);
+    const [pluginComponents, setPluginComponents] = useState<{ slot: string, component: React.FC }[]>([]);
+    const localEventBus = new LocalEventBus();
+    localEventBus.on('selectionChanged', (event) => {
+        console.log('Selection changed:', event);
+    });
 
     useEffect(() => {
         // Assuming PluginManager has a method getPlugin to get a plugin by name
@@ -59,20 +62,20 @@ export const Example1Page: React.FC = () => {
     return (
         <div>
             {/* Render the "master" component */}
-            {pluginComponents &&
-                pluginComponents
-                    .filter((Component) => Component.slot === 'master')
-                    .map((Component, index) => (
-                        <Component.component key={index} />
-                    ))}
+            {pluginComponents && pluginComponents
+                .filter((Component) => Component.slot === "master")
+                .map((Component, index) => (
+                    <Component.component key={index} {...{ events: localEventBus }} />
+                ))
+            }
 
             {/* Render all "detail" components */}
-            {pluginComponents &&
-                pluginComponents
-                    .filter((Component) => Component.slot === 'detail')
-                    .map((Component, index) => (
-                        <Component.component key={`detail-${index}`} />
-                    ))}
-        </div>
+            {pluginComponents && pluginComponents
+                .filter((Component) => Component.slot === "detail")
+                .map((Component, index) => (
+                    <Component.component key={`detail-${index}`} {...{ events: localEventBus }} />
+                ))
+            }
+        </div >
     );
 };

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import './SampleViewComponent.scss'; // Assuming the SCSS file is named SampleViewComponent.scss
+import { LocalEventBus } from './LocalEventBus';
 
 interface Trade {
     id: number;
@@ -27,19 +28,23 @@ const trades: Trade[] = [
     // Add more sample trades...
 ];
 
-export const SampleViewComponent: React.FC = () => {
+export const SampleViewComponent: React.FC<{ events: LocalEventBus }> = ({ events }) => {
     const [selectedTrade, setSelectedTrade] = useState<Trade | null>(null);
-
+    // events.on('selectionChanged', (event) => {
+    //     console.log('Selection changed:', event);
+    // });
     useEffect(() => {
         // Automatically select the first trade on component mount
         if (trades.length > 0) {
             setSelectedTrade(trades[0]);
         }
+        events.emit('selectionChanged', selectedTrade);
     }, []); // The empty array ensures this effect runs only once on mount
 
     const handleSelectionChange = (trade: Trade) => {
         setSelectedTrade(trade);
         // Additional actions on selection change...
+        events.emit('selectionChanged', trade);
     };
 
     return (
