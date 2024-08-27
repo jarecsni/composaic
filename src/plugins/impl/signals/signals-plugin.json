@@ -1,0 +1,14 @@
+{
+    "plugin": "@composaic/signals",
+    "version": "0.1.0",
+    "description": "Signals Plugin",
+    "module": "index",
+    "package": "signals",
+    "class": "SignalsPlugin",
+    "extensionPoints": [
+        {
+            "id": "signals",
+            "type": "SignalsExtensionPoint"
+        }
+    ]
+}
