@@ -78,6 +78,22 @@
                             ]
                         }
                     ]
+                },
+                {
+                    "package": "notification",
+                    "module": "NotificationPlugin",
+                    "class": "NotificationPlugin",
+                    "plugin": "@composaic-tests/notification",
+                    "version": "1.0",
+                    "description": "Extension for the @composaic/signals plugin",
+                    "extensions": [
+                        {
+                            "plugin": "@composaic/signals",
+                            "id": "signals",
+                            "className": "NotificationExtension",
+                            "meta": []
+                        }
+                    ]
                 }
             ]
         }

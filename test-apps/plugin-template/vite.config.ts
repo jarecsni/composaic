@@ -21,6 +21,7 @@ export default defineConfig({
                 './SimpleLogger': './src/plugins/simplelogger/SimpleLogger.ts',
                 './NavbarExtension': './src/plugins/navbar/NavbarExtension.ts',
                 './ViewsExtension': './src/plugins/views/ViewsExtension.ts',
+                './NotificationPlugin': './src/plugins/notification/NotificationPlugin.ts',
             },
             shared: ['react'],
         }),
