@@ -3,8 +3,7 @@ import { Plugin } from '../../types';
 /**
  * Signals extension point.
  */
-export interface SignalsExtensionPoint {
-}
+export interface SignalsExtensionPoint {}
 
 export class SignalsPlugin extends Plugin {
     async start() {
@@ -14,6 +13,5 @@ export class SignalsPlugin extends Plugin {
                 extension.extensionImpl as SignalsExtensionPoint;
         });
     }
-    async stop() { }
+    async stop() {}
 }
-
