@@ -1,8 +1,8 @@
 import React, { ReactNode, useEffect, useState } from 'react';
 // @ts-expect-error - This import is not yet available
 import { LocalEventBus } from '@composaic/plugins/views/LocalEventBus';
-// @ts-expect-error is not supported in this version of TypeScript
-import { SignalService } from '@composaic/services/SignalService';
+
+//import { SignalService } from '@composaic/services/SignalService';
 
 import './PluginTestComponent.scss';
 
@@ -37,13 +37,11 @@ export const PluginTestComponent: React.FC<TradeDetailViewProps> = ({
     };
 
     useEffect(() => {
-        (async () => {
-            const signalService = await SignalService.getInstance();
-            await signalService.send({
-                type: 'notification',
-                payload: { message: 'Hello from Signals' },
-            });
-        })();
+
+        // (async () => {
+        //     const signalService = await SignalService.getInstance();
+        //     await signalService.send({ type: 'notification', payload: { message: 'Hello from Signals' } });
+        // })();
 
         events.on('selectedTradeChanged', tradeChangeHandler);
 
