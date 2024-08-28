@@ -91,7 +91,12 @@
                             "plugin": "@composaic/signals",
                             "id": "signals",
                             "className": "NotificationExtension",
-                            "meta": []
+                            "meta": [
+                                {
+                                    "signal": "notification",
+                                    "handler": "handleNotification"
+                                }
+                            ]
                         }
                     ]
                 }

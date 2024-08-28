@@ -140,7 +140,7 @@ export class PluginManager {
             }
             pluginDescriptor.loadedClass =
                 pluginDescriptor.loadedModule![
-                    pluginDescriptor.class as keyof typeof pluginDescriptor.loadedModule
+                pluginDescriptor.class as keyof typeof pluginDescriptor.loadedModule
                 ];
         }
         if (pluginDescriptor.extensions) {
@@ -245,7 +245,7 @@ export class PluginManager {
                 );
             }
         }
-        plugin.start();
+        await plugin.start();
     }
 
     /**
@@ -262,7 +262,7 @@ export class PluginManager {
         if (!pluginDescriptor.pluginInstance) {
             await this.loadPlugin(pluginName);
         }
-        this.startPlugin(pluginDescriptor.pluginInstance!);
+        await this.startPlugin(pluginDescriptor.pluginInstance!);
         return pluginDescriptor.pluginInstance!;
     }
 
