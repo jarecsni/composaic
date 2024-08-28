@@ -28,11 +28,12 @@
         tbody {
             tr {
                 &:hover {
-                    background-color: #f5f5f5; // Slightly darker grey for hover effect
+                    color: #408ffd;
                 }
 
                 &.selected {
                     background-color: #f2f2f2; // Light grey background for the selected row
+                    color: #408ffd;
                 }
             }
         }
