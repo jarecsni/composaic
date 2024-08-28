@@ -37,7 +37,6 @@ export const PluginTestComponent: React.FC<TradeDetailViewProps> = ({
     };
 
     useEffect(() => {
-
         // (async () => {
         //     const signalService = await SignalService.getInstance();
         //     await signalService.send({ type: 'notification', payload: { message: 'Hello from Signals' } });
