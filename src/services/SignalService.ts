@@ -19,7 +19,10 @@ export class SignalService {
     private async init(): Promise<void> {
         if (!this.isInitialized) {
             console.log('Initializing SignalService');
-            const plugin = await RemotePluginManager.getInstance().getPlugin('@composaic/signals');
+            const plugin =
+                await RemotePluginManager.getInstance().getPlugin(
+                    '@composaic/signals'
+                );
             console.log('Plugin loaded:', plugin);
             this.signalsPlugin = plugin as SignalsPlugin;
             this.isInitialized = true;
@@ -38,13 +41,17 @@ export class SignalService {
 
     async send(signal: Signal) {
         if (!this.isInitialized) {
-            console.error("SignalService is not initialized.");
+            console.error('SignalService is not initialized.');
             return;
         }
         // Assuming getPlugin and getModule are async methods available in the system
-        const signalDefinition = this.signalsPlugin!.getSignalDefinition(signal.type);
+        const signalDefinition = this.signalsPlugin!.getSignalDefinition(
+            signal.type
+        );
         if (signalDefinition) {
-            const plugin = await RemotePluginManager.getInstance().getPlugin(signalDefinition.plugin);
+            const plugin = await RemotePluginManager.getInstance().getPlugin(
+                signalDefinition.plugin
+            );
             const handlerFn = await plugin.getModule(signalDefinition.handler);
             if (handlerFn && typeof handlerFn === 'function') {
                 handlerFn(signal.payload);
@@ -52,6 +59,5 @@ export class SignalService {
                 console.error(`Handler for ${signal.type} is not a function.`);
             }
         }
-
     }
 }

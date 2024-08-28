@@ -9,7 +9,7 @@ export type SignalDefinition = {
 /**
  * Signals extension point.
  */
-export interface SignalsExtensionPoint { }
+export interface SignalsExtensionPoint {}
 
 export class SignalsPlugin extends Plugin {
     signals: { [key: string]: SignalDefinition } = {};
@@ -23,7 +23,7 @@ export class SignalsPlugin extends Plugin {
             }
         });
     }
-    async stop() { }
+    async stop() {}
     getSignalDefinition(signalType: string): SignalDefinition | undefined {
         return this.signals[signalType];
     }
