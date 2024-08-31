@@ -19,7 +19,7 @@ type RemoteModule = {
 
 /**
  * Service for loading remote modules dynamically.
- * 
+ *
  * This approach is necessary to avoid the remote module referencing the __federation__ virtual module as that leads to a loading error.
  * The PluginManager uses this service to load remote modules - and since we are using eventing, the bundler won't see the reference to __federation__.
  */
