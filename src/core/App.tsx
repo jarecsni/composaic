@@ -2,11 +2,11 @@ import React, { useEffect, useRef, useState } from 'react';
 import { BrowserRouter, Routes } from 'react-router-dom';
 import { Navbar } from './menu/Navbar';
 import ErrorBoundary from './ErrorBoundary';
-import { initPlugins } from './init';
+import { init } from './init';
 import { getRoutes } from './menu/menu-utils';
 
 // Initalise Plugin Framework
-await initPlugins();
+await init();
 
 export const App: React.FC = () => {
     const [routes, setRoutes] = useState<JSX.Element[]>([]);

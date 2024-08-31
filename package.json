@@ -1,6 +1,6 @@
 {
     "name": "composaic",
-    "version": "0.4.3",
+    "version": "0.4.6",
     "description": "A Composable Micro-Frontend Framework",
     "main": "./lib/index.js",
     "types": "./lib/index.d.ts",

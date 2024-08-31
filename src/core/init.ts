@@ -2,14 +2,17 @@ import { loadPluginDefinitions } from '../plugins/manifest-util';
 import { createServices } from '../services/ServiceManager';
 import { RemotePluginLoader } from '../services/RemotePluginLoader';
 import { ConfigurationService } from '../services/configuration';
-import { RemotePluginManager } from '../plugins/RemotePluginManager';
+import { PluginManager } from '../plugins/PluginManager';
 import { LoggingService } from '../services/LoggingService';
+import { RemoteModuleLoaderService } from '../services/RemoteModuleLoaderService';
 
-export const initPlugins = async (addLocalPluginsFn?: () => void) => {
+export const init = async (addLocalPluginsFn?: () => void) => {
+    RemoteModuleLoaderService.getInstance();
+
     const corePlugins = await loadPluginDefinitions();
 
     // // Add core plugins
-    RemotePluginManager.getInstance().addPluginDefinitions(corePlugins);
+    PluginManager.getInstance().addPluginDefinitions(corePlugins);
 
     await addLocalPluginsFn?.();
 
@@ -25,10 +28,10 @@ export const initPlugins = async (addLocalPluginsFn?: () => void) => {
     );
 
     LoggingService.getInstance().info(
-        `Initialisation done, ${RemotePluginManager.getInstance().getNumberOfPlugins()} plugins in total`
+        `Initialisation done, ${PluginManager.getInstance().getNumberOfPlugins()} plugins in total`
     );
     LoggingService.getInstance().info(
-        `Plugins: ${RemotePluginManager.getInstance()
+        `Plugins: ${PluginManager.getInstance()
             .getPluginIds()
             .map((plugin) => plugin)
             .join(', ')}`

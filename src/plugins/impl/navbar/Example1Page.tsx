@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { ViewsPlugin } from '../views';
-import { RemotePluginManager } from '../../RemotePluginManager';
+import { PluginManager } from '../../PluginManager';
 import { LocalEventBus } from '../views/LocalEventBus';
 
 export const Example1Page: React.FC = () => {
@@ -15,7 +15,7 @@ export const Example1Page: React.FC = () => {
     useEffect(() => {
         // Assuming PluginManager has a method getPlugin to get a plugin by name
         // and the plugin has a method getViewsByContext to get views by context
-        RemotePluginManager.getInstance()
+        PluginManager.getInstance()
             .getPlugin('@composaic/views')
             .then((viewsPlugin) => {
                 if (viewsPlugin) {
@@ -26,7 +26,7 @@ export const Example1Page: React.FC = () => {
                     };
                     const componentPromises = components.map(
                         ({ component, plugin }) => {
-                            return RemotePluginManager.getInstance()
+                            return PluginManager.getInstance()
                                 .getPlugin(plugin)
                                 .then((pluginInstance) => {
                                     if (!pluginInstance) {

@@ -1,5 +1,6 @@
 import { ClassConstructor, Plugin, PluginDescriptor } from './types';
 import { PluginRegistry } from './PluginRegistry';
+import { EventService } from '../services/EventService';
 
 /**
  * The `PluginManager` class is responsible for managing plugins in the application.
@@ -219,7 +220,21 @@ export class PluginManager {
         bundleFile: string,
         moduleName: string
     ): Promise<object | undefined> {
-        return undefined;
+        try {
+            return new Promise((resolve, reject) => {
+                // Emit the event and pass the resolve and reject functions as parameters
+                EventService.getInstance().emit('@composaic.loadRemoteModule', {
+                    url,
+                    name,
+                    bundleFile,
+                    moduleName,
+                    resolve,
+                    reject,
+                });
+            });
+        } catch (error) {
+            console.error(`Error loading plugin: ${name}`, error);
+        }
     }
 
     protected async startPlugin(plugin: Plugin, dependingPlugin?: Plugin) {

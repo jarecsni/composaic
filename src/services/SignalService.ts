@@ -1,4 +1,4 @@
-import { RemotePluginManager } from '../plugins/RemotePluginManager';
+import { PluginManager } from '../plugins/PluginManager';
 import { SignalsPlugin } from '../plugins/impl/signals';
 
 export type Signal = {
@@ -20,7 +20,7 @@ export class SignalService {
         if (!this.isInitialized) {
             console.log('Initializing SignalService');
             const plugin =
-                await RemotePluginManager.getInstance().getPlugin(
+                await PluginManager.getInstance().getPlugin(
                     '@composaic/signals'
                 );
             console.log('Plugin loaded:', plugin);
@@ -49,7 +49,7 @@ export class SignalService {
             signal.type
         );
         if (signalDefinition) {
-            const plugin = await RemotePluginManager.getInstance().getPlugin(
+            const plugin = await PluginManager.getInstance().getPlugin(
                 signalDefinition.plugin
             );
             const handlerFn = await plugin.getModule(signalDefinition.handler);

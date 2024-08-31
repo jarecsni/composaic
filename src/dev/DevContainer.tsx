@@ -1,7 +1,7 @@
 import { FC, useEffect, useRef, useState } from 'react';
 import { BrowserRouter, Routes } from 'react-router-dom';
 import ErrorBoundary from '../core/ErrorBoundary';
-import { initPlugins } from '../core/init';
+import { init } from '../core/init';
 import { Navbar } from '../core/menu/Navbar';
 import { getRoutes } from '../core/menu/menu-utils';
 import { addLocalPlugins } from './plugin-utils';
@@ -17,7 +17,7 @@ export const DevContainer: FC<DevContainerProps> = ({ loadModuleFn }) => {
     useEffect(() => {
         if (!menuItemsLoaded.current) {
             menuItemsLoaded.current = true;
-            initPlugins(async () => {
+            init(async () => {
                 await addLocalPlugins(loadModuleFn);
             }).then(() => {
                 getRoutes().then((generatedRoutes) => {
