@@ -9,7 +9,7 @@ import { PluginRegistryService } from '../services/PluginRegistryService';
 export class PluginManager {
     protected static instance: PluginManager;
 
-    protected constructor() { }
+    protected constructor() {}
 
     public static getInstance(): PluginManager {
         if (!PluginManager.instance) {
@@ -160,7 +160,7 @@ export class PluginManager {
             }
             pluginDescriptor.loadedClass =
                 pluginDescriptor.loadedModule![
-                pluginDescriptor.class as keyof typeof pluginDescriptor.loadedModule
+                    pluginDescriptor.class as keyof typeof pluginDescriptor.loadedModule
                 ];
         }
         if (pluginDescriptor.extensions) {
@@ -267,22 +267,29 @@ export class PluginManager {
             return;
         }
         if (plugin.pluginDescriptor.dependencies) {
-            Promise.all(plugin.pluginDescriptor.dependencies.map(async (dependency) => {
-                if ((dependency as PluginDescriptor).load === 'deferred') {
-                    console.log(
-                        'Deferring starting of plugin with load=deferred',
-                        plugin.pluginDescriptor.plugin
-                    );
-                } else {
-                    const pluginToLoad = (dependency as PluginDescriptor).plugin;
-                    if (pluginToLoad !== dependingPlugin?.pluginDescriptor.plugin) {
-                        await this.startPlugin(
-                            (dependency as PluginDescriptor).pluginInstance!,
-                            plugin
+            Promise.all(
+                plugin.pluginDescriptor.dependencies.map(async (dependency) => {
+                    if ((dependency as PluginDescriptor).load === 'deferred') {
+                        console.log(
+                            'Deferring starting of plugin with load=deferred',
+                            plugin.pluginDescriptor.plugin
                         );
+                    } else {
+                        const pluginToLoad = (dependency as PluginDescriptor)
+                            .plugin;
+                        if (
+                            pluginToLoad !==
+                            dependingPlugin?.pluginDescriptor.plugin
+                        ) {
+                            await this.startPlugin(
+                                (dependency as PluginDescriptor)
+                                    .pluginInstance!,
+                                plugin
+                            );
+                        }
                     }
-                }
-            }));
+                })
+            );
         }
         await plugin.start();
     }
@@ -295,7 +302,8 @@ export class PluginManager {
      */
     async getPlugin(pluginName: string): Promise<Plugin> {
         try {
-            const pluginDescriptor = await this.getPluginFromRegistry(pluginName);
+            const pluginDescriptor =
+                await this.getPluginFromRegistry(pluginName);
             if (!pluginDescriptor) {
                 throw new Error(`Plugin with ID ${pluginName} not found`);
             }
