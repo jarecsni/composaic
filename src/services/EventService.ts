@@ -1,28 +1,30 @@
+declare global {
+    var __GlobalEventServiceInstance__: EventService | undefined;
+}
+
+// Use a unique, application-specific key to store the instance
+const GLOBAL_EVENT_SERVICE_KEY = '__GlobalEventServiceInstance__';
+
 import { EventType, Handler } from 'mitt';
 import { LocalEventBus } from '../plugins/impl/views/LocalEventBus';
 
-/**
- * Service for managing events using an event bus.
- */
 export class EventService {
     private static instance: EventService;
     private eventBus: LocalEventBus;
 
-    /**
-     * Constructs a new instance of the EventService class.
-     */
     private constructor() {
         this.eventBus = new LocalEventBus();
     }
 
-    /**
-     * Gets the singleton instance of the EventService class.
-     * @returns The singleton instance of the EventService class.
-     */
     public static getInstance(): EventService {
-        if (!EventService.instance) {
-            EventService.instance = new EventService();
+        // Check for the existence of a global object. Use `globalThis` which is standard across environments.
+        if (!globalThis[GLOBAL_EVENT_SERVICE_KEY]) {
+            globalThis[GLOBAL_EVENT_SERVICE_KEY] = new EventService();
         }
+
+        // Ensure the instance property of this class also reflects the global instance
+        EventService.instance = globalThis[GLOBAL_EVENT_SERVICE_KEY];
+
         return EventService.instance;
     }
 
