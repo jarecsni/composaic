@@ -1,28 +1,15 @@
 import { ClassConstructor, Plugin, PluginDescriptor } from './types';
-import { PluginRegistry } from './PluginRegistry';
 import { EventService } from '../services/EventService';
+import { PluginRegistryService } from '../services/PluginRegistryService';
 
 /**
  * The `PluginManager` class is responsible for managing plugins in the application.
  * It provides methods to add, load, start, and get plugins.
  */
-/**
- * The `PluginManager` class is responsible for managing plugins in the application.
- * It provides methods to add, load, and retrieve plugins, as well as start and clear the plugin registry.
- */
-/**
- * The `PluginManager` class is responsible for managing plugins in the application.
- * It provides methods to add, load, and retrieve plugins, as well as start and clear the plugin registry.
- */
 export class PluginManager {
     protected static instance: PluginManager;
 
-    private pluginRegistry: PluginRegistry;
-
-    protected constructor() {
-        // Initialization code here
-        this.pluginRegistry = PluginRegistry.getInstance();
-    }
+    protected constructor() { }
 
     public static getInstance(): PluginManager {
         if (!PluginManager.instance) {
@@ -31,40 +18,72 @@ export class PluginManager {
         return PluginManager.instance;
     }
 
+    async getPluginFromRegistry(
+        pluginName: string
+    ): Promise<PluginDescriptor | null> {
+        return await new Promise((resolve) => {
+            EventService.getInstance().emit('@composaic.getPlugin', {
+                pluginName,
+                resolve,
+            });
+        });
+    }
+
+    async addPluginToRegistry(pluginDescriptor: PluginDescriptor) {
+        await new Promise((resolve) => {
+            EventService.getInstance().emit('@composaic.addPlugin', {
+                pluginDescriptor,
+                resolve,
+            });
+        });
+    }
+
     /**
      * Add an array of plugin definitions to the registry
      * @param plugins - an array of plugin definitions
      */
-    addPluginDefinitions(plugins: PluginDescriptor[]) {
-        plugins.forEach((plugin) => {
-            if (!this.pluginRegistry.get(plugin.plugin)) {
-                this.addPlugin(plugin);
-            } else {
-                console.log(
-                    `Plugin with ID ${plugin.plugin} already exists, ignoring request to add it again to the registry`
+    async addPluginDefinitions(plugins: PluginDescriptor[]) {
+        await Promise.all(
+            plugins.map(async (plugin) => {
+                const existingPlugin = await this.getPluginFromRegistry(
+                    plugin.plugin
                 );
-            }
-        });
+                if (!existingPlugin) {
+                    await this.addPlugin(plugin);
+                } else {
+                    console.log(
+                        `Plugin with ID ${plugin.plugin} already exists, ignoring request to add it again to the registry`
+                    );
+                }
+            })
+        );
     }
 
     /**
      * Add a plugin definition to the registry
      * @param pluginDescriptor - a plugin definition
      */
-    addPlugin(pluginDescriptor: PluginDescriptor) {
+    async addPlugin(pluginDescriptor: PluginDescriptor) {
         pluginDescriptor.dependencies = [];
-        pluginDescriptor.extensions?.forEach((extension) => {
-            if (extension.plugin !== 'self') {
-                // Add this plugin as a dependency to the plugin offering the extension point
-                const targetPluginDescriptor = this.pluginRegistry.get(
-                    extension.plugin
-                );
-                targetPluginDescriptor.dependencies!.push(pluginDescriptor);
-                // Also add the plugin offering the extension point as a dependency to this plugin
-                pluginDescriptor.dependencies!.push(targetPluginDescriptor);
-            }
-        });
-        this.pluginRegistry.add(pluginDescriptor.plugin, pluginDescriptor);
+        if (pluginDescriptor.extensions) {
+            await Promise.all(
+                pluginDescriptor.extensions.map(async (extension) => {
+                    if (extension.plugin !== 'self') {
+                        // Add this plugin as a dependency to the plugin offering the extension point
+                        const targetPluginDescriptor =
+                            await this.getPluginFromRegistry(extension.plugin);
+                        targetPluginDescriptor!.dependencies!.push(
+                            pluginDescriptor
+                        );
+                        // Also add the plugin offering the extension point as a dependency to this plugin
+                        pluginDescriptor.dependencies!.push(
+                            targetPluginDescriptor!
+                        );
+                    }
+                })
+            );
+        }
+        await this.addPluginToRegistry(pluginDescriptor);
     }
 
     /**
@@ -76,13 +95,13 @@ export class PluginManager {
         pluginName: string,
         dependingPlugin?: string
     ): Promise<Plugin | null> {
-        const pluginDescriptor: PluginDescriptor =
-            this.pluginRegistry.get(pluginName);
-        const deferred =
-            pluginDescriptor.load === 'deferred' && !!dependingPlugin;
+        const pluginDescriptor = await this.getPluginFromRegistry(pluginName);
         if (!pluginDescriptor) {
             throw new Error(`Plugin with ID ${pluginName} not found`);
         }
+        const deferred =
+            pluginDescriptor.load === 'deferred' && !!dependingPlugin;
+
         if (pluginDescriptor.pluginInstance) {
             return pluginDescriptor.pluginInstance;
         }
@@ -141,7 +160,7 @@ export class PluginManager {
             }
             pluginDescriptor.loadedClass =
                 pluginDescriptor.loadedModule![
-                    pluginDescriptor.class as keyof typeof pluginDescriptor.loadedModule
+                pluginDescriptor.class as keyof typeof pluginDescriptor.loadedModule
                 ];
         }
         if (pluginDescriptor.extensions) {
@@ -155,7 +174,13 @@ export class PluginManager {
                 const targetPlugin =
                     extension.plugin === 'self'
                         ? pluginDescriptor
-                        : this.pluginRegistry.get(extension.plugin);
+                        : await this.getPluginFromRegistry(extension.plugin);
+                if (!targetPlugin) {
+                    console.error(
+                        `Plugin with ID ${extension.plugin} not found for extension ${extension.id}`
+                    );
+                    continue;
+                }
                 // look up the extension point in the targetPlugin matching the extension.id
                 const extensionPoint = targetPlugin.extensionPoints!.find(
                     (ep: any) => ep.id === extension.id
@@ -242,23 +267,22 @@ export class PluginManager {
             return;
         }
         if (plugin.pluginDescriptor.dependencies) {
-            for (const dependency of plugin.pluginDescriptor.dependencies) {
+            Promise.all(plugin.pluginDescriptor.dependencies.map(async (dependency) => {
                 if ((dependency as PluginDescriptor).load === 'deferred') {
                     console.log(
                         'Deferring starting of plugin with load=deferred',
                         plugin.pluginDescriptor.plugin
                     );
-                    continue;
+                } else {
+                    const pluginToLoad = (dependency as PluginDescriptor).plugin;
+                    if (pluginToLoad !== dependingPlugin?.pluginDescriptor.plugin) {
+                        await this.startPlugin(
+                            (dependency as PluginDescriptor).pluginInstance!,
+                            plugin
+                        );
+                    }
                 }
-                const pluginToLoad = (dependency as PluginDescriptor).plugin;
-                if (pluginToLoad === dependingPlugin?.pluginDescriptor.plugin) {
-                    continue;
-                }
-                await this.startPlugin(
-                    (dependency as PluginDescriptor).pluginInstance!,
-                    plugin
-                );
-            }
+            }));
         }
         await plugin.start();
     }
@@ -270,23 +294,28 @@ export class PluginManager {
      * @returns the plugin instance. If the plugin is not loaded, it will be loaded.
      */
     async getPlugin(pluginName: string): Promise<Plugin> {
-        const pluginDescriptor = this.pluginRegistry.get(pluginName);
-        if (!pluginDescriptor) {
-            throw new Error(`Plugin with ID ${pluginName} not found`);
+        try {
+            const pluginDescriptor = await this.getPluginFromRegistry(pluginName);
+            if (!pluginDescriptor) {
+                throw new Error(`Plugin with ID ${pluginName} not found`);
+            }
+            if (!pluginDescriptor.pluginInstance) {
+                await this.loadPlugin(pluginName);
+            }
+            await this.startPlugin(pluginDescriptor.pluginInstance!);
+            return pluginDescriptor.pluginInstance!;
+        } catch (error) {
+            console.error(`Error getting plugin: ${pluginName}`, error);
+            throw error;
         }
-        if (!pluginDescriptor.pluginInstance) {
-            await this.loadPlugin(pluginName);
-        }
-        await this.startPlugin(pluginDescriptor.pluginInstance!);
-        return pluginDescriptor.pluginInstance!;
     }
 
     clear() {
-        this.pluginRegistry.clear();
+        PluginRegistryService.getInstance().clear();
     }
 
     public getNumberOfPlugins() {
-        return this.pluginRegistry.getNumberOfPlugins();
+        return PluginRegistryService.getInstance().getNumberOfPlugins();
     }
 
     /**
@@ -295,6 +324,6 @@ export class PluginManager {
      * @returns An array of plugin IDs.
      */
     public getPluginIds() {
-        return this.pluginRegistry.getPluginIds();
+        return PluginRegistryService.getInstance().getPluginIds();
     }
 }

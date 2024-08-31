@@ -30,7 +30,7 @@ export class RemotePluginLoader {
                     console.log(
                         `[composaic] Converted manifest to plugin descriptor: ${JSON.stringify(pluginDescriptor)}`
                     );
-                    PluginManager.getInstance().addPluginDefinitions(
+                    await PluginManager.getInstance().addPluginDefinitions(
                         pluginDescriptor
                     );
                 })

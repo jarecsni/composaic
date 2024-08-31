@@ -1,4 +1,5 @@
 import { LoggingService } from './LoggingService';
+import { SignalService } from './SignalService';
 
 /**
  * Creates and initializes all services.
@@ -8,4 +9,5 @@ import { LoggingService } from './LoggingService';
  */
 export const createServices = async () => {
     await LoggingService.createInstance();
+    await SignalService.getInstance();
 };

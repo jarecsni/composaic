@@ -5,9 +5,11 @@ import { ConfigurationService } from '../services/configuration';
 import { PluginManager } from '../plugins/PluginManager';
 import { LoggingService } from '../services/LoggingService';
 import { RemoteModuleLoaderService } from '../services/RemoteModuleLoaderService';
+import { PluginRegistryService } from '../services/PluginRegistryService';
 
 export const init = async (addLocalPluginsFn?: () => void) => {
     RemoteModuleLoaderService.getInstance();
+    PluginRegistryService.getInstance();
 
     const corePlugins = await loadPluginDefinitions();
 

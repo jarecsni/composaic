@@ -19,13 +19,18 @@ export class SignalService {
     private async init(): Promise<void> {
         if (!this.isInitialized) {
             console.log('Initializing SignalService');
-            const plugin =
-                await PluginManager.getInstance().getPlugin(
-                    '@composaic/signals'
-                );
-            console.log('Plugin loaded:', plugin);
-            this.signalsPlugin = plugin as SignalsPlugin;
-            this.isInitialized = true;
+            try {
+                const plugin =
+                    await PluginManager.getInstance().getPlugin(
+                        '@composaic/signals'
+                    );
+                console.log('Plugin loaded:', plugin);
+                this.signalsPlugin = plugin as SignalsPlugin;
+                this.isInitialized = true;
+            } catch (e) {
+                console.error('Error loading plugin:', e);
+                return;
+            }
         }
     }
 

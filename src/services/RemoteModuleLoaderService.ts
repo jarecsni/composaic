@@ -30,7 +30,7 @@ export class RemoteModuleLoaderService {
         // Private constructor to prevent instantiation
         EventService.getInstance().on<RemoteModule>(
             '@composaic.loadRemoteModule',
-            this.loadRemoteModule
+            this.loadRemoteModule.bind(this)
         );
     }
 
