@@ -16,7 +16,7 @@
         "test": "jest",
         "test:watch": "jest --watch",
         "prettier": "prettier --write .",
-        "build": "npx tsc && npm run prettier && vite build",
+        "build": "npx tsc && npm run prettier",
         "build:watch": "vite build --watch",
         "preview": "vite preview"
     },
