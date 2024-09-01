@@ -10,13 +10,16 @@
         "url": "https://github.com/jarecsni/composaic.git"
     },
     "scripts": {
+        "compile-scss": "node ./scripts/compile-scss.js ./src ./lib",
+        "replace-scss-imports": "node ./scripts/replace-scss-imports.js ./lib",
         "api": "node ./server.js",
         "dev:all": "concurrently \"npm run dev\" \"npm run api\"",
         "dev": "vite",
         "test": "jest",
         "test:watch": "jest --watch",
         "prettier": "prettier --write .",
-        "build": "npx tsc && npm run prettier",
+        "build-old": "npx tsc && npm run prettier",
+        "build": "npx tsc && npm run compile-scss && npm run replace-scss-imports && npm run prettier",
         "build:watch": "vite build --watch",
         "preview": "vite preview"
     },
