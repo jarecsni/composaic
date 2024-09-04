@@ -1,6 +1,6 @@
 {
     "name": "composaic",
-    "version": "0.4.8",
+    "version": "0.4.14",
     "description": "A Composable Micro-Frontend Framework",
     "main": "./lib/index.js",
     "types": "./lib/index.d.ts",
@@ -41,6 +41,7 @@
     "devDependencies": {
         "@babel/cli": "^7.21.5",
         "@babel/core": "^7.21.5",
+        "@babel/plugin-transform-react-jsx": "^7.25.2",
         "@babel/preset-env": "^7.21.5",
         "@babel/preset-typescript": "^7.21.5",
         "@eslint/compat": "^1.0.3",
@@ -68,7 +69,6 @@
         "vite": "^5.2.0"
     },
     "dependencies": {
-        "@babel/plugin-transform-react-jsx": "^7.25.2",
         "@emotion/react": "^11.11.4",
         "@emotion/styled": "^11.11.5",
         "@mui/icons-material": "^5.16.4",

@@ -2,6 +2,19 @@ import { ClassConstructor, Plugin, PluginDescriptor } from './types';
 import { EventService } from '../services/EventService';
 import { PluginRegistryService } from '../services/PluginRegistryService';
 
+// import all core plugins statically
+import * as logger from './impl/logger';
+import * as navbar from './impl/navbar';
+import * as signals from './impl/signals';
+import * as views from './impl/views';
+
+const moduleMap: { [key: string]: object } = {
+    'logger/index': logger,
+    'navbar/index': navbar,
+    'signals/index': signals,
+    'views/index': views,
+};
+
 /**
  * The `PluginManager` class is responsible for managing plugins in the application.
  * It provides methods to add, load, start, and get plugins.
@@ -123,18 +136,9 @@ export class PluginManager {
             if (!pluginDescriptor.loadedModule) {
                 if (!pluginDescriptor.remoteURL) {
                     // load local module
-                    try {
-                        // Production mode where we run the composaic project as the main web application
-                        pluginDescriptor.loadedModule = await import(
-                            `./impl/${pluginDescriptor.package}/${pluginDescriptor.module}.ts`
-                        );
-                    } catch (error) {
-                        // To support local development, when the plugin project installs composaic as an npm package
-                        pluginDescriptor.loadedModule = await import(
-                            /* @vite-ignore */
-                            `/node_modules/composaic/lib/plugins/impl/${pluginDescriptor.package}/${pluginDescriptor.module}.js`
-                        );
-                    }
+                    pluginDescriptor.loadedModule = moduleMap[
+                        `${pluginDescriptor.package}/${pluginDescriptor.module}`
+                    ] as { exportedModule: object };
                 } else {
                     // load remote module using module federation
                     // FIXME
