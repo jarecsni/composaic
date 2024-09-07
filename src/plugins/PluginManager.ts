@@ -7,6 +7,7 @@ import * as logger from './impl/logger';
 import * as navbar from './impl/navbar';
 import * as signals from './impl/signals';
 import * as views from './impl/views';
+import { RemoteModuleLoaderService } from '../services/RemoteModuleLoaderService';
 
 const moduleMap: { [key: string]: object } = {
     'logger/index': logger,
@@ -249,21 +250,27 @@ export class PluginManager {
         bundleFile: string,
         moduleName: string
     ): Promise<object | undefined> {
-        try {
-            return new Promise((resolve, reject) => {
-                // Emit the event and pass the resolve and reject functions as parameters
-                EventService.getInstance().emit('@composaic.loadRemoteModule', {
-                    url,
-                    name,
-                    bundleFile,
-                    moduleName,
-                    resolve,
-                    reject,
-                });
-            });
-        } catch (error) {
-            console.error(`Error loading plugin: ${name}`, error);
-        }
+        // try {
+        //     return new Promise((resolve, reject) => {
+        //         // Emit the event and pass the resolve and reject functions as parameters
+        //         EventService.getInstance().emit('@composaic.loadRemoteModule', {
+        //             url,
+        //             name,
+        //             bundleFile,
+        //             moduleName,
+        //             resolve,
+        //             reject,
+        //         });
+        //     });
+        // } catch (error) {
+        //     console.error(`Error loading plugin: ${name}`, error);
+        // }
+        return RemoteModuleLoaderService.getInstance().loadRemoteModule({
+            url,
+            name,
+            bundleFile,
+            moduleName,
+        });
     }
 
     protected async startPlugin(plugin: Plugin, dependingPlugin?: Plugin) {

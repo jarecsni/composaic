@@ -1,6 +1,7 @@
+import React from 'react';
 import { FC, useEffect, useRef, useState } from 'react';
 import { BrowserRouter, Routes } from 'react-router-dom';
-import ErrorBoundary from '../core/ErrorBoundary';
+import ErrorBoundary from './ErrorBoundary';
 import { init } from '../core/init';
 import { Navbar } from '../core/menu/Navbar';
 import { getRoutes } from '../core/menu/menu-utils';
@@ -17,8 +18,12 @@ export const DevContainer: FC<DevContainerProps> = ({ loadModuleFn }) => {
     useEffect(() => {
         if (!menuItemsLoaded.current) {
             menuItemsLoaded.current = true;
-            init(async () => {
-                await addLocalPlugins(loadModuleFn);
+            init({
+                addLocalPluginsFn: async () => {
+                    await addLocalPlugins(loadModuleFn);
+                },
+                // FIXME: remote module loading in dev container not supported as yet
+                loadRemoteModuleFn: async () => Promise.resolve({}),
             }).then(() => {
                 getRoutes().then((generatedRoutes) => {
                     setRoutes(generatedRoutes);

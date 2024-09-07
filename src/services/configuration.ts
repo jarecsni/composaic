@@ -1,5 +1,3 @@
-import { config } from '../config';
-
 export type NodeEnv = 'development' | 'production';
 export type ComposaicEnv = 'dev' | 'prd';
 export type EnvironmentConfiguration = {
@@ -23,7 +21,7 @@ export class ConfigurationService {
         // init
     }
     public static getInstance(
-        configuration: Configuration = config
+        configuration: Configuration = {} as Configuration
     ): ConfigurationService {
         if (!ConfigurationService.instance) {
             ConfigurationService.configuration = configuration;

@@ -1,14 +1,32 @@
 import { loadPluginDefinitions } from '../plugins/manifest-util';
 import { createServices } from '../services/ServiceManager';
 import { RemotePluginLoader } from '../services/RemotePluginLoader';
-import { ConfigurationService } from '../services/configuration';
+import { Configuration, ConfigurationService } from '../services/configuration';
 import { PluginManager } from '../plugins/PluginManager';
 import { LoggingService } from '../services/LoggingService';
 import { RemoteModuleLoaderService } from '../services/RemoteModuleLoaderService';
 import { PluginRegistryService } from '../services/PluginRegistryService';
 
-export const init = async (addLocalPluginsFn?: () => void) => {
-    RemoteModuleLoaderService.getInstance();
+export type RemoteModule = {
+    url: string;
+    name: string;
+    bundleFile: string;
+    moduleName: string;
+};
+
+export type RemoteModuleLoaderFn = (
+    remoteModule: RemoteModule
+) => Promise<object | undefined>;
+
+interface InitOptions {
+    addLocalPluginsFn?: () => void;
+    config?: Configuration;
+    loadRemoteModuleFn: RemoteModuleLoaderFn;
+}
+
+export const init = async (options: InitOptions) => {
+    const { addLocalPluginsFn, config, loadRemoteModuleFn } = options;
+    RemoteModuleLoaderService.initialiseStaticInstance(loadRemoteModuleFn);
     PluginRegistryService.getInstance();
 
     const corePlugins = await loadPluginDefinitions();
@@ -19,7 +37,7 @@ export const init = async (addLocalPluginsFn?: () => void) => {
     await addLocalPluginsFn?.();
 
     await RemotePluginLoader.getInstance().loadManifests(
-        ConfigurationService.getInstance().getConfiguration().remotes
+        ConfigurationService.getInstance(config).getConfiguration().remotes
     );
 
     // Create and initialize services
