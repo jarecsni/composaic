@@ -1,5 +1,6 @@
 import { PluginManager } from '../plugins/PluginManager';
 import { SignalsPlugin } from '../plugins/impl/signals';
+import { GlobalScopeService } from './GlobalScopeService';
 
 export type Signal = {
     type: string;
@@ -42,16 +43,19 @@ export class SignalService {
     }
 
     public static async getInstance(): Promise<SignalService> {
-        if (!SignalService.instance) {
-            SignalService.instance = new SignalService();
+        if (!GlobalScopeService.getSingletonInstance('SignalService')) {
+            const instance = new SignalService();
+            GlobalScopeService.setSingletonInstance('SignalService', instance);
             console.log('Awaiting SignalService initialization');
-            await SignalService.instance.init(); // Ensure the instance is initialized before returning
+            await instance.init(); // Ensure the instance is initialized before returning
             console.log('SignalService initialized');
         }
         console.log(
             `Using SignalService instance with ID: ${SignalService.instance.instanceId}`
         );
-        return SignalService.instance;
+        return GlobalScopeService.getSingletonInstance(
+            'SignalService'
+        ) as SignalService;
     }
 
     async send(signal: Signal) {

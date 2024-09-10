@@ -1,6 +1,11 @@
 # Changelog
 
+## 0.4.26 (10 Sep 2024)
+
+Making SignalService use the new GlobalScopeService
+
 ## 0.4.25 (10 Sep 2024)
+
 Added GlobalScopeService (vite no longer supports singletons, so we'll need to introduce Window scoped variables for this)
 
 ## 0.1.4 (28 May 2024) - Tag test 3

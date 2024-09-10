@@ -1,3 +1,4 @@
+import { SignalService } from './SignalService';
 
 /**
  * Represents the global scope service.
@@ -13,6 +14,7 @@ declare global {
  */
 interface ServiceTypeMapping {
     GlobalScopeService: GlobalScopeService;
+    SignalService: SignalService;
     // Add other services here as needed
 }
 
@@ -22,7 +24,7 @@ interface ServiceTypeMapping {
 export class GlobalScopeService {
     private static readonly instanceKey = 'GlobalScopeService';
 
-    private constructor() { }
+    private constructor() {}
 
     /**
      * Gets the singleton instance of the GlobalScopeService.
@@ -30,12 +32,24 @@ export class GlobalScopeService {
      */
     public static getInstance(): GlobalScopeService {
         if (!window.__composaic_singletonInstances__) {
-            window.__composaic_singletonInstances__ = new Map<string, unknown>();
+            window.__composaic_singletonInstances__ = new Map<
+                string,
+                unknown
+            >();
         }
-        if (!window.__composaic_singletonInstances__.has(GlobalScopeService.instanceKey)) {
-            window.__composaic_singletonInstances__.set(GlobalScopeService.instanceKey, new GlobalScopeService());
+        if (
+            !window.__composaic_singletonInstances__.has(
+                GlobalScopeService.instanceKey
+            )
+        ) {
+            window.__composaic_singletonInstances__.set(
+                GlobalScopeService.instanceKey,
+                new GlobalScopeService()
+            );
         }
-        return window.__composaic_singletonInstances__.get(GlobalScopeService.instanceKey) as GlobalScopeService;
+        return window.__composaic_singletonInstances__.get(
+            GlobalScopeService.instanceKey
+        ) as GlobalScopeService;
     }
 
     /**
@@ -43,7 +57,10 @@ export class GlobalScopeService {
      * @param key - The key associated with the service type.
      * @param instance - The instance of the service.
      */
-    public static setSingletonInstance<K extends keyof ServiceTypeMapping>(key: K, instance: ServiceTypeMapping[K]): void {
+    public static setSingletonInstance<K extends keyof ServiceTypeMapping>(
+        key: K,
+        instance: ServiceTypeMapping[K]
+    ): void {
         if (!window.__composaic_singletonInstances__) {
             console.error('Global singleton map is not initialized.');
             return;
@@ -56,7 +73,11 @@ export class GlobalScopeService {
      * @param key - The key associated with the service type.
      * @returns The singleton instance of the service, or undefined if not found.
      */
-    public static getSingletonInstance<K extends keyof ServiceTypeMapping>(key: K): ServiceTypeMapping[K] | undefined {
-        return window.__composaic_singletonInstances__?.get(key) as ServiceTypeMapping[K] | undefined;
+    public static getSingletonInstance<K extends keyof ServiceTypeMapping>(
+        key: K
+    ): ServiceTypeMapping[K] | undefined {
+        return window.__composaic_singletonInstances__?.get(key) as
+            | ServiceTypeMapping[K]
+            | undefined;
     }
 }
