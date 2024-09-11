@@ -1,13 +1,13 @@
 import { ClassConstructor, Plugin, PluginDescriptor } from './types';
-import { EventService } from '../services/EventService';
-import { PluginRegistryService } from '../services/PluginRegistryService';
+import { EventService } from '../services/EventService.js';
+import { PluginRegistryService } from '../services/PluginRegistryService.js';
 
 // import all core plugins statically
-import * as logger from './impl/logger';
-import * as navbar from './impl/navbar';
-import * as signals from './impl/signals';
-import * as views from './impl/views';
-import { RemoteModuleLoaderService } from '../services/RemoteModuleLoaderService';
+import * as logger from './impl/logger/index.js';
+import * as navbar from './impl/navbar/index.js';
+import * as signals from './impl/signals/index.js';
+import * as views from './impl/views/index.js';
+import { RemoteModuleLoaderService } from '../services/RemoteModuleLoaderService.js';
 
 const moduleMap: { [key: string]: object } = {
     'logger/index': logger,

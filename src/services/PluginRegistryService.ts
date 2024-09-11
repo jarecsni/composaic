@@ -1,5 +1,5 @@
-import { PluginDescriptor } from '../plugins/types';
-import { EventService } from './EventService';
+import { PluginDescriptor } from '../plugins/types.js';
+import { EventService } from './EventService.js';
 
 type PluginDef = {
     pluginDescriptor: PluginDescriptor;

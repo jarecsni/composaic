@@ -1,5 +1,5 @@
-import { LoggingService } from './LoggingService';
-import { SignalService } from './SignalService';
+import { LoggingService } from './LoggingService.js';
+import { SignalService } from './SignalService.js';
 
 /**
  * Creates and initializes all services.

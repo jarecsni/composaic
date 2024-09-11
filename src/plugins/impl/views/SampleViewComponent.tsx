@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import './SampleViewComponent.scss'; // Assuming the SCSS file is named SampleViewComponent.scss
-import { LocalEventBus } from './LocalEventBus';
+import { LocalEventBus } from './LocalEventBus.js';
 
 interface Trade {
     id: number;

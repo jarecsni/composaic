@@ -1,6 +1,6 @@
-import { convertManifestToPluginDescriptor } from '../dev/plugin-utils';
-import { PluginManager } from '../plugins/PluginManager';
-import { PluginDescriptor } from '../plugins/types';
+import { convertManifestToPluginDescriptor } from '../dev/plugin-utils.js';
+import { PluginManager } from '../plugins/PluginManager.js';
+import { PluginDescriptor } from '../plugins/types.js';
 
 export class RemotePluginLoader {
     private static instance: RemotePluginLoader;

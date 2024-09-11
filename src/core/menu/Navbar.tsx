@@ -1,15 +1,7 @@
 import React, { useState } from 'react';
-import {
-    AppBar,
-    Toolbar,
-    Typography,
-    Button,
-    Menu,
-    MenuItem,
-} from '@mui/material';
+import { AppBar, Toolbar, Typography, Menu, MenuItem } from '@mui/material';
 import { Link as RouterLink } from 'react-router-dom';
-import { menuItems, MenuItem as MenuItemType } from './menuModel';
-import styles from './menu.module.scss';
+import { menuItems, MenuItem as MenuItemType } from './menuModel.js';
 
 // Recursive Menu Item Component
 const RecursiveMenuItem: React.FC<{

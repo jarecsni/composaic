@@ -6,7 +6,7 @@ declare global {
 const GLOBAL_EVENT_SERVICE_KEY = '__GlobalEventServiceInstance__';
 
 import { EventType, Handler } from 'mitt';
-import { LocalEventBus } from '../plugins/impl/views/LocalEventBus';
+import { LocalEventBus } from '../plugins/impl/views/LocalEventBus.js';
 
 export class EventService {
     private static instance: EventService;

@@ -1,11 +1,11 @@
 import React from 'react';
 import { FC, useEffect, useRef, useState } from 'react';
 import { BrowserRouter, Routes } from 'react-router-dom';
-import ErrorBoundary from './ErrorBoundary';
-import { init } from '../core/init';
-import { Navbar } from '../core/menu/Navbar';
-import { getRoutes } from '../core/menu/menu-utils';
-import { addLocalPlugins } from './plugin-utils';
+import ErrorBoundary from './ErrorBoundary.js';
+import { init } from '../core/init.js';
+import { Navbar } from '../core/menu/Navbar.js';
+import { getRoutes } from '../core/menu/menu-utils.js';
+import { addLocalPlugins } from './plugin-utils.js';
 
 interface DevContainerProps {
     loadModuleFn(moduleName: string, pkg: string): Promise<object>;

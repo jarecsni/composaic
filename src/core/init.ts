@@ -1,11 +1,14 @@
-import { loadPluginDefinitions } from '../plugins/manifest-util';
-import { createServices } from '../services/ServiceManager';
-import { RemotePluginLoader } from '../services/RemotePluginLoader';
-import { Configuration, ConfigurationService } from '../services/configuration';
-import { PluginManager } from '../plugins/PluginManager';
-import { LoggingService } from '../services/LoggingService';
-import { RemoteModuleLoaderService } from '../services/RemoteModuleLoaderService';
-import { PluginRegistryService } from '../services/PluginRegistryService';
+import { loadPluginDefinitions } from '../plugins/manifest-util.js';
+import { createServices } from '../services/ServiceManager.js';
+import { RemotePluginLoader } from '../services/RemotePluginLoader.js';
+import {
+    Configuration,
+    ConfigurationService,
+} from '../services/configuration.js';
+import { PluginManager } from '../plugins/PluginManager.js';
+import { LoggingService } from '../services/LoggingService.js';
+import { RemoteModuleLoaderService } from '../services/RemoteModuleLoaderService.js';
+import { PluginRegistryService } from '../services/PluginRegistryService.js';
 
 export type RemoteModule = {
     url: string;

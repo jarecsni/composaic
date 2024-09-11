@@ -1,5 +1,5 @@
-import { PluginManager } from '../plugins/PluginManager';
-import { PluginDescriptor, PluginManifest } from '../plugins/types';
+import { PluginManager } from '../plugins/PluginManager.js';
+import { PluginDescriptor, PluginManifest } from '../plugins/types.js';
 
 /**
  * Converts a plugin manifest to an array of plugin descriptors.

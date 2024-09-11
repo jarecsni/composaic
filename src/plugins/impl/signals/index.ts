@@ -1,4 +1,4 @@
-import { Plugin } from '../../types';
+import { Plugin } from '../../types.js';
 
 export type SignalDefinition = {
     signal: string;

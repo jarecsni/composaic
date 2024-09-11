@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
-//import { PluginManager } from '../../plugins/PluginManager';
-import { PluginManager } from '../../plugins/PluginManager';
+import { PluginManager } from '../../plugins/PluginManager.js';
 
 interface PluginComponentPageProps {
     component: string;
