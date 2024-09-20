@@ -1,7 +1,7 @@
-import * as sass from 'sass';
-import glob from 'glob';
-import fs from 'fs';
-import path from 'path';
+const sass = require('sass');
+const glob = require('glob');
+const fs = require('fs');
+const path = require('path');
 
 // Source and target directories as arguments
 const srcFolder = process.argv[2] || 'src';

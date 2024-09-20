@@ -1,6 +1,6 @@
-import glob from 'glob';
-import fs from 'fs';
-import path from 'path';
+const glob = require('glob');
+const fs = require('fs');
+const path = require('path');
 
 // Get directory name from command line arguments, default to 'dist' if not provided
 const directory = process.argv[2] || 'dist';
