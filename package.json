@@ -1,21 +1,37 @@
 {
     "name": "composaic",
-    "version": "0.5.4",
+    "version": "0.6.5",
     "description": "A Composable Micro-Frontend Framework",
-    "main": "./lib/index.js",
-    "types": "./lib/index.d.ts",
+    "main": "./dist/cjs/index.js",
+    "module": "./dist/esm/index.mjs",
+    "types": "./dist/types/index.d.ts",
+    "files": [
+        "dist"
+    ],
+    "exports": {
+        ".": {
+            "require": "./dist/cjs/index.js",
+            "import": "./dist/esm/index.mjs"
+        }
+    },
     "repository": {
         "type": "git",
         "url": "https://github.com/jarecsni/composaic.git"
     },
     "scripts": {
-        "compile-scss": "node ./scripts/compile-scss.js ./src ./lib",
-        "replace-scss-imports": "node ./scripts/replace-scss-imports.js ./lib",
+        "build:cjs": "tsc -p tsconfig.cjs.json",
+        "build:esm": "tsc -p tsconfig.esm.json && npm run rename:esm",
+        "build": "npm run build:cjs && npm run build:esm && npm run compile-scss && npm run replace-scss-imports",
+        "clean": "rimraf dist",
+        "rename:esm": "/bin/zsh ./scripts/fix-mjs.sh",
+        "prepack": "npm run clean && npm run build",
+        "compile-scss": "node ./scripts/compile-scss.js ./src ./dist",
+        "replace-scss-imports": "node ./scripts/replace-scss-imports.js ./dist",
         "api": "node ./server.js",
         "test": "jest",
         "test:watch": "jest --watch",
         "prettier": "prettier --write .",
-        "build": "npx tsc && npm run compile-scss && npm run replace-scss-imports && npm run prettier"
+        "build-old": "npx tsc && npm run compile-scss && npm run replace-scss-imports && npm run prettier"
     },
     "keywords": [
         "nodejs",
@@ -28,9 +44,6 @@
         "name": "Johnny Jarecsni",
         "email": "johnny.jarecsni@icloud.com"
     },
-    "files": [
-        "lib"
-    ],
     "license": "MIT",
     "devDependencies": {
         "@babel/cli": "^7.21.5",
@@ -55,8 +68,9 @@
         "globals": "^15.3.0",
         "jest": "^29.5.0",
         "prettier": "^3.3.1",
+        "rimraf": "^6.0.1",
         "sass": "^1.77.8",
-        "typescript": "^5.0.4",
+        "typescript": "^5.6.2",
         "typescript-eslint": "^7.12.0"
     },
     "dependencies": {

@@ -40,6 +40,7 @@ glob(`${srcFolder}/**/*.scss`, (err, files) => {
     }
 
     files.forEach((file) => {
-        compileSass(file, srcFolder, targetFolder);
+        compileSass(file, srcFolder, path.join(targetFolder, 'cjs'));
+        compileSass(file, srcFolder, path.join(targetFolder, 'esm'));
     });
 });

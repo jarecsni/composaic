@@ -25,7 +25,9 @@ const replaceScssImports = (directory, fileExtension) => {
 
 // Adjust the pattern to match your output JavaScript files within the provided directory
 console.log('Replacing .scss imports with .css in JS files');
-replaceScssImports(directory, 'js');
+replaceScssImports(path.join(directory, 'cjs'), 'js');
+replaceScssImports(path.join(directory, 'esm'), 'mjs');
 
 console.log('Replacing .scss imports with .css in .d.ts files');
-replaceScssImports(directory, 'd.ts');
+replaceScssImports(path.join(directory, 'cjs'), 'd.ts');
+replaceScssImports(path.join(directory, 'esm'), 'd.ts');
