@@ -32,20 +32,24 @@ export interface PluginDescriptor {
     version: string;
     description: string;
     pluginInstance?: Plugin;
-    extensionPoints?: {
-        id: string;
-        type: string;
-        singleton?: boolean;
-        impl?: { plugin: string; extensionImpl?: object; meta?: object }[];
-    }[];
-    extensions?: {
-        plugin: string;
-        id: string;
-        className: string;
-        impl?: object;
-        meta?: object;
-    }[];
+    extensionPoints?: ExtensionPoint[];
+    extensions?: Extension[];
     dependencies?: (string | PluginDescriptor)[];
+}
+
+export type ExtensionPoint = {
+    id: string;
+    type: string;
+    singleton?: boolean;
+    impl?: { plugin: string; extensionImpl?: object; meta?: object }[];
+}
+
+export type Extension = {
+    plugin: string;
+    id: string;
+    className: string;
+    impl?: object;
+    meta?: object;
 }
 
 const PluginManifestExtensionPoints = Record({

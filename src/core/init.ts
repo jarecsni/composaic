@@ -8,7 +8,6 @@ import {
 import { PluginManager } from '../plugins/PluginManager.js';
 import { LoggingService } from '../services/LoggingService.js';
 import { RemoteModuleLoaderService } from '../services/RemoteModuleLoaderService.js';
-import { PluginRegistryService } from '../services/PluginRegistryService.js';
 
 export type RemoteModule = {
     url: string;
@@ -30,7 +29,6 @@ interface InitOptions {
 export const init = async (options: InitOptions) => {
     const { addLocalPluginsFn, config, loadRemoteModuleFn } = options;
     RemoteModuleLoaderService.initialiseStaticInstance(loadRemoteModuleFn);
-    PluginRegistryService.getInstance();
 
     const corePlugins = await loadPluginDefinitions();
 
