@@ -1,21 +1,4 @@
-import {
-    __federation_method_getRemote,
-    __federation_method_setRemote,
-    // @ts-expect-error: this is a private API
-} from '__federation__';
-import { EventService } from './EventService';
-
-/**
- * Represents a remote module that can be loaded dynamically.
- */
-type RemoteModule = {
-    url: string;
-    name: string;
-    bundleFile: string;
-    moduleName: string;
-    resolve: (value: object | undefined) => void;
-    reject: (reason?: any) => void;
-};
+import { RemoteModule, RemoteModuleLoaderFn } from '../core/init';
 
 /**
  * Service for loading remote modules dynamically.
@@ -25,24 +8,28 @@ type RemoteModule = {
  */
 export class RemoteModuleLoaderService {
     private static instance: RemoteModuleLoaderService;
+    private loadRemoteModuleFn: RemoteModuleLoaderFn;
 
-    private constructor() {
-        // Private constructor to prevent instantiation
-        EventService.getInstance().on<RemoteModule>(
-            '@composaic.loadRemoteModule',
-            this.loadRemoteModule.bind(this)
-        );
+    private constructor(loadRemoteModuleFn: RemoteModuleLoaderFn) {
+        this.loadRemoteModuleFn = loadRemoteModuleFn;
     }
 
     /**
      * Gets the singleton instance of RemoteModuleLoaderService.
      * @returns The singleton instance of RemoteModuleLoaderService.
      */
-    public static getInstance(): RemoteModuleLoaderService {
+    public static initialiseStaticInstance(
+        loadRemoteModuleFn: RemoteModuleLoaderFn
+    ): RemoteModuleLoaderService {
         if (!RemoteModuleLoaderService.instance) {
-            RemoteModuleLoaderService.instance =
-                new RemoteModuleLoaderService();
+            RemoteModuleLoaderService.instance = new RemoteModuleLoaderService(
+                loadRemoteModuleFn
+            );
         }
+        return RemoteModuleLoaderService.instance;
+    }
+
+    public static getInstance(): RemoteModuleLoaderService {
         return RemoteModuleLoaderService.instance;
     }
 
@@ -50,26 +37,9 @@ export class RemoteModuleLoaderService {
      * Loads a remote module.
      * @param remoteModule - The remote module to load.
      */
-    private async loadRemoteModule(remoteModule: RemoteModule) {
-        const { url, name, bundleFile, moduleName, resolve, reject } =
-            remoteModule;
-        __federation_method_setRemote(name, {
-            url: () =>
-                Promise.resolve(`${remoteModule.url}/assets/${bundleFile}`),
-            format: 'esm',
-            from: 'vite',
-        });
-        try {
-            const module = await __federation_method_getRemote(
-                name,
-                moduleName
-            );
-            resolve(module);
-        } catch (error) {
-            console.error(
-                `[composaic] Error fetching remote plugin module ${moduleName}, url=${url}, name=${name} : ${error}`
-            );
-            reject(error);
-        }
+    public async loadRemoteModule(
+        remoteModule: RemoteModule
+    ): Promise<object | undefined> {
+        return this.loadRemoteModuleFn(remoteModule);
     }
 }

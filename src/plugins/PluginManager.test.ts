@@ -1,6 +1,6 @@
 import { PluginManager } from './PluginManager';
 import { BarPlugin } from './impl/bar/BarPluginModule';
-import { ClassConstructor, Plugin, PluginDescriptor } from './types';
+import { PluginDescriptor } from './types';
 
 describe('PluginManager', () => {
     describe('using unresolved descriptors', () => {

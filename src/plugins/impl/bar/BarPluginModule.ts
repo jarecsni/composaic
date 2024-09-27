@@ -1,4 +1,4 @@
-import { Plugin } from '../../types';
+import { Plugin } from '../../types.js';
 
 export interface MyCoolExtensionType {
     saySomethingCool(): void;

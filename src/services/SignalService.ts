@@ -1,4 +1,4 @@
-import { PluginManager } from '../plugins/PluginManager';
+import { PluginManager } from '../plugins/PluginManager.js';
 import { SignalsPlugin } from '../plugins/impl/signals';
 
 export type Signal = {
@@ -10,15 +10,22 @@ export class SignalService {
     private static instance: SignalService;
     private signalsPlugin?: SignalsPlugin; // Assume this is initialized correctly
     private isInitialized: boolean = false;
+    private readonly instanceId: number;
 
     private constructor() {
         // Private constructor to prevent direct construction calls with the `new` operator.
+        this.instanceId = Date.now(); // Use the current timestamp as a unique identifier
+        console.log(
+            `[composaic] SignalService instance created with ID: ${this.instanceId}`
+        );
     }
 
     // New method to asynchronously initialize the service
     private async init(): Promise<void> {
         if (!this.isInitialized) {
-            console.log('Initializing SignalService');
+            console.log(
+                `Initializing SignalService with ID: ${this.instanceId}`
+            );
             try {
                 const plugin =
                     await PluginManager.getInstance().getPlugin(
@@ -41,12 +48,17 @@ export class SignalService {
             await SignalService.instance.init(); // Ensure the instance is initialized before returning
             console.log('SignalService initialized');
         }
+        console.log(
+            `[composaic] Using SignalService instance with ID: ${SignalService.instance.instanceId}`
+        );
         return SignalService.instance;
     }
 
     async send(signal: Signal) {
         if (!this.isInitialized) {
-            console.error('SignalService is not initialized.');
+            console.log(
+                `SignalService instance with ID not initialised: ${SignalService.instance.instanceId}`
+            );
             return;
         }
         // Assuming getPlugin and getModule are async methods available in the system

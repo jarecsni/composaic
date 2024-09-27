@@ -1,15 +1,34 @@
-import { loadPluginDefinitions } from '../plugins/manifest-util';
-import { createServices } from '../services/ServiceManager';
-import { RemotePluginLoader } from '../services/RemotePluginLoader';
-import { ConfigurationService } from '../services/configuration';
-import { PluginManager } from '../plugins/PluginManager';
-import { LoggingService } from '../services/LoggingService';
-import { RemoteModuleLoaderService } from '../services/RemoteModuleLoaderService';
-import { PluginRegistryService } from '../services/PluginRegistryService';
+import { loadPluginDefinitions } from '../plugins/manifest-util.js';
+import { createServices } from '../services/ServiceManager.js';
+import { RemotePluginLoader } from '../services/RemotePluginLoader.js';
+import {
+    Configuration,
+    ConfigurationService,
+} from '../services/configuration.js';
+import { PluginManager } from '../plugins/PluginManager.js';
+import { LoggingService } from '../services/LoggingService.js';
+import { RemoteModuleLoaderService } from '../services/RemoteModuleLoaderService.js';
 
-export const init = async (addLocalPluginsFn?: () => void) => {
-    RemoteModuleLoaderService.getInstance();
-    PluginRegistryService.getInstance();
+export type RemoteModule = {
+    url: string;
+    name: string;
+    bundleFile: string;
+    moduleName: string;
+};
+
+export type RemoteModuleLoaderFn = (
+    remoteModule: RemoteModule
+) => Promise<object | undefined>;
+
+interface InitOptions {
+    addLocalPluginsFn?: () => void;
+    config?: Configuration;
+    loadRemoteModuleFn: RemoteModuleLoaderFn;
+}
+
+export const init = async (options: InitOptions) => {
+    const { addLocalPluginsFn, config, loadRemoteModuleFn } = options;
+    RemoteModuleLoaderService.initialiseStaticInstance(loadRemoteModuleFn);
 
     const corePlugins = await loadPluginDefinitions();
 
@@ -18,9 +37,10 @@ export const init = async (addLocalPluginsFn?: () => void) => {
 
     await addLocalPluginsFn?.();
 
-    await RemotePluginLoader.getInstance().loadManifests(
-        ConfigurationService.getInstance().getConfiguration().remotes
-    );
+    const configuration = ConfigurationService.getInstance(config).getConfiguration();
+    console.log(`[composaic] Configuration ${JSON.stringify(configuration)}`);
+
+    await RemotePluginLoader.getInstance().loadManifests(configuration.remotes);
 
     // Create and initialize services
     await createServices();

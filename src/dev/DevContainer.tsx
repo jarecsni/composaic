@@ -1,24 +1,32 @@
+import React from 'react';
 import { FC, useEffect, useRef, useState } from 'react';
 import { BrowserRouter, Routes } from 'react-router-dom';
-import ErrorBoundary from '../core/ErrorBoundary';
-import { init } from '../core/init';
-import { Navbar } from '../core/menu/Navbar';
-import { getRoutes } from '../core/menu/menu-utils';
-import { addLocalPlugins } from './plugin-utils';
+import ErrorBoundary from './ErrorBoundary.js';
+import { init } from '../core/init.js';
+import { Navbar } from '../core/menu/Navbar.js';
+import { getRoutes } from '../core/menu/menu-utils.js';
+import { addLocalPlugins } from './plugin-utils.js';
+import { Configuration } from '../services/configuration.js';
 
 interface DevContainerProps {
     loadModuleFn(moduleName: string, pkg: string): Promise<object>;
+    config: Configuration
 }
 
-export const DevContainer: FC<DevContainerProps> = ({ loadModuleFn }) => {
+export const DevContainer: FC<DevContainerProps> = ({ loadModuleFn, config }) => {
     const [routes, setRoutes] = useState<JSX.Element[]>([]);
     const menuItemsLoaded = useRef(false);
 
     useEffect(() => {
         if (!menuItemsLoaded.current) {
             menuItemsLoaded.current = true;
-            init(async () => {
-                await addLocalPlugins(loadModuleFn);
+            init({
+                addLocalPluginsFn: async () => {
+                    await addLocalPlugins(loadModuleFn);
+                },
+                // FIXME: remote module loading in dev container not supported as yet
+                loadRemoteModuleFn: async () => Promise.resolve({}),
+                config
             }).then(() => {
                 getRoutes().then((generatedRoutes) => {
                     setRoutes(generatedRoutes);

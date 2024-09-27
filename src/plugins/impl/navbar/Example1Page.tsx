@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { ViewsPlugin } from '../views';
-import { PluginManager } from '../../PluginManager';
-import { LocalEventBus } from '../views/LocalEventBus';
+import { PluginManager } from '../../PluginManager.js';
+import { LocalEventBus } from '../views/LocalEventBus.js';
 
 export const Example1Page: React.FC = () => {
     const [pluginComponents, setPluginComponents] = useState<

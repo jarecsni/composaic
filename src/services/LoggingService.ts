@@ -1,9 +1,9 @@
-import { PluginManager } from '../plugins/PluginManager';
+import { PluginManager } from '../plugins/PluginManager.js';
 import {
     ComposaicSubSystemName,
     LogLevel,
     LoggerPlugin,
-} from '../plugins/impl/logger';
+} from '../plugins/impl/logger/index.js';
 
 export class LoggingService {
     private static instance: LoggingService;

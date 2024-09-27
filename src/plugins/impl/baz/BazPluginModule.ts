@@ -1,5 +1,5 @@
-import { Plugin } from '../../types';
-import { MyCoolExtensionType } from '../bar/BarPluginModule';
+import { Plugin } from '../../types.js';
+import { MyCoolExtensionType } from '../bar/BarPluginModule.js';
 
 export class BazCoolExtensionImpl implements MyCoolExtensionType {
     saySomethingCool(): void {
@@ -7,4 +7,4 @@ export class BazCoolExtensionImpl implements MyCoolExtensionType {
     }
 }
 
-export class BazPlugin extends Plugin {}
+export class BazPlugin extends Plugin { }

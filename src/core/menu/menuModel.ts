@@ -1,8 +1,8 @@
 import React from 'react';
-import HomePage from './pages/HomePage';
-import Service1Page from './pages/Service1Page';
-import Service2Page from './pages/Service2Page';
-import AboutPage from './pages/AboutPage';
+import HomePage from './pages/HomePage.js';
+import Service1Page from './pages/Service1Page.js';
+import Service2Page from './pages/Service2Page.js';
+import AboutPage from './pages/AboutPage.js';
 
 // Define a type where component is required and children is omitted
 export interface MenuItem {

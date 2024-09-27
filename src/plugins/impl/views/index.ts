@@ -1,6 +1,6 @@
-import { Plugin } from '../../types';
+import { Plugin } from '../../types.js';
 
-export { SampleViewComponent } from './SampleViewComponent';
+export { SampleViewComponent } from './SampleViewComponent.js';
 
 export type PluginViewDefinition = {
     container: string;

@@ -1,4 +1,4 @@
-import { Plugin } from '../../types';
+import { Plugin } from '../../types.js';
 
 export type LogLevel = 'trace' | 'debug' | 'info' | 'warn' | 'error' | 'fatal';
 

@@ -1,9 +1,10 @@
 import React, { Suspense } from 'react';
 import { NavbarItem, NavbarPlugin } from '../../plugins/impl/navbar';
-import { MenuItem } from './menuModel'; // Import the MenuItemModel and menuItems
+import { MenuItem } from './menuModel.js'; // Import the MenuItemModel and menuItems
 import { Route } from 'react-router-dom';
-import { PluginManager } from '../../plugins/PluginManager';
-import { menuItems } from './menuModel'; // Import the MenuItemModel and menuItems
+import { PluginManager } from '../../plugins/PluginManager.js';
+import { menuItems } from './menuModel.js'; // Import the MenuItemModel and menuItems
+import PluginComponentPage from './PluginComponentPage.js';
 
 export const transformNavBarItemsToMenuItems = (
     navBarItems: NavbarItem[],
@@ -11,11 +12,13 @@ export const transformNavBarItemsToMenuItems = (
 ): MenuItem[] => {
     return navBarItems.map((item: NavbarItem): MenuItem => {
         // Base transformation for items without children
-        const LazyComponent = React.lazy(() => import(`./PluginComponentPage`));
+        // const LazyComponent = React.lazy(
+        //     () => import(`./PluginComponentPage.js`)
+        // );
         // Create a wrapper component to pass props to the lazy-loaded component
         const ComponentWithProps = () => (
             <Suspense fallback={<div>Loading...</div>}>
-                <LazyComponent
+                <PluginComponentPage
                     component={item.component}
                     plugin={plugin || item.plugin}
                 />
