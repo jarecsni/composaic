@@ -49,7 +49,7 @@ export class SignalService {
             console.log('SignalService initialized');
         }
         console.log(
-            `Using SignalService instance with ID: ${SignalService.instance.instanceId}`
+            `[composaic] Using SignalService instance with ID: ${SignalService.instance.instanceId}`
         );
         return SignalService.instance;
     }

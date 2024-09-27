@@ -6,12 +6,14 @@ import { init } from '../core/init.js';
 import { Navbar } from '../core/menu/Navbar.js';
 import { getRoutes } from '../core/menu/menu-utils.js';
 import { addLocalPlugins } from './plugin-utils.js';
+import { Configuration } from '../services/configuration.js';
 
 interface DevContainerProps {
     loadModuleFn(moduleName: string, pkg: string): Promise<object>;
+    config: Configuration
 }
 
-export const DevContainer: FC<DevContainerProps> = ({ loadModuleFn }) => {
+export const DevContainer: FC<DevContainerProps> = ({ loadModuleFn, config }) => {
     const [routes, setRoutes] = useState<JSX.Element[]>([]);
     const menuItemsLoaded = useRef(false);
 
@@ -24,6 +26,7 @@ export const DevContainer: FC<DevContainerProps> = ({ loadModuleFn }) => {
                 },
                 // FIXME: remote module loading in dev container not supported as yet
                 loadRemoteModuleFn: async () => Promise.resolve({}),
+                config
             }).then(() => {
                 getRoutes().then((generatedRoutes) => {
                     setRoutes(generatedRoutes);
