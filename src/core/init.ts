@@ -37,7 +37,8 @@ export const init = async (options: InitOptions) => {
 
     await addLocalPluginsFn?.();
 
-    const configuration = ConfigurationService.getInstance(config).getConfiguration();
+    const configuration =
+        ConfigurationService.getInstance(config).getConfiguration();
     console.log(`[composaic] Configuration ${JSON.stringify(configuration)}`);
 
     await RemotePluginLoader.getInstance().loadManifests(configuration.remotes);

@@ -42,7 +42,7 @@ export type ExtensionPoint = {
     type: string;
     singleton?: boolean;
     impl?: { plugin: string; extensionImpl?: object; meta?: object }[];
-}
+};
 
 export type Extension = {
     plugin: string;
@@ -50,7 +50,7 @@ export type Extension = {
     className: string;
     impl?: object;
     meta?: object;
-}
+};
 
 const PluginManifestExtensionPoints = Record({
     id: String,

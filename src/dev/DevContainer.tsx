@@ -10,10 +10,13 @@ import { Configuration } from '../services/configuration.js';
 
 interface DevContainerProps {
     loadModuleFn(moduleName: string, pkg: string): Promise<object>;
-    config: Configuration
+    config: Configuration;
 }
 
-export const DevContainer: FC<DevContainerProps> = ({ loadModuleFn, config }) => {
+export const DevContainer: FC<DevContainerProps> = ({
+    loadModuleFn,
+    config,
+}) => {
     const [routes, setRoutes] = useState<JSX.Element[]>([]);
     const menuItemsLoaded = useRef(false);
 
@@ -26,7 +29,7 @@ export const DevContainer: FC<DevContainerProps> = ({ loadModuleFn, config }) =>
                 },
                 // FIXME: remote module loading in dev container not supported as yet
                 loadRemoteModuleFn: async () => Promise.resolve({}),
-                config
+                config,
             }).then(() => {
                 getRoutes().then((generatedRoutes) => {
                     setRoutes(generatedRoutes);

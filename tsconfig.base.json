@@ -1,9 +1,6 @@
 {
     "compilerOptions": {
-        "lib": [
-            "esnext",
-            "dom"
-        ],
+        "lib": ["esnext", "dom"],
         "declaration": true,
         "declarationDir": "./dist/types",
         "strict": true,
@@ -14,13 +11,8 @@
         "baseUrl": ".",
         "rootDir": "./src",
         "jsx": "react-jsx",
-        "resolveJsonModule": true,
+        "resolveJsonModule": true
     },
-    "include": [
-        "src"
-    ],
-    "exclude": [
-        "dist",
-        "node_modules"
-    ]
+    "include": ["src"],
+    "exclude": ["dist", "node_modules"]
 }
