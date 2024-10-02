@@ -34,6 +34,8 @@ export const DevContainer: FC<DevContainerProps> = ({
                 getRoutes().then((generatedRoutes) => {
                     setRoutes(generatedRoutes);
                 });
+            }).catch((err) => {
+                console.error(err);
             });
         }
     }, []);

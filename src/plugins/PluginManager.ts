@@ -32,7 +32,7 @@ export class PluginManager {
     protected static instance: PluginManager;
     private registry: { [key: string]: any } = {};
 
-    protected constructor() {}
+    protected constructor() { }
 
     public static getInstance(): PluginManager {
         if (!PluginManager.instance) {
@@ -147,7 +147,7 @@ export class PluginManager {
             }
             pluginDescriptor.loadedClass =
                 pluginDescriptor.loadedModule![
-                    pluginDescriptor.class as keyof typeof pluginDescriptor.loadedModule
+                pluginDescriptor.class as keyof typeof pluginDescriptor.loadedModule
                 ];
         }
         if (pluginDescriptor.extensions) {
@@ -234,21 +234,6 @@ export class PluginManager {
         bundleFile: string,
         moduleName: string
     ): Promise<object | undefined> {
-        // try {
-        //     return new Promise((resolve, reject) => {
-        //         // Emit the event and pass the resolve and reject functions as parameters
-        //         EventService.getInstance().emit('@composaic.loadRemoteModule', {
-        //             url,
-        //             name,
-        //             bundleFile,
-        //             moduleName,
-        //             resolve,
-        //             reject,
-        //         });
-        //     });
-        // } catch (error) {
-        //     console.error(`Error loading plugin: ${name}`, error);
-        // }
         return RemoteModuleLoaderService.getInstance().loadRemoteModule({
             url,
             name,

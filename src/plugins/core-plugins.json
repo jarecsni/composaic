@@ -1,6 +1,0 @@
-[
-    "logger/logger-plugin",
-    "navbar/navbar-plugin",
-    "views/views-plugin",
-    "signals/signals-plugin"
-]
