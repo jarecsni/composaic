@@ -7,9 +7,10 @@ import { Navbar } from '../core/menu/Navbar.js';
 import { getRoutes } from '../core/menu/menu-utils.js';
 import { addLocalPlugins } from './plugin-utils.js';
 import { Configuration } from '../services/configuration.js';
+import { PluginDescriptor } from '../plugins/types.js';
 
 interface DevContainerProps {
-    loadModuleFn(moduleName: string, pkg: string): Promise<object>;
+    loadModuleFn(pluginDescriptor: PluginDescriptor): Promise<object | undefined>;
     config: Configuration;
 }
 

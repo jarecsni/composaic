@@ -1,13 +1,9 @@
 import {
-    Boolean,
-    Number,
     Optional,
     String,
     Literal,
     Array,
-    Tuple,
     Record,
-    Union,
     Static,
     Unknown,
 } from 'runtypes';
@@ -25,6 +21,7 @@ export interface PluginDescriptor {
     module: string;
     package: string;
     class: string;
+    loader?: (pluginDescriptor: PluginDescriptor) => Promise<object | undefined>;
     loadedClass?: object;
     loadedModule?: { [exportedModule: string]: object };
     plugin: string;

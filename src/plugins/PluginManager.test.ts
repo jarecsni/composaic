@@ -8,7 +8,7 @@ describe('PluginManager', () => {
             PluginManager.getInstance().clear();
         });
         it('should add a plugin', async () => {
-            PluginManager.getInstance().addPlugin({
+            const barDescriptor: PluginDescriptor = {
                 module: 'BarPluginModule',
                 package: 'bar',
                 class: 'BarPlugin',
@@ -21,8 +21,13 @@ describe('PluginManager', () => {
                         type: 'MyCoolExtensionType',
                     },
                 ],
-            });
-            PluginManager.getInstance().addPlugin({
+            };
+            barDescriptor.loadedModule = await import(
+                `./impl/${barDescriptor.package}/${barDescriptor.module}.ts`
+            );
+            PluginManager.getInstance().addPlugin(barDescriptor);
+
+            const bazDescriptor: PluginDescriptor = {
                 module: 'BazPluginModule',
                 package: 'baz',
                 class: 'BazPlugin',
@@ -36,7 +41,11 @@ describe('PluginManager', () => {
                         className: 'BazCoolExtensionImpl',
                     },
                 ],
-            });
+            };
+            bazDescriptor.loadedModule = await import(
+                `./impl/${bazDescriptor.package}/${bazDescriptor.module}.ts`
+            );
+            PluginManager.getInstance().addPlugin(bazDescriptor);
             const pluginBaz = (
                 await PluginManager.getInstance().getPlugin('@foo/baz')
             ).pluginDescriptor;
@@ -58,7 +67,7 @@ describe('PluginManager', () => {
             ).toBe('@foo/baz');
         });
         it('should be able to load a plugin with self extension', async () => {
-            PluginManager.getInstance().addPlugin({
+            const barDescriptor: PluginDescriptor = {
                 module: 'BarPluginModule',
                 package: 'bar',
                 class: 'BarPlugin',
@@ -78,8 +87,12 @@ describe('PluginManager', () => {
                         className: 'SimpleCoolExtensionProvider',
                     },
                 ],
-            });
-            PluginManager.getInstance().addPlugin({
+            };
+            barDescriptor.loadedModule = await import(
+                `./impl/${barDescriptor.package}/${barDescriptor.module}.ts`
+            );
+            PluginManager.getInstance().addPlugin(barDescriptor);
+            const bazDescriptor: PluginDescriptor = {
                 module: 'BazPluginModule',
                 package: 'baz',
                 class: 'BazPlugin',
@@ -93,7 +106,11 @@ describe('PluginManager', () => {
                         className: 'BazCoolExtensionImpl',
                     },
                 ],
-            });
+            };
+            bazDescriptor.loadedModule = await import(
+                `./impl/${bazDescriptor.package}/${bazDescriptor.module}.ts`
+            );
+            PluginManager.getInstance().addPlugin(bazDescriptor);
 
             const loadedPlugin =
                 await PluginManager.getInstance().getPlugin('@foo/bar');
