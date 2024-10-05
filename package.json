@@ -1,6 +1,6 @@
 {
     "name": "composaic",
-    "version": "0.7.0",
+    "version": "0.8.1",
     "description": "A Composable Micro-Frontend Framework",
     "main": "./dist/cjs/index.js",
     "module": "./dist/esm/index.mjs",
@@ -61,7 +61,7 @@
         "babel-jest": "^29.7.0",
         "babel-plugin-module-resolver": "^5.0.2",
         "concurrently": "^8.2.2",
-        "eslint": "^8.6.0",
+        "eslint": "^9.10.0",
         "eslint-config-prettier": "^9.1.0",
         "eslint-import-resolver-typescript": "^3.6.1",
         "eslint-plugin-import": "^2.29.1",
@@ -73,7 +73,7 @@
         "rimraf": "^6.0.1",
         "sass": "^1.77.8",
         "typescript": "^5.6.2",
-        "typescript-eslint": "^7.12.0"
+        "typescript-eslint": "^8.8.0"
     },
     "dependencies": {
         "express": "^4.19.2",

@@ -1,4 +1,4 @@
-import { convertManifestToPluginDescriptor } from './plugin-utils';
+import { convertManifestToPluginDescriptor, loadRemotePlugin } from './plugin-utils';
 
 describe('local-plugin-utils', () => {
     it('should convert remote manifest to plugin descriptor', () => {
@@ -51,6 +51,8 @@ describe('local-plugin-utils', () => {
                 module: 'TestModule',
                 package: 'test-package',
                 class: 'test-class',
+                load: undefined,
+                loader: loadRemotePlugin,
                 plugin: 'test-plugin',
                 version: '1.0.0',
                 description: 'test-description',
@@ -65,6 +67,7 @@ describe('local-plugin-utils', () => {
                         plugin: 'test-plugin',
                         id: 'test-id',
                         className: 'test-class',
+                        meta: undefined
                     },
                 ],
             },

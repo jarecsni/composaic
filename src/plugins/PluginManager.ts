@@ -24,6 +24,10 @@ const moduleMap: { [key: string]: object } = {
     'baz/BazPluginModule': baz,
 };
 
+export const loadCorePlugin = async (pluginDescriptor: PluginDescriptor): Promise<object | undefined> => {
+    return Promise.resolve(moduleMap[`${pluginDescriptor.package}/${pluginDescriptor.module}`]);
+};
+
 /**
  * The `PluginManager` class is responsible for managing plugins in the application.
  * It provides methods to add, load, start, and get plugins.
@@ -120,35 +124,30 @@ export class PluginManager {
             console.log('Deferring loading of plugin', pluginName);
         } else {
             if (!pluginDescriptor.loadedModule) {
-                if (!pluginDescriptor.remoteURL) {
-                    // load local module
-                    pluginDescriptor.loadedModule = moduleMap[
-                        `${pluginDescriptor.package}/${pluginDescriptor.module}`
-                    ] as { exportedModule: object };
-                } else {
-                    pluginDescriptor.loadedModule =
-                        await this.loadRemotePluginModule(
-                            pluginDescriptor.remoteURL,
-                            pluginDescriptor.remoteName!,
-                            pluginDescriptor.bundleFile!,
-                            pluginDescriptor.remoteModuleName!
-                        );
-                    if (!pluginDescriptor.loadedModule) {
-                        console.error(
-                            `[composaic] Failed to load remote plugin ${pluginDescriptor.plugin}`
-                        );
-                        return null;
-                    } else {
-                        console.log(
-                            `[composaic] Loaded remote plugin ${pluginDescriptor.plugin}`
-                        );
-                    }
+                try {
+                    pluginDescriptor.loadedModule = await pluginDescriptor.loader(pluginDescriptor);
+                    console.log(
+                        `[composaic] Loaded plugin ${pluginDescriptor.plugin}`
+                    );
+                } catch (error) {
+                    console.error(
+                        `[composaic] Failed to load plugin ${pluginDescriptor.plugin}`,
+                        error
+                    );
+                    return null;
                 }
             }
-            pluginDescriptor.loadedClass =
-                pluginDescriptor.loadedModule![
-                pluginDescriptor.class as keyof typeof pluginDescriptor.loadedModule
-                ];
+            if (pluginDescriptor.loadedModule) {
+                pluginDescriptor.loadedClass =
+                    pluginDescriptor.loadedModule![
+                    pluginDescriptor.class as keyof typeof pluginDescriptor.loadedModule
+                    ];
+            } else {
+                console.error(
+                    `[composaic] No module loaded for plugin ${pluginDescriptor.plugin}`
+                );
+            }
+
         }
         if (pluginDescriptor.extensions) {
             for (const extension of pluginDescriptor.extensions) {

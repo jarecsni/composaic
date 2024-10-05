@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.8.1 (03 Oct 2024)
+o Introduced loader property in PluginDescriptor to allow loading plugins from
+  various sources
+o Refactor has been done in previous versions which were partly undone, this was all
+  due to remote federation issues around using composaic as a node module
+
 ## 0.4.26 (10 Sep 2024)
 
 Making SignalService use the new GlobalScopeService
