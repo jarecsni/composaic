@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.9.0 (12 Oct 2024)
+o Discarding the idea of using SystemJS
+
 ## 0.8.1 (03 Oct 2024)
 o Introduced loader property in PluginDescriptor to allow loading plugins from
   various sources
