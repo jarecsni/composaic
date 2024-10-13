@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.9.1 (13 Oct 2024)
+Added more details to ErrorBoundary component
+
 ## 0.9.0 (12 Oct 2024)
 o Discarding the idea of using SystemJS
 
