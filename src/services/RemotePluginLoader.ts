@@ -1,6 +1,7 @@
 import { convertManifestToPluginDescriptor } from '../dev/plugin-utils.js';
 import { PluginManager } from '../plugins/PluginManager.js';
 import { PluginDescriptor } from '../plugins/types.js';
+import { RemoteDefinition } from './configuration.js';
 
 export class RemotePluginLoader {
     private static instance: RemotePluginLoader;
@@ -16,11 +17,11 @@ export class RemotePluginLoader {
         return RemotePluginLoader.instance;
     }
 
-    async loadManifests(remotes: string[]): Promise<void> {
+    async loadManifests(remotes: RemoteDefinition[]): Promise<void> {
         try {
             await Promise.all(
                 remotes.map(async (remote) => {
-                    const manifestRaw = await fetch(remote + '/manifest.json');
+                    const manifestRaw = await fetch(remote.host + '/manifest.json');
                     const manifest = await manifestRaw.json();
                     console.log(
                         `[composaic] Loaded manifest from ${remote}: ${JSON.stringify(manifest)}`

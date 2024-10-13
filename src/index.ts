@@ -8,3 +8,4 @@ export { getRoutes } from './core/menu/menu-utils.js';
 export { DevContainer } from './dev/DevContainer.js';
 export { RemoteModule } from './core/init.js';
 export { PluginDescriptor } from './plugins/types.js';
+export { ConfigurationService, ComposaicEnv } from './services/configuration.js';

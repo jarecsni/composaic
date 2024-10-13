@@ -1,5 +1,14 @@
 # Changelog
 
+## 10.0.2-3 (13 Oct 2024)
+o expose ConfigurationService.getEnv() to return environment string.
+
+## 10.0.1 (13 Oct 2024)
+o expose ConfigurationService
+
+## 10.0.0 (13 Oct 2024)
+o moving to @module-federation/enhanced requires some slight refactoring around the remote attributes
+
 ## 0.9.1 (13 Oct 2024)
 Added more details to ErrorBoundary component
 
