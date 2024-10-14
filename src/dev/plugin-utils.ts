@@ -57,7 +57,7 @@ export const convertManifestToPluginDescriptor = (
                 result.remoteName = remote.name;
                 result.remoteURL = remote.host;
                 result.bundleFile = remote.file;
-                result.remoteModuleName = './' + definition.module;
+                result.remoteModuleName = definition.module;
                 result.loader = loadRemotePlugin;
             }
             return result;
