@@ -40,7 +40,7 @@ describe('local-plugin-utils', () => {
         // Act
         const result = convertManifestToPluginDescriptor(
             manifest,
-            'http://localhost:9000'
+            { name: 'Remote1', host: 'http://localhost:9000', file: 'remoteEntry.js' }
         );
         expect(result).toEqual([
             {

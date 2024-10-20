@@ -1,8 +1,15 @@
 export type NodeEnv = 'development' | 'production';
 export type ComposaicEnv = 'dev' | 'prd';
-export type EnvironmentConfiguration = {
-    remotes: string[];
+
+export type RemoteDefinition = {
+    name: string;
+    host: string;
+    file: string;
 };
+export type EnvironmentConfiguration = {
+    remotes: RemoteDefinition[];
+};
+
 export type Configuration = {
     dev: EnvironmentConfiguration;
     prd: EnvironmentConfiguration;
@@ -36,4 +43,7 @@ export class ConfigurationService {
             environmentMap[ConfigurationService.env]
         ];
     };
+    getEnv = () => {
+        return environmentMap[ConfigurationService.env];
+    }
 }

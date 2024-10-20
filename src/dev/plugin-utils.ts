@@ -1,6 +1,7 @@
 import { RemoteModuleLoaderService } from '../services/RemoteModuleLoaderService.js';
 import { PluginManager } from '../plugins/PluginManager.js';
 import { PluginDescriptor, PluginManifest } from '../plugins/types.js';
+import { RemoteDefinition } from '../services/configuration.js';
 
 export const loadRemotePlugin = (pluginDescriptor: PluginDescriptor): Promise<object | undefined> => {
     return RemoteModuleLoaderService.getInstance().loadRemoteModule({
@@ -19,7 +20,7 @@ export const loadRemotePlugin = (pluginDescriptor: PluginDescriptor): Promise<ob
  */
 export const convertManifestToPluginDescriptor = (
     manifest: PluginManifest,
-    remote?: string
+    remote?: RemoteDefinition
 ): PluginDescriptor[] => {
     return manifest.plugins.flatMap((plugin) => {
         return plugin.definitions.map((definition) => {
@@ -51,10 +52,12 @@ export const convertManifestToPluginDescriptor = (
                 }),
             };
             if (remote) {
-                result.remoteName = plugin.remote.name;
-                result.remoteURL = remote;
-                result.bundleFile = plugin.remote.bundleFile;
-                result.remoteModuleName = './' + definition.module;
+                // FIXME - this needs to be properly cleared up - plugins should not define their own remote information at all!
+                // For the time being we will just use the remote information from the configuration and ignore anything in the plugin manifest
+                result.remoteName = remote.name;
+                result.remoteURL = remote.host;
+                result.bundleFile = remote.file;
+                result.remoteModuleName = definition.module;
                 result.loader = loadRemotePlugin;
             }
             return result;

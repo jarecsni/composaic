@@ -3,10 +3,22 @@ import { ConfigurationService, Configuration, NodeEnv } from './configuration';
 describe('configuration', () => {
     const config: Configuration = {
         dev: {
-            remotes: ['http://localhost:3000/assets/remoteEntry.js'],
+            remotes: [
+                {
+                    name: 'remote1',
+                    host: 'http://localhost:3000',
+                    file: 'remoteEntry.js'
+                }
+            ],
         },
         prd: {
-            remotes: ['http://some.host/assets/remoteEntry.js'],
+            remotes: [
+                {
+                    name: 'remote1',
+                    host: 'http://localhost:9000',
+                    file: 'remoteEntry.js'
+                }
+            ],
         },
     };
     let savedEnv: NodeEnv;
