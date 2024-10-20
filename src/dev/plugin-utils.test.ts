@@ -44,10 +44,10 @@ describe('local-plugin-utils', () => {
         );
         expect(result).toEqual([
             {
-                remoteName: 'test',
+                remoteName: 'Remote1',
                 remoteURL: 'http://localhost:9000',
-                bundleFile: 'TestBundle.js',
-                remoteModuleName: './TestModule',
+                bundleFile: 'remoteEntry.js',
+                remoteModuleName: 'TestModule',
                 module: 'TestModule',
                 package: 'test-package',
                 class: 'test-class',

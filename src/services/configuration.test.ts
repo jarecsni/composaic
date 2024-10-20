@@ -32,6 +32,10 @@ describe('configuration', () => {
         process.env.NODE_ENV = 'development';
         expect(
             ConfigurationService.getInstance(config).getConfiguration().remotes
-        ).toEqual(['http://localhost:3000/assets/remoteEntry.js']);
+        ).toEqual([{
+            file: 'remoteEntry.js',
+            host: 'http://localhost:3000',
+            name: 'remote1'
+        }]);
     });
 });
