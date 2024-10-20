@@ -1,5 +1,8 @@
 # Changelog
 
+## 10.0.4 (20 Oct 2024)
+o no change (npm i was not picking up on 0.10.3 but it was a caching/time issue)
+
 ## 10.0.2-3 (13 Oct 2024)
 o expose ConfigurationService.getEnv() to return environment string.
 
