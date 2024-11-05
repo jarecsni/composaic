@@ -1,28 +1,40 @@
 # Changelog
 
+## 10.0.5 (5 Nov 2024)
+
+o Fix for the incorrect use of Promise.all (change to Promise.allSettled) causing a premature application initialisation
+(first failed remote manifest fetch aborted loading rest of the manifests)
+
 ## 10.0.4 (20 Oct 2024)
+
 o no change (npm i was not picking up on 0.10.3 but it was a caching/time issue)
 
 ## 10.0.2-3 (13 Oct 2024)
+
 o expose ConfigurationService.getEnv() to return environment string.
 
 ## 10.0.1 (13 Oct 2024)
+
 o expose ConfigurationService
 
 ## 10.0.0 (13 Oct 2024)
+
 o moving to @module-federation/enhanced requires some slight refactoring around the remote attributes
 
 ## 0.9.1 (13 Oct 2024)
+
 Added more details to ErrorBoundary component
 
 ## 0.9.0 (12 Oct 2024)
+
 o Discarding the idea of using SystemJS
 
 ## 0.8.1 (03 Oct 2024)
+
 o Introduced loader property in PluginDescriptor to allow loading plugins from
-  various sources
+various sources
 o Refactor has been done in previous versions which were partly undone, this was all
-  due to remote federation issues around using composaic as a node module
+due to remote federation issues around using composaic as a node module
 
 ## 0.4.26 (10 Sep 2024)
 

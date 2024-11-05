@@ -19,9 +19,14 @@ export class RemotePluginLoader {
 
     async loadManifests(remotes: RemoteDefinition[]): Promise<void> {
         try {
-            await Promise.all(
+            await Promise.allSettled(
                 remotes.map(async (remote) => {
-                    const manifestRaw = await fetch(remote.host + '/manifest.json');
+                    console.log(
+                        `[composaic] Loading manifest from remote: ${remote.host}`
+                    );
+                    const manifestRaw = await fetch(
+                        remote.host + '/manifest.json'
+                    );
                     const manifest = await manifestRaw.json();
                     console.log(
                         `[composaic] Loaded manifest from ${remote}: ${JSON.stringify(manifest)}`
