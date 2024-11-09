@@ -60,6 +60,12 @@ export const loadCorePlugin = async (
 export class PluginManager {
     protected static instance: PluginManager;
     private registry: { [key: string]: any } = {};
+    /**
+     * A map of pluginID (dependency) to a collection of pluginIDs (dependent or providing extension to the dependency)
+     * Whenever a plugin is loaded we will need to check this map to see if there's plugin(s) waiting for the loaded plugin if so,
+     * those will need to be loaded first.
+     */
+    private awaitingDependency: { [key: string]: string[] } = {};
     private listeners: PluginListener[] = [];
 
     protected constructor() {}
@@ -119,6 +125,7 @@ export class PluginManager {
      * Load a plugin by name
      * @param pluginName - the name of the plugin to load
      * @param dependingPlugin - the name of the plugin that depends on the plugin to load
+     * @param forceReload - whether to force a reload of the plugin if it is already loaded
      */
     protected async loadPlugin(
         pluginName: string,
@@ -131,19 +138,54 @@ export class PluginManager {
         const deferred =
             pluginDescriptor.load === 'deferred' && !!dependingPlugin;
 
-        if (pluginDescriptor.pluginInstance) {
-            return pluginDescriptor.pluginInstance;
+        // we can no longer just return, as we might need to finish loading a plugin that needs to offer extensions (awaiting plugin situation)
+        // if (pluginDescriptor.pluginInstance) {
+        //     return pluginDescriptor.pluginInstance;
+        // }
+
+        // load plugins that have extensions for this plugin but were added prior to this plugin
+        const awaitingThisPlugin =
+            this.awaitingDependency[pluginDescriptor.plugin];
+        if (awaitingThisPlugin) {
+            for (const awaitingPlugin of awaitingThisPlugin) {
+                console.log(
+                    `Loading plugin ${awaitingPlugin} that was awaiting plugin ${pluginDescriptor.plugin}`
+                );
+                await this.loadPlugin(awaitingPlugin);
+            }
         }
+
+        // load plugins that this plugin depends on
         if (pluginDescriptor.dependencies) {
             for (const dependency of pluginDescriptor.dependencies) {
                 const pluginToLoad = (dependency as PluginDescriptor).plugin;
                 if (pluginToLoad === dependingPlugin) {
                     continue;
                 }
-                await this.loadPlugin(
-                    (dependency as PluginDescriptor).plugin,
-                    pluginDescriptor.plugin
-                );
+                // check if target plugin is available in the registry
+                // it might not have been added yet if it is a remote plugin
+                if (!this.registry[pluginToLoad]) {
+                    console.log(
+                        `Plugin with ID ${pluginToLoad} not found in registry, delaying loading of plugin ${pluginName}`
+                    );
+                    // remember that for the target plugin we are going to have to reload this plugin once again
+                    // we might be able to do this in a more efficient way by only setting the extensions (which are already loaded)
+                    // for the target plugin when that has become available
+                    // reason for this is that even if none of the dependencies are available, this plugin will still keeps loading and
+                    // it's extensions will be initialised and ready for use
+                    if (!this.awaitingDependency[pluginToLoad]) {
+                        this.awaitingDependency[pluginToLoad] = [];
+                    }
+                    this.awaitingDependency[pluginToLoad].push(
+                        pluginDescriptor.plugin
+                    );
+                    continue;
+                } else {
+                    await this.loadPlugin(
+                        (dependency as PluginDescriptor).plugin,
+                        pluginDescriptor.plugin
+                    );
+                }
             }
         }
         if (deferred) {
@@ -178,10 +220,13 @@ export class PluginManager {
         if (pluginDescriptor.extensions) {
             for (const extension of pluginDescriptor.extensions) {
                 if (!deferred) {
-                    const ExtensionImpl = pluginDescriptor.loadedModule![
-                        extension.className as keyof typeof pluginDescriptor.loadedModule
-                    ] as ClassConstructor;
-                    extension.impl = new ExtensionImpl();
+                    if (!extension.impl) {
+                        // if this is a reload dont recreate the extension impl
+                        const ExtensionImpl = pluginDescriptor.loadedModule![
+                            extension.className as keyof typeof pluginDescriptor.loadedModule
+                        ] as ClassConstructor;
+                        extension.impl = new ExtensionImpl();
+                    }
                 }
                 const targetPlugin =
                     extension.plugin === 'self'
@@ -202,12 +247,22 @@ export class PluginManager {
                     if (!extensionPoint!.impl) {
                         extensionPoint!.impl = [];
                     }
-                    if (
-                        !extensionPoint!.impl!.find(
-                            (e: any) => e.plugin === pluginDescriptor.plugin
-                        )
-                    ) {
-                        extensionPoint!.impl!.push({
+                    // Find and replace or add new extension
+                    const existingIndex: number =
+                        extensionPoint.impl!.findIndex(
+                            (ext: { plugin: string }) =>
+                                ext.plugin === pluginDescriptor.plugin
+                        );
+                    if (existingIndex !== -1) {
+                        // Replace existing extension
+                        extensionPoint.impl![existingIndex] = {
+                            plugin: pluginDescriptor.plugin,
+                            extensionImpl: extension.impl,
+                            meta: extension.meta,
+                        };
+                    } else {
+                        // Add new extension
+                        extensionPoint.impl!.push({
                             plugin: pluginDescriptor.plugin,
                             extensionImpl: extension.impl,
                             meta: extension.meta,
@@ -223,15 +278,17 @@ export class PluginManager {
             }
         }
 
-        let plugin: Plugin | null = null;
-
         if (!deferred) {
-            const PluginClass =
-                pluginDescriptor.loadedClass! as ClassConstructor;
-            plugin = new PluginClass();
+            if (!pluginDescriptor.pluginInstance) {
+                const PluginClass =
+                    pluginDescriptor.loadedClass! as ClassConstructor;
+                const plugin = new PluginClass();
+                pluginDescriptor.pluginInstance = plugin as Plugin;
+            }
+
             pluginDescriptor.extensionPoints?.forEach(
                 (extensionPoint: ExtensionPoint) => {
-                    plugin!.connectExtensions(
+                    pluginDescriptor.pluginInstance.connectExtensions(
                         extensionPoint.id,
                         extensionPoint.impl!
                     );
@@ -239,18 +296,17 @@ export class PluginManager {
             );
 
             pluginDescriptor.extensions?.forEach((extension: Extension) => {
-                plugin!.setExtensionImplementation(
+                pluginDescriptor.pluginInstance.setExtensionImplementation(
                     extension.plugin,
                     extension.id,
                     extension.impl!
                 );
             });
-
-            plugin!.init(pluginDescriptor);
-            pluginDescriptor.pluginInstance = plugin as Plugin;
+            pluginDescriptor.pluginInstance.init(pluginDescriptor);
+            this.notifyPluginChanged(pluginDescriptor.pluginInstance);
         }
-
-        return plugin;
+        // don't notify listeners for deferred plugins only when they're loaded
+        return pluginDescriptor.pluginInstance;
     }
 
     async loadRemotePluginModule(
