@@ -24,8 +24,33 @@ const moduleMap: { [key: string]: object } = {
     'baz/BazPluginModule': baz,
 };
 
-export const loadCorePlugin = async (pluginDescriptor: PluginDescriptor): Promise<object | undefined> => {
-    return Promise.resolve(moduleMap[`${pluginDescriptor.package}/${pluginDescriptor.module}`]);
+/**
+ * A callback function type that is invoked when a plugin changes.
+ *
+ * @callback PluginChangeCallback
+ * @param {string} pluginId - The unique identifier of the plugin that has changed.
+ */
+type PluginChangeCallback = (plugin: Plugin) => void;
+
+/**
+ * Represents a listener for plugin changes.
+ *
+ * @interface PluginListener
+ *
+ * @property {string[]} pluginIds - An array of plugin IDs that the listener is interested in.
+ * @property {PluginChangeCallback} callback - A callback function that is invoked when there is a change in the specified plugins.
+ */
+interface PluginListener {
+    pluginIds: string[];
+    callback: PluginChangeCallback;
+}
+
+export const loadCorePlugin = async (
+    pluginDescriptor: PluginDescriptor
+): Promise<object | undefined> => {
+    return Promise.resolve(
+        moduleMap[`${pluginDescriptor.package}/${pluginDescriptor.module}`]
+    );
 };
 
 /**
@@ -35,8 +60,9 @@ export const loadCorePlugin = async (pluginDescriptor: PluginDescriptor): Promis
 export class PluginManager {
     protected static instance: PluginManager;
     private registry: { [key: string]: any } = {};
+    private listeners: PluginListener[] = [];
 
-    protected constructor() { }
+    protected constructor() {}
 
     public static getInstance(): PluginManager {
         if (!PluginManager.instance) {
@@ -125,7 +151,8 @@ export class PluginManager {
         } else {
             if (!pluginDescriptor.loadedModule) {
                 try {
-                    pluginDescriptor.loadedModule = await pluginDescriptor.loader(pluginDescriptor);
+                    pluginDescriptor.loadedModule =
+                        await pluginDescriptor.loader(pluginDescriptor);
                     console.log(
                         `[composaic] Loaded plugin ${pluginDescriptor.plugin}`
                     );
@@ -140,14 +167,13 @@ export class PluginManager {
             if (pluginDescriptor.loadedModule) {
                 pluginDescriptor.loadedClass =
                     pluginDescriptor.loadedModule![
-                    pluginDescriptor.class as keyof typeof pluginDescriptor.loadedModule
+                        pluginDescriptor.class as keyof typeof pluginDescriptor.loadedModule
                     ];
             } else {
                 console.error(
                     `[composaic] No module loaded for plugin ${pluginDescriptor.plugin}`
                 );
             }
-
         }
         if (pluginDescriptor.extensions) {
             for (const extension of pluginDescriptor.extensions) {
@@ -306,5 +332,59 @@ export class PluginManager {
 
     getPluginIds(): string[] {
         return Object.keys(this.registry);
+    }
+
+    /**
+     * Registers a listener for plugin change events.
+     *
+     * @param pluginIds - An array of plugin IDs to listen for changes.
+     * @param callback - A callback function to be invoked when any of the specified plugins change.
+     * @returns A function to unsubscribe the listener.
+     */
+    public registerPluginChangeListener(
+        pluginIds: string[],
+        callback: PluginChangeCallback
+    ): () => void {
+        const listener: PluginListener = {
+            pluginIds,
+            callback,
+        };
+        this.listeners.push(listener);
+
+        // Return unsubscribe function
+        return () => {
+            this.unregisterPluginChangeListener(listener);
+        };
+    }
+
+    /**
+     * Unregisters a plugin change listener.
+     *
+     * This method removes the specified listener from the list of registered listeners
+     * if it is currently registered.
+     *
+     * @param listener - The plugin listener to unregister.
+     */
+    private unregisterPluginChangeListener(listener: PluginListener): void {
+        const index = this.listeners.indexOf(listener);
+        if (index > -1) {
+            this.listeners.splice(index, 1);
+        }
+    }
+
+    /**
+     * Notifies all registered listeners that a plugin has changed.
+     *
+     * This method iterates over all listeners and invokes their callback
+     * if the listener is interested in the specified plugin.
+     *
+     * @param plugin - The plugin that has changed.
+     */
+    private notifyPluginChanged(plugin: Plugin): void {
+        this.listeners.forEach((listener) => {
+            if (listener.pluginIds.includes(plugin.pluginDescriptor.plugin)) {
+                listener.callback(plugin);
+            }
+        });
     }
 }
