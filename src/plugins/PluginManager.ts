@@ -13,6 +13,7 @@ import * as signals from './impl/signals/index.js';
 import * as views from './impl/views/index.js';
 import * as bar from './impl/bar/BarPluginModule.js';
 import * as baz from './impl/baz/BazPluginModule.js';
+import * as foo from './impl/foo/FooPluginModule.js';
 import { RemoteModuleLoaderService } from '../services/RemoteModuleLoaderService.js';
 
 const moduleMap: { [key: string]: object } = {
@@ -22,6 +23,7 @@ const moduleMap: { [key: string]: object } = {
     'views/index': views,
     'bar/BarPluginModule': bar,
     'baz/BazPluginModule': baz,
+    'foo/FooPluginModule': foo,
 };
 
 /**
@@ -103,22 +105,53 @@ export class PluginManager {
     addPlugin(pluginDescriptor: PluginDescriptor) {
         pluginDescriptor.dependencies = [];
         if (pluginDescriptor.extensions) {
-            pluginDescriptor.extensions.map((extension) => {
+            pluginDescriptor.extensions.forEach((extension) => {
                 if (extension.plugin !== 'self') {
-                    // Add this plugin as a dependency to the plugin offering the extension point
+                    const targetPluginName = extension.plugin;
                     const targetPluginDescriptor =
-                        this.registry[extension.plugin];
-                    targetPluginDescriptor!.dependencies!.push(
-                        pluginDescriptor
-                    );
-                    // Also add the plugin offering the extension point as a dependency to this plugin
-                    pluginDescriptor.dependencies!.push(
-                        targetPluginDescriptor!
-                    );
+                        this.registry[targetPluginName];
+
+                    if (targetPluginDescriptor) {
+                        // Add this plugin as a dependency to the plugin offering the extension point
+                        targetPluginDescriptor.dependencies!.push(
+                            pluginDescriptor
+                        );
+                        // Also add the plugin offering the extension point as a dependency to this plugin
+                        pluginDescriptor.dependencies!.push(
+                            targetPluginDescriptor
+                        );
+                    } else {
+                        // Add to awaitingDependency map
+                        if (!this.awaitingDependency[targetPluginName]) {
+                            this.awaitingDependency[targetPluginName] = [];
+                        }
+                        this.awaitingDependency[targetPluginName].push(
+                            pluginDescriptor.plugin
+                        );
+                    }
                 }
             });
         }
+
+        // Register the plugin in the registry
         this.registry[pluginDescriptor.plugin] = pluginDescriptor;
+
+        // Check if there are any plugins waiting for this plugin
+        const awaitingPlugins =
+            this.awaitingDependency[pluginDescriptor.plugin];
+        if (awaitingPlugins) {
+            for (const awaitingPlugin of awaitingPlugins) {
+                console.log(
+                    `Adding plugin ${awaitingPlugin} that was awaiting plugin ${pluginDescriptor.plugin}`
+                );
+                const awaitingPluginDescriptor = this.registry[awaitingPlugin];
+                if (awaitingPluginDescriptor) {
+                    this.addPlugin(awaitingPluginDescriptor);
+                }
+            }
+            // Clear the awaiting list for this plugin
+            delete this.awaitingDependency[pluginDescriptor.plugin];
+        }
     }
 
     /**
@@ -380,6 +413,8 @@ export class PluginManager {
 
     clear() {
         this.registry = {};
+        this.awaitingDependency = {};
+        this.listeners = [];
     }
 
     getNumberOfPlugins(): number {
