@@ -21,7 +21,9 @@ export interface PluginDescriptor {
     module: string;
     package: string;
     class: string;
-    loader?: (pluginDescriptor: PluginDescriptor) => Promise<object | undefined>;
+    loader?: (
+        pluginDescriptor: PluginDescriptor
+    ) => Promise<object | undefined>;
     loadedClass?: object;
     loadedModule?: { [exportedModule: string]: object };
     plugin: string;
@@ -121,9 +123,9 @@ export abstract class Plugin {
         this.stopped = true;
     }
     init(pluginDescriptor: PluginDescriptor): void {
-        if (this.initialised) {
-            throw new Error('Plugin already initialised');
-        }
+        // if (this.initialised) {
+        //     throw new Error('Plugin already initialised');
+        // }
         this.pluginDescriptor = pluginDescriptor;
         this.initialised = true;
     }
@@ -138,9 +140,9 @@ export abstract class Plugin {
             meta?: object;
         }[]
     ): void {
-        if (this.initialised) {
-            throw new Error('Plugin already initialised');
-        }
+        // if (this.initialised) {
+        //     throw new Error('Plugin already initialised');
+        // }
         this.extensionsPoints[extensionPointId] = extensions;
     }
     protected getConnectedExtensions(
@@ -153,9 +155,9 @@ export abstract class Plugin {
         extensionPointId: string,
         extensionImpl: object
     ): void {
-        if (this.initialised) {
-            throw new Error('Plugin already initialised');
-        }
+        // if (this.initialised) {
+        //     throw new Error('Plugin already initialised');
+        // }
         this.extensions[plugin + '::' + extensionPointId] = extensionImpl;
     }
     protected getExtensionImpl(plugin: string, extensionId: string): object {

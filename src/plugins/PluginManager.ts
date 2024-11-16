@@ -121,13 +121,19 @@ export class PluginManager {
                             targetPluginDescriptor
                         );
                     } else {
-                        // Add to awaitingDependency map
+                        // add plugin to awaiting list if not already there
                         if (!this.awaitingDependency[targetPluginName]) {
                             this.awaitingDependency[targetPluginName] = [];
                         }
-                        this.awaitingDependency[targetPluginName].push(
-                            pluginDescriptor.plugin
-                        );
+                        if (
+                            !this.awaitingDependency[targetPluginName].includes(
+                                pluginDescriptor.plugin
+                            )
+                        ) {
+                            this.awaitingDependency[targetPluginName].push(
+                                pluginDescriptor.plugin
+                            );
+                        }
                     }
                 }
             });
@@ -135,23 +141,6 @@ export class PluginManager {
 
         // Register the plugin in the registry
         this.registry[pluginDescriptor.plugin] = pluginDescriptor;
-
-        // Check if there are any plugins waiting for this plugin
-        const awaitingPlugins =
-            this.awaitingDependency[pluginDescriptor.plugin];
-        if (awaitingPlugins) {
-            for (const awaitingPlugin of awaitingPlugins) {
-                console.log(
-                    `Adding plugin ${awaitingPlugin} that was awaiting plugin ${pluginDescriptor.plugin}`
-                );
-                const awaitingPluginDescriptor = this.registry[awaitingPlugin];
-                if (awaitingPluginDescriptor) {
-                    this.addPlugin(awaitingPluginDescriptor);
-                }
-            }
-            // Clear the awaiting list for this plugin
-            delete this.awaitingDependency[pluginDescriptor.plugin];
-        }
     }
 
     /**
@@ -186,6 +175,8 @@ export class PluginManager {
                 );
                 await this.loadPlugin(awaitingPlugin);
             }
+            // remove plugins that were awaiting this plugin
+            this.awaitingDependency[pluginDescriptor.plugin] = [];
         }
 
         // load plugins that this plugin depends on
@@ -396,13 +387,13 @@ export class PluginManager {
      */
     async getPlugin(pluginName: string): Promise<Plugin> {
         try {
-            const pluginDescriptor = await this.registry[pluginName];
+            const pluginDescriptor = this.registry[pluginName];
             if (!pluginDescriptor) {
                 throw new Error(`Plugin with ID ${pluginName} not found`);
             }
-            if (!pluginDescriptor.pluginInstance) {
-                await this.loadPlugin(pluginName);
-            }
+            //if (!pluginDescriptor.pluginInstance) {
+            await this.loadPlugin(pluginName);
+            //}
             await this.startPlugin(pluginDescriptor.pluginInstance!);
             return pluginDescriptor.pluginInstance!;
         } catch (error) {
@@ -477,5 +468,9 @@ export class PluginManager {
                 listener.callback(plugin);
             }
         });
+    }
+
+    getAwaitingPluginsFor(pluginId: string): string[] {
+        return this.awaitingDependency[pluginId] || [];
     }
 }

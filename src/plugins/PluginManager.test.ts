@@ -358,7 +358,7 @@ describe('PluginManager', () => {
         // });
     });
 
-    describe('When plugins added not in the order of dependency (out-of-order initialisation)', () => {
+    describe('When plugins added not in the order of dependency (out-of-order initialisation, E-E-EP)', () => {
         beforeEach(() => {
             pluginManager = PluginManager.getInstance();
             pluginManager.clear();
@@ -429,6 +429,214 @@ describe('PluginManager', () => {
             PluginManager.getInstance().addPlugin(barDescriptor);
             await PluginManager.getInstance().getPlugin('@foo/bar');
             expect(barDescriptor.extensionPoints![0].impl).toHaveLength(2);
+        });
+    });
+
+    /**
+     * E-EP-E means plugin with extension, plugin with extension point, plugin with extension initialisation order
+     */
+    describe('When plugins added not in the order of dependency (out-of-order initialisation, E-EP-E)', () => {
+        beforeEach(() => {
+            pluginManager = PluginManager.getInstance();
+            pluginManager.clear();
+        });
+        it('it should connect the extensions normally', async () => {
+            const callback = jest.fn();
+            const pluginIds = ['@foo/bar'];
+
+            const unsubscribe = pluginManager.registerPluginChangeListener(
+                pluginIds,
+                callback
+            );
+            // plugin providing extension point (others depend on this)
+            const barDescriptor: PluginDescriptor = {
+                module: 'BarPluginModule',
+                package: 'bar',
+                class: 'BarPlugin',
+                plugin: '@foo/bar',
+                version: '1.0',
+                description: 'bar',
+                extensionPoints: [
+                    {
+                        id: 'MyCoolExtension',
+                        type: 'MyCoolExtensionType',
+                    },
+                ],
+            };
+            barDescriptor.loadedModule = await import(
+                `./impl/${barDescriptor.package}/${barDescriptor.module}.ts`
+            );
+
+            // Baz offering extension for bar
+            const bazDescriptor: PluginDescriptor = {
+                module: 'BazPluginModule',
+                package: 'baz',
+                class: 'BazPlugin',
+                plugin: '@foo/baz',
+                version: '1.0',
+                description: 'baz',
+                extensions: [
+                    {
+                        plugin: '@foo/bar',
+                        id: 'MyCoolExtension',
+                        className: 'BazCoolExtensionImpl',
+                    },
+                ],
+            };
+            bazDescriptor.loadedModule = await import(
+                `./impl/${bazDescriptor.package}/${bazDescriptor.module}.ts`
+            );
+
+            // Foo offering extension for bar
+            const fooDescriptor: PluginDescriptor = {
+                module: 'FooPluginModule',
+                package: 'foo',
+                class: 'FooPlugin',
+                plugin: '@foo/foo',
+                version: '1.0',
+                description: 'foo',
+                extensions: [
+                    {
+                        plugin: '@foo/bar',
+                        id: 'MyCoolExtension',
+                        className: 'FooCoolExtensionImpl',
+                    },
+                ],
+            };
+            fooDescriptor.loadedModule = await import(
+                `./impl/${fooDescriptor.package}/${fooDescriptor.module}.ts`
+            );
+
+            // out of order addition
+            PluginManager.getInstance().addPlugin(bazDescriptor);
+            PluginManager.getInstance().addPlugin(barDescriptor);
+            await PluginManager.getInstance().getPlugin('@foo/bar');
+            expect(callback).toHaveBeenCalledWith(barDescriptor.pluginInstance);
+            callback.mockClear();
+            expect(barDescriptor.extensionPoints![0].impl).toHaveLength(1);
+            expect(barDescriptor.extensionPoints![0].impl![0].plugin).toBe(
+                '@foo/baz'
+            );
+            expect(
+                pluginManager.getAwaitingPluginsFor('@foo/bar')
+            ).toHaveLength(0);
+            PluginManager.getInstance().addPlugin(fooDescriptor);
+            await PluginManager.getInstance().getPlugin('@foo/bar');
+            expect(callback).toHaveBeenCalledWith(barDescriptor.pluginInstance);
+            expect(barDescriptor.extensionPoints![0].impl).toHaveLength(2);
+        });
+    });
+    /**
+     * E(2)-EP1-EP2
+     * Plugin A provides two extensions one for plugin B and one for plugin C. Plugin A added to the registry first, at this point it must be in
+     * the awaiting list of B and C. Plugin B added next when A registers its extension, and remains in the registry for C. Plugin C added last when
+     * B registers its extension, and now all plugins are connected.
+     */
+    describe('When plugins added not in the order of dependency (out-of-order initialisation, E-EP-E)', () => {
+        beforeEach(() => {
+            pluginManager = PluginManager.getInstance();
+            pluginManager.clear();
+        });
+        it('it should connect the extensions normally', async () => {
+            const callback = jest.fn();
+            const pluginIds = ['@foo/bar'];
+
+            const unsubscribe = pluginManager.registerPluginChangeListener(
+                pluginIds,
+                callback
+            );
+
+            // [Plugin A] Baz offering extension for bar (Plugin A) and foo (Plugin B)
+            const bazDescriptor: PluginDescriptor = {
+                module: 'BazPluginModule',
+                package: 'baz',
+                class: 'BazPlugin',
+                plugin: '@foo/baz',
+                version: '1.0',
+                description: 'baz',
+                extensions: [
+                    {
+                        plugin: '@foo/bar',
+                        id: 'MyCoolExtension',
+                        className: 'BazCoolExtensionImpl',
+                    },
+                    {
+                        plugin: '@foo/foo',
+                        id: 'MyFooExtension',
+                        className: 'BazFooExtensionImpl',
+                    },
+                ],
+            };
+            bazDescriptor.loadedModule = await import(
+                `./impl/${bazDescriptor.package}/${bazDescriptor.module}.ts`
+            );
+
+            // plugin providing extension point (others depend on this)
+            const barDescriptor: PluginDescriptor = {
+                module: 'BarPluginModule',
+                package: 'bar',
+                class: 'BarPlugin',
+                plugin: '@foo/bar',
+                version: '1.0',
+                description: 'bar',
+                extensionPoints: [
+                    {
+                        id: 'MyCoolExtension',
+                        type: 'MyCoolExtensionType',
+                    },
+                ],
+            };
+            barDescriptor.loadedModule = await import(
+                `./impl/${barDescriptor.package}/${barDescriptor.module}.ts`
+            );
+
+            // Foo offering extension for bar
+            const fooDescriptor: PluginDescriptor = {
+                module: 'FooPluginModule',
+                package: 'foo',
+                class: 'FooPlugin',
+                plugin: '@foo/foo',
+                version: '1.0',
+                description: 'foo',
+                extensionPoints: [
+                    {
+                        id: 'MyFooExtension',
+                        type: 'MyFooExtensionType',
+                    },
+                ],
+            };
+            fooDescriptor.loadedModule = await import(
+                `./impl/${fooDescriptor.package}/${fooDescriptor.module}.ts`
+            );
+
+            // Add Plugin A
+            PluginManager.getInstance().addPlugin(bazDescriptor);
+            expect(
+                pluginManager.getAwaitingPluginsFor('@foo/bar')
+            ).toHaveLength(1);
+            expect(
+                pluginManager.getAwaitingPluginsFor('@foo/foo')
+            ).toHaveLength(1);
+
+            PluginManager.getInstance().addPlugin(barDescriptor);
+            // we still have to actively trigger the init! - will need to change to automaitcally triggered
+            await PluginManager.getInstance().getPlugin('@foo/bar');
+            expect(
+                pluginManager.getAwaitingPluginsFor('@foo/bar')
+            ).toHaveLength(0);
+            expect(
+                pluginManager.getAwaitingPluginsFor('@foo/foo')
+            ).toHaveLength(1);
+
+            PluginManager.getInstance().addPlugin(fooDescriptor);
+            // we still have to actively trigger the init! - will need to change to automaitcally triggered
+            await PluginManager.getInstance().getPlugin('@foo/foo');
+            expect(
+                pluginManager.getAwaitingPluginsFor('@foo/bar')
+            ).toHaveLength(0);
+            expect(
+                pluginManager.getAwaitingPluginsFor('@foo/foo')
+            ).toHaveLength(0);
         });
     });
 });
