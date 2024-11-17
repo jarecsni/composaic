@@ -102,7 +102,7 @@ export class PluginManager {
      * Add a plugin definition to the registry
      * @param pluginDescriptor - a plugin definition
      */
-    addPlugin(pluginDescriptor: PluginDescriptor) {
+    async addPlugin(pluginDescriptor: PluginDescriptor) {
         pluginDescriptor.dependencies = [];
         if (pluginDescriptor.extensions) {
             pluginDescriptor.extensions.forEach((extension) => {
@@ -141,6 +141,7 @@ export class PluginManager {
 
         // Register the plugin in the registry
         this.registry[pluginDescriptor.plugin] = pluginDescriptor;
+        await this.loadPlugin(pluginDescriptor.plugin);
     }
 
     /**
