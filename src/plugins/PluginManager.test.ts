@@ -513,9 +513,18 @@ describe('PluginManager', () => {
             );
 
             // out of order addition
+            /**
+             * If plugin with extension is added before plugin with extension point (baz -> bar) we get 1 notification for bar
+             * However if we add the extension point first then the extension (bar then baz), we get 2 notifications for bar - why?
+             * This is easy: add a plugin -> notification. Add an extension to the plugin -> notification. (When you add the extension
+             * first there's no notification for the plugin with the extension point as it's not yet available in the registry.)
+             * Also don't forget that here we only listen for change for bar, so we only get notifications for bar.
+             */
             await PluginManager.getInstance().addPlugin(bazDescriptor);
             await PluginManager.getInstance().addPlugin(barDescriptor);
             expect(callback).toHaveBeenCalledWith(barDescriptor.pluginInstance);
+            expect(callback.mock.calls.length).toBe(1);
+
             callback.mockClear();
             expect(barDescriptor.extensionPoints![0].impl).toHaveLength(1);
             expect(barDescriptor.extensionPoints![0].impl![0].plugin).toBe(
@@ -542,7 +551,7 @@ describe('PluginManager', () => {
         });
         it('it should connect the extensions normally', async () => {
             const callback = jest.fn();
-            const pluginIds = ['@foo/bar'];
+            const pluginIds = ['@foo/bar', '@foo/foo', '@foo/baz'];
 
             const unsubscribe = pluginManager.registerPluginChangeListener(
                 pluginIds,
@@ -614,6 +623,8 @@ describe('PluginManager', () => {
 
             // Add Plugin A
             await PluginManager.getInstance().addPlugin(bazDescriptor);
+            expect(callback).toHaveBeenCalledWith(bazDescriptor.pluginInstance);
+            callback.mockClear();
             expect(
                 pluginManager.getAwaitingPluginsFor('@foo/bar')
             ).toHaveLength(1);
@@ -621,6 +632,10 @@ describe('PluginManager', () => {
                 pluginManager.getAwaitingPluginsFor('@foo/foo')
             ).toHaveLength(1);
             await PluginManager.getInstance().addPlugin(barDescriptor);
+            expect(callback.mock.calls.length).toBe(2);
+            expect(callback).toHaveBeenCalledWith(barDescriptor.pluginInstance);
+            expect(callback).toHaveBeenCalledWith(bazDescriptor.pluginInstance);
+            callback.mockClear();
             expect(
                 pluginManager.getAwaitingPluginsFor('@foo/bar')
             ).toHaveLength(0);
@@ -629,6 +644,9 @@ describe('PluginManager', () => {
             ).toHaveLength(1);
 
             await PluginManager.getInstance().addPlugin(fooDescriptor);
+            expect(callback.mock.calls.length).toBe(2);
+            expect(callback).toHaveBeenCalledWith(fooDescriptor.pluginInstance);
+            expect(callback).toHaveBeenCalledWith(bazDescriptor.pluginInstance);
             expect(
                 pluginManager.getAwaitingPluginsFor('@foo/bar')
             ).toHaveLength(0);
