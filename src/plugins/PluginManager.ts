@@ -32,7 +32,7 @@ const moduleMap: { [key: string]: object } = {
  * @callback PluginChangeCallback
  * @param {string} pluginId - The unique identifier of the plugin that has changed.
  */
-type PluginChangeCallback = (plugin: Plugin) => void;
+type PluginChangeCallback = (plugin: string) => void;
 
 /**
  * Represents a listener for plugin changes.
@@ -45,6 +45,11 @@ type PluginChangeCallback = (plugin: Plugin) => void;
 interface PluginListener {
     pluginIds: string[];
     callback: PluginChangeCallback;
+}
+
+interface LoadPluginOptions {
+    dependingPlugin?: string;
+    processManifestOnly?: boolean;
 }
 
 export const loadCorePlugin = async (
@@ -141,7 +146,9 @@ export class PluginManager {
 
         // Register the plugin in the registry
         this.registry[pluginDescriptor.plugin] = pluginDescriptor;
-        await this.loadPlugin(pluginDescriptor.plugin);
+        await this.loadPlugin(pluginDescriptor.plugin, {
+            processManifestOnly: true,
+        });
     }
 
     /**
@@ -152,8 +159,9 @@ export class PluginManager {
      */
     protected async loadPlugin(
         pluginName: string,
-        dependingPlugin?: string
+        options: LoadPluginOptions = {}
     ): Promise<Plugin | null> {
+        const { dependingPlugin, processManifestOnly = false } = options;
         const pluginDescriptor = this.registry[pluginName];
         if (!pluginDescriptor) {
             throw new Error(`Plugin with ID ${pluginName} not found`);
@@ -174,7 +182,9 @@ export class PluginManager {
                 console.log(
                     `Loading plugin ${awaitingPlugin} that was awaiting plugin ${pluginDescriptor.plugin}`
                 );
-                await this.loadPlugin(awaitingPlugin);
+                await this.loadPlugin(awaitingPlugin, {
+                    processManifestOnly,
+                });
             }
             // remove plugins that were awaiting this plugin
             this.awaitingDependency[pluginDescriptor.plugin] = [];
@@ -208,7 +218,10 @@ export class PluginManager {
                 } else {
                     await this.loadPlugin(
                         (dependency as PluginDescriptor).plugin,
-                        pluginDescriptor.plugin
+                        {
+                            dependingPlugin: pluginDescriptor.plugin,
+                            processManifestOnly,
+                        }
                     );
                 }
             }
@@ -216,7 +229,10 @@ export class PluginManager {
         if (deferred) {
             console.log('Deferring loading of plugin', pluginName);
         } else {
-            if (!pluginDescriptor.loadedModule) {
+            if (
+                !pluginDescriptor.loadedModule &&
+                !(processManifestOnly || deferred)
+            ) {
                 try {
                     pluginDescriptor.loadedModule =
                         await pluginDescriptor.loader(pluginDescriptor);
@@ -244,7 +260,7 @@ export class PluginManager {
         }
         if (pluginDescriptor.extensions) {
             for (const extension of pluginDescriptor.extensions) {
-                if (!deferred) {
+                if (!deferred && !processManifestOnly) {
                     if (!extension.impl) {
                         // if this is a reload dont recreate the extension impl
                         const ExtensionImpl = pluginDescriptor.loadedModule![
@@ -303,7 +319,7 @@ export class PluginManager {
             }
         }
 
-        if (!deferred) {
+        if (!(deferred || processManifestOnly)) {
             if (!pluginDescriptor.pluginInstance) {
                 const PluginClass =
                     pluginDescriptor.loadedClass! as ClassConstructor;
@@ -328,8 +344,8 @@ export class PluginManager {
                 );
             });
             pluginDescriptor.pluginInstance.init(pluginDescriptor);
-            this.notifyPluginChanged(pluginDescriptor.pluginInstance);
         }
+        this.notifyPluginChanged(pluginDescriptor.plugin);
         // don't notify listeners for deferred plugins only when they're loaded
         return pluginDescriptor.pluginInstance;
     }
@@ -463,9 +479,9 @@ export class PluginManager {
      *
      * @param plugin - The plugin that has changed.
      */
-    private notifyPluginChanged(plugin: Plugin): void {
+    private notifyPluginChanged(plugin: string): void {
         this.listeners.forEach((listener) => {
-            if (listener.pluginIds.includes(plugin.pluginDescriptor.plugin)) {
+            if (listener.pluginIds.includes(plugin)) {
                 listener.callback(plugin);
             }
         });

@@ -326,7 +326,7 @@ describe('PluginManager', () => {
                 `./impl/${barDescriptor.package}/${barDescriptor.module}.ts`
             );
             await PluginManager.getInstance().addPlugin(barDescriptor);
-            expect(callback).toHaveBeenCalledWith(barDescriptor.pluginInstance);
+            expect(callback).toHaveBeenCalledWith(barDescriptor.plugin);
             unsubscribe();
         });
 
@@ -522,7 +522,7 @@ describe('PluginManager', () => {
              */
             await PluginManager.getInstance().addPlugin(bazDescriptor);
             await PluginManager.getInstance().addPlugin(barDescriptor);
-            expect(callback).toHaveBeenCalledWith(barDescriptor.pluginInstance);
+            expect(callback).toHaveBeenCalledWith(barDescriptor.plugin);
             expect(callback.mock.calls.length).toBe(1);
 
             callback.mockClear();
@@ -534,7 +534,7 @@ describe('PluginManager', () => {
                 pluginManager.getAwaitingPluginsFor('@foo/bar')
             ).toHaveLength(0);
             await PluginManager.getInstance().addPlugin(fooDescriptor);
-            expect(callback).toHaveBeenCalledWith(barDescriptor.pluginInstance);
+            expect(callback).toHaveBeenCalledWith(barDescriptor.plugin);
             expect(barDescriptor.extensionPoints![0].impl).toHaveLength(2);
         });
     });
@@ -623,7 +623,7 @@ describe('PluginManager', () => {
 
             // Add Plugin A
             await PluginManager.getInstance().addPlugin(bazDescriptor);
-            expect(callback).toHaveBeenCalledWith(bazDescriptor.pluginInstance);
+            expect(callback).toHaveBeenCalledWith(bazDescriptor.plugin);
             callback.mockClear();
             expect(
                 pluginManager.getAwaitingPluginsFor('@foo/bar')
@@ -633,8 +633,8 @@ describe('PluginManager', () => {
             ).toHaveLength(1);
             await PluginManager.getInstance().addPlugin(barDescriptor);
             expect(callback.mock.calls.length).toBe(2);
-            expect(callback).toHaveBeenCalledWith(barDescriptor.pluginInstance);
-            expect(callback).toHaveBeenCalledWith(bazDescriptor.pluginInstance);
+            expect(callback).toHaveBeenCalledWith(barDescriptor.plugin);
+            expect(callback).toHaveBeenCalledWith(bazDescriptor.plugin);
             callback.mockClear();
             expect(
                 pluginManager.getAwaitingPluginsFor('@foo/bar')
@@ -645,8 +645,8 @@ describe('PluginManager', () => {
 
             await PluginManager.getInstance().addPlugin(fooDescriptor);
             expect(callback.mock.calls.length).toBe(2);
-            expect(callback).toHaveBeenCalledWith(fooDescriptor.pluginInstance);
-            expect(callback).toHaveBeenCalledWith(bazDescriptor.pluginInstance);
+            expect(callback).toHaveBeenCalledWith(fooDescriptor.plugin);
+            expect(callback).toHaveBeenCalledWith(bazDescriptor.plugin);
             expect(
                 pluginManager.getAwaitingPluginsFor('@foo/bar')
             ).toHaveLength(0);
