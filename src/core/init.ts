@@ -33,7 +33,7 @@ export const init = async (options: InitOptions) => {
     const corePlugins = await loadPluginDefinitions();
 
     // // Add core plugins
-    PluginManager.getInstance().addPluginDefinitions(corePlugins);
+    await PluginManager.getInstance().addPluginDefinitions(corePlugins);
 
     await addLocalPluginsFn?.();
 
@@ -41,7 +41,7 @@ export const init = async (options: InitOptions) => {
         ConfigurationService.getInstance(config).getConfiguration();
     console.log(`[composaic] Configuration ${JSON.stringify(configuration)}`);
 
-    await RemotePluginLoader.getInstance().loadManifests(configuration.remotes);
+    RemotePluginLoader.getInstance().loadManifests(configuration.remotes);
 
     // Create and initialize services
     await createServices();

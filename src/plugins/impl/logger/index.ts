@@ -34,7 +34,7 @@ export class LoggerPlugin extends Plugin {
         this.getConnectedExtensions('logger').forEach((extension) => {
             const loggerExtension =
                 extension.extensionImpl as LoggerExtensionPoint;
-            loggerExtension.setLogCallback(this.log.bind(this));
+            loggerExtension?.setLogCallback(this.log.bind(this));
         });
     }
     async stop() {}

@@ -3,6 +3,8 @@ import { PluginManager } from '../plugins/PluginManager.js';
 import { PluginDescriptor } from '../plugins/types.js';
 import { RemoteDefinition } from './configuration.js';
 
+const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
 export class RemotePluginLoader {
     private static instance: RemotePluginLoader;
 
@@ -19,28 +21,28 @@ export class RemotePluginLoader {
 
     async loadManifests(remotes: RemoteDefinition[]): Promise<void> {
         try {
-            await Promise.allSettled(
-                remotes.map(async (remote) => {
-                    console.log(
-                        `[composaic] Loading manifest from remote: ${remote.host}`
-                    );
-                    const manifestRaw = await fetch(
-                        remote.host + '/manifest.json'
-                    );
-                    const manifest = await manifestRaw.json();
-                    console.log(
-                        `[composaic] Loaded manifest from ${remote}: ${JSON.stringify(manifest)}`
-                    );
-                    const pluginDescriptor: PluginDescriptor[] =
-                        convertManifestToPluginDescriptor(manifest, remote);
-                    console.log(
-                        `[composaic] Converted manifest to plugin descriptor: ${JSON.stringify(pluginDescriptor)}`
-                    );
-                    await PluginManager.getInstance().addPluginDefinitions(
-                        pluginDescriptor
-                    );
-                })
-            );
+            remotes.map(async (remote) => {
+                console.log(
+                    `[composaic] Loading manifest from remote: ${remote.host}`
+                );
+                //await delay(20000);
+                const manifestRaw = await fetch(remote.host + '/manifest.json');
+                console.log(
+                    `[composaic] Loading manifest from remote: ${remote.host} DONE`
+                );
+                const manifest = await manifestRaw.json();
+                console.log(
+                    `[composaic] Loaded manifest from ${remote}: ${JSON.stringify(manifest)}`
+                );
+                const pluginDescriptor: PluginDescriptor[] =
+                    convertManifestToPluginDescriptor(manifest, remote);
+                console.log(
+                    `[composaic] Converted manifest to plugin descriptor: ${JSON.stringify(pluginDescriptor)}`
+                );
+                PluginManager.getInstance().addPluginDefinitions(
+                    pluginDescriptor
+                );
+            });
         } catch (error) {
             console.error(
                 '[composaic] Error loading manifest:',

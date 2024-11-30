@@ -50,6 +50,7 @@ interface PluginListener {
 interface LoadPluginOptions {
     dependingPlugin?: string;
     processManifestOnly?: boolean;
+    viaGetPlugin?: boolean;
 }
 
 export const loadCorePlugin = async (
@@ -89,18 +90,16 @@ export class PluginManager {
      * @param plugins - an array of plugin definitions
      */
     async addPluginDefinitions(plugins: PluginDescriptor[]) {
-        await Promise.all(
-            plugins.map(async (plugin) => {
-                const existingPlugin = this.registry[plugin.plugin];
-                if (!existingPlugin) {
-                    await this.addPlugin(plugin);
-                } else {
-                    console.log(
-                        `Plugin with ID ${plugin.plugin} already exists, ignoring request to add it again to the registry`
-                    );
-                }
-            })
-        );
+        plugins.map(async (plugin) => {
+            const existingPlugin = this.registry[plugin.plugin];
+            if (!existingPlugin) {
+                this.addPlugin(plugin);
+            } else {
+                console.log(
+                    `Plugin with ID ${plugin.plugin} already exists, ignoring request to add it again to the registry`
+                );
+            }
+        });
     }
 
     /**
@@ -161,10 +160,18 @@ export class PluginManager {
         pluginName: string,
         options: LoadPluginOptions = {}
     ): Promise<Plugin | null> {
-        const { dependingPlugin, processManifestOnly = false } = options;
+        const {
+            dependingPlugin,
+            processManifestOnly = false,
+            viaGetPlugin = false,
+        } = options;
         const pluginDescriptor = this.registry[pluginName];
         if (!pluginDescriptor) {
             throw new Error(`Plugin with ID ${pluginName} not found`);
+        }
+        if (pluginDescriptor.pluginInstance) {
+            console.log('[composaic] Plugin already loaded', pluginName);
+            return pluginDescriptor.pluginInstance;
         }
         const deferred =
             pluginDescriptor.load === 'deferred' && !!dependingPlugin;
@@ -229,10 +236,7 @@ export class PluginManager {
         if (deferred) {
             console.log('Deferring loading of plugin', pluginName);
         } else {
-            if (
-                !pluginDescriptor.loadedModule &&
-                !(processManifestOnly || deferred)
-            ) {
+            if (!pluginDescriptor.loadedModule && !processManifestOnly) {
                 try {
                     pluginDescriptor.loadedModule =
                         await pluginDescriptor.loader(pluginDescriptor);
@@ -252,10 +256,6 @@ export class PluginManager {
                     pluginDescriptor.loadedModule![
                         pluginDescriptor.class as keyof typeof pluginDescriptor.loadedModule
                     ];
-            } else {
-                console.error(
-                    `[composaic] No module loaded for plugin ${pluginDescriptor.plugin}`
-                );
             }
         }
         if (pluginDescriptor.extensions) {
@@ -309,6 +309,22 @@ export class PluginManager {
                             meta: extension.meta,
                         });
                     }
+
+                    if (extension.plugin !== 'self') {
+                        setTimeout(() => {
+                            // need to restart the plugin so it picks up stuff from new extension!
+                            if (this.registry[extension.plugin]) {
+                                this.registry[
+                                    extension.plugin
+                                ].pluginInstance?.start();
+                            }
+                            console.log(
+                                '[composaic] notifying listeners for change (extensions) for plugin ',
+                                pluginDescriptor.plugin
+                            );
+                            this.notifyPluginChanged(extension.plugin);
+                        }, 0);
+                    }
                 } else {
                     console.warn(
                         'Extension point not found',
@@ -345,7 +361,13 @@ export class PluginManager {
             });
             pluginDescriptor.pluginInstance.init(pluginDescriptor);
         }
-        this.notifyPluginChanged(pluginDescriptor.plugin);
+        if (!viaGetPlugin) {
+            console.log(
+                '[composaic] notifying listeners for change for plugin ',
+                pluginDescriptor.plugin
+            );
+            this.notifyPluginChanged(pluginDescriptor.plugin);
+        }
         // don't notify listeners for deferred plugins only when they're loaded
         return pluginDescriptor.pluginInstance;
     }
@@ -374,7 +396,7 @@ export class PluginManager {
                     if ((dependency as PluginDescriptor).load === 'deferred') {
                         console.log(
                             'Deferring starting of plugin with load=deferred',
-                            plugin.pluginDescriptor.plugin
+                            (dependency as PluginDescriptor).plugin
                         );
                     } else {
                         const pluginToLoad = (dependency as PluginDescriptor)
@@ -409,7 +431,7 @@ export class PluginManager {
                 throw new Error(`Plugin with ID ${pluginName} not found`);
             }
             //if (!pluginDescriptor.pluginInstance) {
-            await this.loadPlugin(pluginName);
+            await this.loadPlugin(pluginName, { viaGetPlugin: true });
             //}
             await this.startPlugin(pluginDescriptor.pluginInstance!);
             return pluginDescriptor.pluginInstance!;

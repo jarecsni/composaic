@@ -35,8 +35,9 @@ export class NavbarPlugin extends Plugin {
         this.getConnectedExtensions('navbarItem').forEach((extension) => {
             const navBarMeta = extension.meta! as NavbarItem[];
             for (const item of navBarMeta) {
-                item.plugin = extension.plugin;
-                this.navbarItems.push(item);
+                const clonedItem = structuredClone(item);
+                clonedItem.plugin = extension.plugin;
+                this.navbarItems.push(clonedItem);
             }
         });
         this.mountItems();
@@ -83,7 +84,7 @@ export class NavbarPlugin extends Plugin {
     }
 
     public getNavbarItems(): NavbarItem[] {
-        return this.navbarItems;
+        return [...this.navbarItems];
     }
 }
 

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { AppBar, Toolbar, Typography, Menu, MenuItem } from '@mui/material';
 import { Link as RouterLink } from 'react-router-dom';
-import { menuItems, MenuItem as MenuItemType } from './menuModel.js';
+import { MenuItem as MenuItemType, MenuModel } from './menuModel.js';
 
 // Recursive Menu Item Component
 const RecursiveMenuItem: React.FC<{
@@ -69,7 +69,7 @@ export const Navbar: React.FC = () => {
     const handleClose = () => {
         // This function would handle closing all open menus, if necessary
     };
-
+    const menuItems = MenuModel.getInstance().getMenuItems();
     return (
         <AppBar position="static">
             <Toolbar>
