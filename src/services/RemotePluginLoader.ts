@@ -32,7 +32,6 @@ export class RemotePluginLoader {
                 console.log(
                     `[composaic] Loading manifest from remote: ${remote.host}`
                 );
-
                 const manifestRaw = await fetch(remote.host + '/manifest.json');
                 if (!manifestRaw.ok) {
                     throw new Error(

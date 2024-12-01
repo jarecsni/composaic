@@ -15,11 +15,12 @@ export class LoggingService {
 
     private async initLoggerPlugin(): Promise<void> {
         this.loggerPlugin = (await PluginManager.getInstance().getPlugin(
-            '@composaic/logger'
+            '@composaic/logger',
+            { reinitialise: true }
         )) as LoggerPlugin;
         this.loggerPlugin.log({
             level: 'info',
-            message: 'All OK! Logger initialised.',
+            message: 'Logging Service initialised.',
             timestamp: new Date(),
             subSystemName: ComposaicSubSystemName,
         });
@@ -31,8 +32,13 @@ export class LoggingService {
     public static async createInstance(): Promise<LoggingService> {
         if (!LoggingService.instance) {
             const instance = new LoggingService();
-            await instance.initLoggerPlugin();
             LoggingService.instance = instance;
+            PluginManager.getInstance().registerPluginChangeListener(
+                ['@composaic/logger'],
+                () => {
+                    LoggingService.instance.initLoggerPlugin();
+                }
+            );
         }
         return LoggingService.instance;
     }
@@ -81,7 +87,7 @@ export class LoggingService {
      */
     private _log(message: string, level: LogLevel): void {
         // Your logging logic here
-        this.loggerPlugin!.log({
+        this.loggerPlugin?.log({
             level,
             message: message,
             timestamp: new Date(),

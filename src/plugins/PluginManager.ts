@@ -51,6 +51,11 @@ interface LoadPluginOptions {
     dependingPlugin?: string;
     processManifestOnly?: boolean;
     viaGetPlugin?: boolean;
+    reinitialise?: boolean;
+}
+
+interface GetPluginOptions {
+    reinitialise?: boolean;
 }
 
 export const loadCorePlugin = async (
@@ -164,14 +169,19 @@ export class PluginManager {
             dependingPlugin,
             processManifestOnly = false,
             viaGetPlugin = false,
+            reinitialise = false,
         } = options;
         const pluginDescriptor = this.registry[pluginName];
         if (!pluginDescriptor) {
             throw new Error(`Plugin with ID ${pluginName} not found`);
         }
-        if (pluginDescriptor.pluginInstance) {
+        if (pluginDescriptor.pluginInstance && !reinitialise) {
             console.log('[composaic] Plugin already loaded', pluginName);
             return pluginDescriptor.pluginInstance;
+        }
+        if (reinitialise) {
+            console.log('[composaic] Reinitialising plugin', pluginName);
+            pluginDescriptor.pluginInstance = null;
         }
         const deferred =
             pluginDescriptor.load === 'deferred' && !!dependingPlugin;
@@ -424,14 +434,21 @@ export class PluginManager {
      * @param pluginName
      * @returns the plugin instance. If the plugin is not loaded, it will be loaded.
      */
-    async getPlugin(pluginName: string): Promise<Plugin> {
+    async getPlugin(
+        pluginName: string,
+        options: GetPluginOptions = {}
+    ): Promise<Plugin> {
+        const { reinitialise = false } = options;
         try {
             const pluginDescriptor = this.registry[pluginName];
             if (!pluginDescriptor) {
                 throw new Error(`Plugin with ID ${pluginName} not found`);
             }
             //if (!pluginDescriptor.pluginInstance) {
-            await this.loadPlugin(pluginName, { viaGetPlugin: true });
+            await this.loadPlugin(pluginName, {
+                viaGetPlugin: true,
+                reinitialise,
+            });
             //}
             await this.startPlugin(pluginDescriptor.pluginInstance!);
             return pluginDescriptor.pluginInstance!;
