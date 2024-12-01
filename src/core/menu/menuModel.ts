@@ -73,67 +73,6 @@ export class MenuModel {
         });
     }
 
-    // public addMenuItem(menuItem: MenuItem): void {
-    //     const existingItem = this.menuItems.find(
-    //         (item) => item.id === menuItem.id
-    //     );
-    //     if (existingItem) {
-    //         // Merge children if the item already exists
-    //         if (existingItem.children && menuItem.children) {
-    //             existingItem.children = [
-    //                 ...existingItem.children,
-    //                 ...menuItem.children,
-    //             ];
-    //         } else if (menuItem.children) {
-    //             existingItem.children = menuItem.children;
-    //         }
-    //     } else {
-    //         // Add the new menu item if it doesn't exist
-    //         this.menuItems.push(menuItem);
-    //     }
-    // }
-
-    // public addMenuItem(menuItem: MenuItem): void {
-    //     const existingItem = this.menuItems.find(
-    //         (item) => item.id === menuItem.id
-    //     );
-
-    //     if (existingItem) {
-    //         // Merge children if the item already exists
-    //         if (menuItem.children) {
-    //             menuItem.children.forEach((child) => {
-    //                 this.addChildItem(existingItem, child);
-    //             });
-    //         }
-    //     } else {
-    //         // Add the new menu item if it doesn't exist
-    //         this.menuItems.push(menuItem);
-    //     }
-    // }
-
-    // private addChildItem(parentItem: MenuItem, childItem: MenuItem): void {
-    //     if (!parentItem.children) {
-    //         parentItem.children = [];
-    //     }
-
-    //     const existingChild = parentItem.children.find(
-    //         (item) =>
-    //             item.label === childItem.label && item.path === childItem.path
-    //     );
-
-    //     if (existingChild) {
-    //         // Recursively add children to the existing child item
-    //         if (childItem.children) {
-    //             childItem.children.forEach((grandChild) => {
-    //                 this.addChildItem(existingChild, grandChild);
-    //             });
-    //         }
-    //     } else {
-    //         // Add the new child item if it doesn't exist
-    //         parentItem.children.push(childItem);
-    //     }
-    // }
-
     // Method to add a new menu item
     public addMenuItem(menuItem: MenuItem): void {
         this.addOrUpdateMenuItem(this.menuItems, menuItem);
@@ -148,8 +87,6 @@ export class MenuModel {
             (item) =>
                 item.label === menuItem.label && item.path === menuItem.path
         );
-        console.log('existingItem', existingItem, menuItem.label);
-
         if (existingItem) {
             // If the item exists and is a terminal node, do nothing
             if (!menuItem.children || menuItem.children.length === 0) {

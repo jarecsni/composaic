@@ -19,30 +19,42 @@ export class RemotePluginLoader {
         return RemotePluginLoader.instance;
     }
 
+    /**
+     *
+     * @param remotes
+     */
     async loadManifests(remotes: RemoteDefinition[]): Promise<void> {
+        const delay = (ms: number) =>
+            new Promise((resolve) => setTimeout(resolve, ms));
+
         try {
-            remotes.map(async (remote) => {
+            for (const remote of remotes) {
                 console.log(
                     `[composaic] Loading manifest from remote: ${remote.host}`
                 );
-                //await delay(20000);
+
                 const manifestRaw = await fetch(remote.host + '/manifest.json');
-                console.log(
-                    `[composaic] Loading manifest from remote: ${remote.host} DONE`
-                );
+                if (!manifestRaw.ok) {
+                    throw new Error(
+                        `Failed to fetch manifest from ${remote.host}`
+                    );
+                }
                 const manifest = await manifestRaw.json();
                 console.log(
-                    `[composaic] Loaded manifest from ${remote}: ${JSON.stringify(manifest)}`
+                    `[composaic] Loaded manifest from ${remote.host}: ${JSON.stringify(manifest)}`
                 );
                 const pluginDescriptor: PluginDescriptor[] =
                     convertManifestToPluginDescriptor(manifest, remote);
                 console.log(
                     `[composaic] Converted manifest to plugin descriptor: ${JSON.stringify(pluginDescriptor)}`
                 );
-                PluginManager.getInstance().addPluginDefinitions(
+                await PluginManager.getInstance().addPluginDefinitions(
                     pluginDescriptor
                 );
-            });
+                console.log(
+                    `[composaic] Added plugin definitions for remote: ${remote.host}`
+                );
+            }
         } catch (error) {
             console.error(
                 '[composaic] Error loading manifest:',
