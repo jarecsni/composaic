@@ -96,12 +96,15 @@ export class PluginManager {
      */
     async addPluginDefinitions(plugins: PluginDescriptor[]) {
         plugins.map(async (plugin) => {
+            console.log(
+                `[composaic][${plugin.plugin}] Adding plugin to registry`
+            );
             const existingPlugin = this.registry[plugin.plugin];
             if (!existingPlugin) {
                 this.addPlugin(plugin);
             } else {
                 console.log(
-                    `Plugin with ID ${plugin.plugin} already exists, ignoring request to add it again to the registry`
+                    `[composaic][${plugin.plugin}] Plugin already exists, skipping`
                 );
             }
         });
@@ -176,16 +179,17 @@ export class PluginManager {
             throw new Error(`Plugin with ID ${pluginName} not found`);
         }
         if (pluginDescriptor.pluginInstance && !reinitialise) {
-            console.log('[composaic] Plugin already loaded', pluginName);
+            console.log(`[composaic][${pluginName}] Plugin already loaded`);
             return pluginDescriptor.pluginInstance;
         }
         if (reinitialise) {
-            console.log('[composaic] Reinitialising plugin', pluginName);
+            console.log(`[composaic][${pluginName}] Reinitialising plugin`);
             pluginDescriptor.pluginInstance = null;
         }
         const deferred =
             pluginDescriptor.load === 'deferred' && !!dependingPlugin;
 
+        // This is interesting - don't we have the reinitialise flag for this? So now it seems we always reinitialise the plugin
         // we can no longer just return, as we might need to finish loading a plugin that needs to offer extensions (awaiting plugin situation)
         // if (pluginDescriptor.pluginInstance) {
         //     return pluginDescriptor.pluginInstance;
@@ -197,7 +201,7 @@ export class PluginManager {
         if (awaitingThisPlugin) {
             for (const awaitingPlugin of awaitingThisPlugin) {
                 console.log(
-                    `Loading plugin ${awaitingPlugin} that was awaiting plugin ${pluginDescriptor.plugin}`
+                    `[composaic][${pluginDescriptor.plugin}] Loading plugin ${awaitingPlugin} that was awaiting plugin ${pluginDescriptor.plugin}`
                 );
                 await this.loadPlugin(awaitingPlugin, {
                     processManifestOnly,
@@ -218,7 +222,7 @@ export class PluginManager {
                 // it might not have been added yet if it is a remote plugin
                 if (!this.registry[pluginToLoad]) {
                     console.log(
-                        `Plugin with ID ${pluginToLoad} not found in registry, delaying loading of plugin ${pluginName}`
+                        `[composaic][${pluginName}] Dependency with ID ${pluginToLoad} not found in registry, delaying loading of plugin ${pluginName}`
                     );
                     // remember that for the target plugin we are going to have to reload this plugin once again
                     // we might be able to do this in a more efficient way by only setting the extensions (which are already loaded)
@@ -244,18 +248,20 @@ export class PluginManager {
             }
         }
         if (deferred) {
-            console.log('Deferring loading of plugin', pluginName);
+            console.log(
+                `[composaic][${pluginName}] load is defined as 'deferred' so not loading plugin`
+            );
         } else {
             if (!pluginDescriptor.loadedModule && !processManifestOnly) {
                 try {
                     pluginDescriptor.loadedModule =
                         await pluginDescriptor.loader(pluginDescriptor);
                     console.log(
-                        `[composaic] Loaded plugin ${pluginDescriptor.plugin}`
+                        `[composaic][${pluginDescriptor.plugin}] Plugin module loaded`
                     );
                 } catch (error) {
                     console.error(
-                        `[composaic] Failed to load plugin ${pluginDescriptor.plugin}`,
+                        `[composaic][${pluginDescriptor.plugin}] Failed to load plugin module`,
                         error
                     );
                     return null;
@@ -285,7 +291,7 @@ export class PluginManager {
                         : this.registry[extension.plugin];
                 if (!targetPlugin) {
                     console.error(
-                        `Plugin with ID ${extension.plugin} not found for extension ${extension.id}`
+                        `[composaic][${pluginName}] Plugin with ID ${extension.plugin} not found for extension ${extension.id}`
                     );
                     continue;
                 }
@@ -329,17 +335,14 @@ export class PluginManager {
                                 ].pluginInstance?.start();
                             }
                             console.log(
-                                '[composaic] notifying listeners for change (extensions) for plugin ',
-                                pluginDescriptor.plugin
+                                `[composaic][${pluginDescriptor.plugin}] Notifying listeners for change (extensions) for plugin`
                             );
                             this.notifyPluginChanged(extension.plugin);
                         }, 0);
                     }
                 } else {
                     console.warn(
-                        'Extension point not found',
-                        targetPlugin.plugin,
-                        extension.id
+                        `[composaic][${pluginDescriptor.plugin}] Extension point not found ${targetPlugin.plugin}:${extension.id}`
                     );
                 }
             }
@@ -373,8 +376,7 @@ export class PluginManager {
         }
         if (!viaGetPlugin) {
             console.log(
-                '[composaic] notifying listeners for change for plugin ',
-                pluginDescriptor.plugin
+                `[composaic][${pluginDescriptor.plugin}] Notifying listeners for change for plugin`
             );
             this.notifyPluginChanged(pluginDescriptor.plugin);
         }
@@ -397,7 +399,13 @@ export class PluginManager {
     }
 
     protected async startPlugin(plugin: Plugin, dependingPlugin?: Plugin) {
+        console.log(
+            `[composaic][${plugin.pluginDescriptor.plugin}] Starting plugin`
+        );
         if (plugin.started) {
+            console.log(
+                `[composaic][${plugin.pluginDescriptor.plugin}] Plugin already started`
+            );
             return;
         }
         if (plugin.pluginDescriptor.dependencies) {
@@ -405,8 +413,7 @@ export class PluginManager {
                 plugin.pluginDescriptor.dependencies.map(async (dependency) => {
                     if ((dependency as PluginDescriptor).load === 'deferred') {
                         console.log(
-                            'Deferring starting of plugin with load=deferred',
-                            (dependency as PluginDescriptor).plugin
+                            `[composaic][${plugin.pluginDescriptor.plugin}] Deferring starting of dependency plugin with load=deferred ${(dependency as PluginDescriptor).plugin}`
                         );
                     } else {
                         const pluginToLoad = (dependency as PluginDescriptor)
@@ -426,6 +433,9 @@ export class PluginManager {
             );
         }
         await plugin.start();
+        console.log(
+            `[composaic][${plugin.pluginDescriptor.plugin}] Plugin started`
+        );
     }
 
     /**
