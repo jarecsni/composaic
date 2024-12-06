@@ -1,4 +1,3 @@
-import { LoggingService } from './LoggingService.js';
 import { SignalService } from './SignalService.js';
 
 /**
@@ -8,6 +7,5 @@ import { SignalService } from './SignalService.js';
  * possible to do in the constructor of the service.
  */
 export const createServices = async () => {
-    await LoggingService.createInstance();
     await SignalService.getInstance();
 };

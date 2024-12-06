@@ -2,6 +2,27 @@ import { BarPlugin } from './impl/bar/BarPluginModule';
 import { PluginManager } from './PluginManager';
 import { PluginDescriptor } from './types';
 
+jest.mock('../services/LoggingService', () => {
+    return {
+        LoggingService: {
+            getInstance: jest.fn().mockReturnValue({
+                info: jest.fn(),
+                error: jest.fn(),
+                debug: jest.fn(),
+                trace: jest.fn(),
+                fatal: jest.fn(),
+            }),
+            createInstance: jest.fn().mockResolvedValue({
+                info: jest.fn(),
+                error: jest.fn(),
+                debug: jest.fn(),
+                trace: jest.fn(),
+                fatal: jest.fn(),
+            }),
+        },
+    };
+});
+
 describe('PluginManager', () => {
     let pluginManager: PluginManager;
     describe('using unresolved descriptors', () => {
@@ -48,24 +69,24 @@ describe('PluginManager', () => {
                 `./impl/${bazDescriptor.package}/${bazDescriptor.module}.ts`
             );
             PluginManager.getInstance().addPlugin(bazDescriptor);
-            const pluginBaz = (
-                await PluginManager.getInstance().getPlugin('@foo/baz')
-            ).pluginDescriptor;
+            const pluginBaz = (await PluginManager.getInstance().getPlugin(
+                '@foo/baz'
+            ))!.pluginDescriptor;
             expect(pluginBaz).toBeDefined();
-            expect(pluginBaz.extensions![0].id).toBe('MyCoolExtension');
-            expect(pluginBaz.extensions![0].plugin).toBe('@foo/bar');
-            expect(pluginBaz.extensions![0].className).toBe(
+            expect(pluginBaz!.extensions![0].id).toBe('MyCoolExtension');
+            expect(pluginBaz!.extensions![0].plugin).toBe('@foo/bar');
+            expect(pluginBaz!.extensions![0].className).toBe(
                 'BazCoolExtensionImpl'
             );
             expect(
-                (pluginBaz.dependencies![0] as PluginDescriptor).plugin
+                (pluginBaz!.dependencies![0] as PluginDescriptor).plugin
             ).toEqual('@foo/bar');
-            const pluginBar = (
-                await PluginManager.getInstance().getPlugin('@foo/bar')
-            ).pluginDescriptor;
-            expect(pluginBar.dependencies!).toHaveLength(1);
+            const pluginBar = (await PluginManager.getInstance().getPlugin(
+                '@foo/bar'
+            ))!.pluginDescriptor;
+            expect(pluginBar!.dependencies!).toHaveLength(1);
             expect(
-                (pluginBar.dependencies![0] as PluginDescriptor).plugin
+                (pluginBar!.dependencies![0] as PluginDescriptor).plugin
             ).toBe('@foo/baz');
         });
         it('should be able to load a plugin with self extension', async () => {
@@ -117,24 +138,24 @@ describe('PluginManager', () => {
             const loadedPlugin =
                 await PluginManager.getInstance().getPlugin('@foo/bar');
             expect(loadedPlugin).toBeDefined();
-            expect(loadedPlugin.getPluginDescriptor().extensions![0].id).toBe(
+            expect(loadedPlugin!.getPluginDescriptor().extensions![0].id).toBe(
                 'MyCoolExtension'
             );
             expect(
-                loadedPlugin.getPluginDescriptor().extensions![0].plugin
+                loadedPlugin!.getPluginDescriptor().extensions![0].plugin
             ).toBe('self');
             const extensionImpl =
-                loadedPlugin.getPluginDescriptor().extensions![0].impl!;
+                loadedPlugin!.getPluginDescriptor().extensions![0].impl!;
             // @ts-expect-error - we know this is a function
             expect(extensionImpl.saySomethingCool).toBeDefined();
             expect(
-                loadedPlugin.getPluginDescriptor().extensionPoints![0].impl
+                loadedPlugin!.getPluginDescriptor().extensionPoints![0].impl
             ).toHaveLength(2);
             const ext1 =
-                loadedPlugin.getPluginDescriptor().extensionPoints![0].impl![0]
+                loadedPlugin!.getPluginDescriptor().extensionPoints![0].impl![0]
                     .extensionImpl;
             const ext2 =
-                loadedPlugin.getPluginDescriptor().extensionPoints![0].impl![1]
+                loadedPlugin!.getPluginDescriptor().extensionPoints![0].impl![1]
                     .extensionImpl;
         });
     });
@@ -192,24 +213,24 @@ describe('PluginManager', () => {
             const loadedPlugin =
                 await PluginManager.getInstance().getPlugin('@foo/bar');
             expect(loadedPlugin).toBeDefined();
-            expect(loadedPlugin.getPluginDescriptor().extensions![0].id).toBe(
+            expect(loadedPlugin!.getPluginDescriptor().extensions![0].id).toBe(
                 'MyCoolExtension'
             );
             expect(
-                loadedPlugin.getPluginDescriptor().extensions![0].plugin
+                loadedPlugin!.getPluginDescriptor().extensions![0].plugin
             ).toBe('self');
             const extensionImpl =
-                loadedPlugin.getPluginDescriptor().extensions![0].impl!;
+                loadedPlugin!.getPluginDescriptor().extensions![0].impl!;
             // @ts-expect-error - we know this is a function
             expect(extensionImpl.saySomethingCool).toBeDefined();
             expect(
-                loadedPlugin.getPluginDescriptor().extensionPoints![0].impl
+                loadedPlugin!.getPluginDescriptor().extensionPoints![0].impl
             ).toHaveLength(2);
             const ext1 =
-                loadedPlugin.getPluginDescriptor().extensionPoints![0].impl![0]
+                loadedPlugin!.getPluginDescriptor().extensionPoints![0].impl![0]
                     .extensionImpl;
             const ext2 =
-                loadedPlugin.getPluginDescriptor().extensionPoints![0].impl![1]
+                loadedPlugin!.getPluginDescriptor().extensionPoints![0].impl![1]
                     .extensionImpl;
             (loadedPlugin as BarPlugin).saySomethingCool();
         });
@@ -268,20 +289,20 @@ describe('PluginManager', () => {
             const loadedPlugin =
                 await PluginManager.getInstance().getPlugin('@foo/baz');
             expect(loadedPlugin).toBeDefined();
-            expect(loadedPlugin.getPluginDescriptor().extensions![0].id).toBe(
+            expect(loadedPlugin!.getPluginDescriptor().extensions![0].id).toBe(
                 'MyCoolExtension'
             );
             expect(
-                loadedPlugin.getPluginDescriptor().extensions![0].plugin
+                loadedPlugin!.getPluginDescriptor().extensions![0].plugin
             ).toBe('@foo/bar');
             const extensionImpl =
-                loadedPlugin.getPluginDescriptor().extensions![0].impl!;
+                loadedPlugin!.getPluginDescriptor().extensions![0].impl!;
             // @ts-expect-error - we know this is a function
             expect(extensionImpl.saySomethingCool).toBeDefined();
             const barPlugin =
                 await PluginManager.getInstance().getPlugin('@foo/bar');
             expect(
-                barPlugin.getPluginDescriptor().extensionPoints![0].impl
+                barPlugin!.getPluginDescriptor().extensionPoints![0].impl
             ).toHaveLength(2);
         });
     });
@@ -326,7 +347,7 @@ describe('PluginManager', () => {
                 `./impl/${barDescriptor.package}/${barDescriptor.module}.ts`
             );
             await PluginManager.getInstance().addPlugin(barDescriptor);
-            expect(callback).toHaveBeenCalledWith(barDescriptor.plugin);
+            expect(callback).not.toHaveBeenCalledWith(barDescriptor.plugin);
             unsubscribe();
         });
 
@@ -444,6 +465,11 @@ describe('PluginManager', () => {
         beforeEach(() => {
             pluginManager = PluginManager.getInstance();
             pluginManager.clear();
+            jest.useFakeTimers(); // Enable fake timers
+        });
+        afterEach(() => {
+            jest.clearAllTimers(); // Clear timers after each test
+            jest.useRealTimers(); // Restore real timers
         });
         it('it should connect the extensions normally', async () => {
             const callback = jest.fn();
@@ -521,10 +547,14 @@ describe('PluginManager', () => {
              * Also don't forget that here we only listen for change for bar, so we only get notifications for bar.
              */
             await PluginManager.getInstance().addPlugin(bazDescriptor);
+            // note there will be no notification at this point as we're only adding the plugin to the registry - so it's not loaded at this stage
+            // despite the fact that adding bar will retrieve baz and baz will update bar, since bar is not loaded at this point, no notification taken place
             await PluginManager.getInstance().addPlugin(barDescriptor);
-            expect(callback).toHaveBeenCalledWith(barDescriptor.plugin);
-            expect(callback.mock.calls.length).toBe(1);
-
+            jest.runAllTimers();
+            expect(callback).not.toHaveBeenCalled();
+            expect(callback.mock.calls.length).toBe(0);
+            // now we load the plugin, so the next extension change will trigger a notification
+            await PluginManager.getInstance().getPlugin('@foo/bar');
             callback.mockClear();
             expect(barDescriptor.extensionPoints![0].impl).toHaveLength(1);
             expect(barDescriptor.extensionPoints![0].impl![0].plugin).toBe(
@@ -533,8 +563,11 @@ describe('PluginManager', () => {
             expect(
                 pluginManager.getAwaitingPluginsFor('@foo/bar')
             ).toHaveLength(0);
-            await PluginManager.getInstance().addPlugin(fooDescriptor);
+            await PluginManager.getInstance().addPlugin(fooDescriptor); // foo will update extension point for bar, so bar's listeners will be notified
+            // Run all timers to ensure the callback is called
+            jest.runAllTimers();
             expect(callback).toHaveBeenCalledWith(barDescriptor.plugin);
+            expect(callback.mock.calls.length).toBe(1);
             expect(barDescriptor.extensionPoints![0].impl).toHaveLength(2);
         });
     });
@@ -548,10 +581,15 @@ describe('PluginManager', () => {
         beforeEach(() => {
             pluginManager = PluginManager.getInstance();
             pluginManager.clear();
+            jest.useFakeTimers(); // Enable fake timers
+        });
+        afterEach(() => {
+            jest.clearAllTimers(); // Clear timers after each test
+            jest.useRealTimers(); // Restore real timers
         });
         it('it should connect the extensions normally', async () => {
             const callback = jest.fn();
-            const pluginIds = ['@foo/bar', '@foo/foo', '@foo/baz'];
+            const pluginIds = ['@foo/bar', '@foo/foo'];
 
             const unsubscribe = pluginManager.registerPluginChangeListener(
                 pluginIds,
@@ -623,7 +661,9 @@ describe('PluginManager', () => {
 
             // Add Plugin A
             await PluginManager.getInstance().addPlugin(bazDescriptor);
-            expect(callback).toHaveBeenCalledWith(bazDescriptor.plugin);
+            jest.runAllTimers();
+            expect(callback).not.toHaveBeenCalled();
+            expect(callback.mock.calls.length).toBe(0);
             callback.mockClear();
             expect(
                 pluginManager.getAwaitingPluginsFor('@foo/bar')
@@ -632,9 +672,9 @@ describe('PluginManager', () => {
                 pluginManager.getAwaitingPluginsFor('@foo/foo')
             ).toHaveLength(1);
             await PluginManager.getInstance().addPlugin(barDescriptor);
-            expect(callback.mock.calls.length).toBe(2);
-            expect(callback).toHaveBeenCalledWith(barDescriptor.plugin);
-            expect(callback).toHaveBeenCalledWith(bazDescriptor.plugin);
+            jest.runAllTimers();
+            expect(callback.mock.calls.length).toBe(0);
+            expect(callback).not.toHaveBeenCalledWith();
             callback.mockClear();
             expect(
                 pluginManager.getAwaitingPluginsFor('@foo/bar')
@@ -644,15 +684,18 @@ describe('PluginManager', () => {
             ).toHaveLength(1);
 
             await PluginManager.getInstance().addPlugin(fooDescriptor);
-            expect(callback.mock.calls.length).toBe(2);
-            expect(callback).toHaveBeenCalledWith(fooDescriptor.plugin);
-            expect(callback).toHaveBeenCalledWith(bazDescriptor.plugin);
+            jest.runAllTimers();
+            expect(callback.mock.calls.length).toBe(0);
+            expect(callback).not.toHaveBeenCalled();
             expect(
                 pluginManager.getAwaitingPluginsFor('@foo/bar')
             ).toHaveLength(0);
             expect(
                 pluginManager.getAwaitingPluginsFor('@foo/foo')
             ).toHaveLength(0);
+
+            // !!!
+            // In this test we had no notifications as the extensions were already present at the time when the plugins with the respected extension points were added
         });
     });
 });

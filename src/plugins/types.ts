@@ -8,6 +8,8 @@ import {
     Unknown,
 } from 'runtypes';
 
+export const LogCore = 'core';
+
 /**
  * Describes a single plugin.
  * This will need to be validated by ajv.

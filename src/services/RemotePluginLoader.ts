@@ -2,6 +2,7 @@ import { convertManifestToPluginDescriptor } from '../dev/plugin-utils.js';
 import { PluginManager } from '../plugins/PluginManager.js';
 import { PluginDescriptor } from '../plugins/types.js';
 import { RemoteDefinition } from './configuration.js';
+import { LoggingService } from './LoggingService.js';
 
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -29,9 +30,11 @@ export class RemotePluginLoader {
 
         try {
             for (const remote of remotes) {
-                console.log(
-                    `[composaic] Loading manifest from remote: ${remote.host}`
-                );
+                LoggingService.getInstance().info({
+                    module: 'federation',
+                    header: 'loadManifests',
+                    message: `Loading manifest from remote: ${remote.host}`,
+                });
                 const manifestRaw = await fetch(remote.host + '/manifest.json');
                 if (!manifestRaw.ok) {
                     throw new Error(

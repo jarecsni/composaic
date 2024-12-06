@@ -12,5 +12,4 @@ export {
     ConfigurationService,
     ComposaicEnv,
 } from './services/configuration.js';
-export { usePlugins } from './react/UsePlugins.js';
 export { PluginManager } from './plugins/PluginManager.js';

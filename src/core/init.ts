@@ -8,6 +8,7 @@ import {
 import { PluginManager } from '../plugins/PluginManager.js';
 import { LoggingService } from '../services/LoggingService.js';
 import { RemoteModuleLoaderService } from '../services/RemoteModuleLoaderService.js';
+import { LogCore } from '../plugins/types.js';
 
 export type RemoteModule = {
     url: string;
@@ -27,36 +28,44 @@ interface InitOptions {
 }
 
 export const init = async (options: InitOptions) => {
+    console.log('[composaic] Booting Composaic...');
+    await LoggingService.createInstance();
+    LoggingService.getInstance().info({
+        module: LogCore,
+        message: 'Logging service initialised.',
+    });
     const { addLocalPluginsFn, config, loadRemoteModuleFn } = options;
     RemoteModuleLoaderService.initialiseStaticInstance(loadRemoteModuleFn);
-
     const corePlugins = await loadPluginDefinitions();
-
-    // // Add core plugins
     await PluginManager.getInstance().addPluginDefinitions(corePlugins);
-
+    await LoggingService.createInstance(true);
     await addLocalPluginsFn?.();
-
     const configuration =
         ConfigurationService.getInstance(config).getConfiguration();
-    console.log(`[composaic] Configuration ${JSON.stringify(configuration)}`);
+    LoggingService.getInstance().info({
+        module: LogCore,
+        message: `Configuration ${JSON.stringify(configuration)}`,
+    });
 
     RemotePluginLoader.getInstance().loadManifests(configuration.remotes);
 
     // Create and initialize services
     await createServices();
 
-    LoggingService.getInstance().info(
-        `Configuration: ${JSON.stringify(ConfigurationService.getInstance().getConfiguration())}`
-    );
+    LoggingService.getInstance().info({
+        module: LogCore,
+        message: `Configuration: ${JSON.stringify(ConfigurationService.getInstance().getConfiguration())}`,
+    });
 
-    LoggingService.getInstance().info(
-        `Initialisation done, ${PluginManager.getInstance().getNumberOfPlugins()} plugins in total`
-    );
-    LoggingService.getInstance().info(
-        `Plugins: ${PluginManager.getInstance()
+    LoggingService.getInstance().info({
+        module: LogCore,
+        message: `Initialisation done, ${PluginManager.getInstance().getNumberOfPlugins()} plugins in total`,
+    });
+    LoggingService.getInstance().info({
+        module: LogCore,
+        message: `Plugins: ${PluginManager.getInstance()
             .getPluginIds()
             .map((plugin) => plugin)
-            .join(', ')}`
-    );
+            .join(', ')}`,
+    });
 };

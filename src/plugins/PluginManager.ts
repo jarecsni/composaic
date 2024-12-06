@@ -15,6 +15,9 @@ import * as bar from './impl/bar/BarPluginModule.js';
 import * as baz from './impl/baz/BazPluginModule.js';
 import * as foo from './impl/foo/FooPluginModule.js';
 import { RemoteModuleLoaderService } from '../services/RemoteModuleLoaderService.js';
+import { LoggingService } from '../services/LoggingService.js';
+
+const pluginModule = 'plugins';
 
 const moduleMap: { [key: string]: object } = {
     'logger/index': logger,
@@ -96,16 +99,20 @@ export class PluginManager {
      */
     async addPluginDefinitions(plugins: PluginDescriptor[]) {
         plugins.map(async (plugin) => {
-            console.log(
-                `[composaic][${plugin.plugin}] Adding plugin to registry`
-            );
+            LoggingService.getInstance().info({
+                module: pluginModule,
+                header: plugin.plugin,
+                message: 'Adding plugin to registry',
+            });
             const existingPlugin = this.registry[plugin.plugin];
             if (!existingPlugin) {
                 this.addPlugin(plugin);
             } else {
-                console.log(
-                    `[composaic][${plugin.plugin}] Plugin already exists, skipping`
-                );
+                LoggingService.getInstance().info({
+                    module: pluginModule,
+                    header: plugin.plugin,
+                    message: 'Already in registry, ignoring',
+                });
             }
         });
     }
@@ -176,7 +183,11 @@ export class PluginManager {
         } = options;
         const pluginDescriptor = this.registry[pluginName];
         if (!pluginDescriptor) {
-            throw new Error(`Plugin with ID ${pluginName} not found`);
+            LoggingService.getInstance().warn({
+                module: pluginModule,
+                header: pluginName,
+                message: 'Plugin not found',
+            });
         }
         if (pluginDescriptor.pluginInstance && !reinitialise) {
             console.log(`[composaic][${pluginName}] Plugin already loaded`);
@@ -254,6 +265,9 @@ export class PluginManager {
         } else {
             if (!pluginDescriptor.loadedModule && !processManifestOnly) {
                 try {
+                    console.log(
+                        `[composaic][${pluginDescriptor.plugin}] Plugin module loading...`
+                    );
                     pluginDescriptor.loadedModule =
                         await pluginDescriptor.loader(pluginDescriptor);
                     console.log(
@@ -326,7 +340,11 @@ export class PluginManager {
                         });
                     }
 
-                    if (extension.plugin !== 'self') {
+                    // Only notify listeners once the plugin has been loaded
+                    if (
+                        extension.plugin !== 'self' &&
+                        targetPlugin.pluginInstance
+                    ) {
                         setTimeout(() => {
                             // need to restart the plugin so it picks up stuff from new extension!
                             if (this.registry[extension.plugin]) {
@@ -374,7 +392,7 @@ export class PluginManager {
             });
             pluginDescriptor.pluginInstance.init(pluginDescriptor);
         }
-        if (!viaGetPlugin) {
+        if (!viaGetPlugin && !processManifestOnly) {
             console.log(
                 `[composaic][${pluginDescriptor.plugin}] Notifying listeners for change for plugin`
             );
@@ -409,7 +427,7 @@ export class PluginManager {
             return;
         }
         if (plugin.pluginDescriptor.dependencies) {
-            Promise.all(
+            Promise.allSettled(
                 plugin.pluginDescriptor.dependencies.map(async (dependency) => {
                     if ((dependency as PluginDescriptor).load === 'deferred') {
                         console.log(
@@ -447,23 +465,33 @@ export class PluginManager {
     async getPlugin(
         pluginName: string,
         options: GetPluginOptions = {}
-    ): Promise<Plugin> {
+    ): Promise<Plugin | undefined> {
         const { reinitialise = false } = options;
+        console.log(
+            `[composaic][${pluginName}] Retrieve plugin, reinitialise=${reinitialise}); `
+        );
         try {
             const pluginDescriptor = this.registry[pluginName];
             if (!pluginDescriptor) {
-                throw new Error(`Plugin with ID ${pluginName} not found`);
+                LoggingService.getInstance().warn({
+                    module: pluginModule,
+                    header: pluginName,
+                    message: 'Plugin not found',
+                });
+            } else {
+                if (!pluginDescriptor.pluginInstance || reinitialise) {
+                    await this.loadPlugin(pluginName, {
+                        viaGetPlugin: true,
+                        reinitialise,
+                    });
+                }
+                if (!pluginDescriptor.pluginInstance.started) {
+                    await this.startPlugin(pluginDescriptor.pluginInstance!);
+                }
             }
-            //if (!pluginDescriptor.pluginInstance) {
-            await this.loadPlugin(pluginName, {
-                viaGetPlugin: true,
-                reinitialise,
-            });
-            //}
-            await this.startPlugin(pluginDescriptor.pluginInstance!);
-            return pluginDescriptor.pluginInstance!;
+            return pluginDescriptor?.pluginInstance!;
         } catch (error) {
-            console.error(`Error getting plugin: ${pluginName}`, error);
+            console.warn(`Error getting plugin: ${pluginName}`, error);
             throw error;
         }
     }

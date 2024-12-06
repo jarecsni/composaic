@@ -18,7 +18,7 @@ const PluginComponentPage: React.FC<PluginComponentPageProps> = ({
         PluginManager.getInstance()
             .getPlugin(plugin)
             .then((plugin) => {
-                const loadedComponent = plugin.getModule(component);
+                const loadedComponent = plugin?.getModule(component);
                 setPluginComponent(() => loadedComponent as React.FC);
             });
     }, [plugin, component]);

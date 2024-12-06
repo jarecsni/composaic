@@ -69,7 +69,7 @@ export class SignalService {
             const plugin = await PluginManager.getInstance().getPlugin(
                 signalDefinition.plugin
             );
-            const handlerFn = await plugin.getModule(signalDefinition.handler);
+            const handlerFn = await plugin?.getModule(signalDefinition.handler);
             if (handlerFn && typeof handlerFn === 'function') {
                 handlerFn(signal.payload);
             } else {
