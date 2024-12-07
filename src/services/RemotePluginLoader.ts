@@ -41,31 +41,41 @@ export class RemotePluginLoader {
                         `Failed to fetch manifest from ${remote.host}`
                     );
                 }
+                //await delay(5000);
                 const manifest = await manifestRaw.json();
-                console.log(
-                    `[composaic] Loaded manifest from ${remote.host}: ${JSON.stringify(manifest)}`
-                );
+                LoggingService.getInstance().info({
+                    module: 'federation',
+                    header: 'loadManifests',
+                    message: `Loaded manifest from remote: ${remote.host}, manifest: ${JSON.stringify(manifest)}`,
+                });
                 const pluginDescriptor: PluginDescriptor[] =
                     convertManifestToPluginDescriptor(manifest, remote);
-                console.log(
-                    `[composaic] Converted manifest to plugin descriptor: ${JSON.stringify(pluginDescriptor)}`
-                );
+                LoggingService.getInstance().info({
+                    module: 'federation',
+                    header: 'loadManifests',
+                    message: `Converted manifest to plugin descriptor: ${JSON.stringify(pluginDescriptor)}`,
+                });
                 await PluginManager.getInstance().addPluginDefinitions(
                     pluginDescriptor
                 );
-                console.log(
-                    `[composaic] Added plugin definitions for remote: ${remote.host}`
-                );
+                LoggingService.getInstance().info({
+                    module: 'federation',
+                    header: 'loadManifests',
+                    message: `Added plugin definitions from remote: ${remote.host}`,
+                });
             }
         } catch (error) {
-            console.error(
-                '[composaic] Error loading manifest:',
-                (error as any).message
-            );
+            LoggingService.getInstance().error({
+                module: 'federation',
+                header: 'loadManifests',
+                message: `error loading manifest: ${JSON.stringify(error)}`,
+            });
         } finally {
-            console.log(
-                `[composaic] Done loading manifests from ${remotes.length} remotes.`
-            );
+            LoggingService.getInstance().info({
+                module: 'federation',
+                header: 'loadManifests',
+                message: `done loading manifests from ${remotes.length} remotes.`,
+            });
         }
     }
 }

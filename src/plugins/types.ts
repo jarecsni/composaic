@@ -117,11 +117,9 @@ export abstract class Plugin {
         return this._started;
     }
     async start(): Promise<void> {
-        console.log('Starting plugin', this.pluginDescriptor.plugin);
         this._started = true;
     }
     async stop(): Promise<void> {
-        console.log('Stopping plugin', this.pluginDescriptor.plugin);
         this.stopped = true;
     }
     init(pluginDescriptor: PluginDescriptor): void {

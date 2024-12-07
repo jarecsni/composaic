@@ -186,15 +186,23 @@ export class PluginManager {
             LoggingService.getInstance().warn({
                 module: pluginModule,
                 header: pluginName,
-                message: 'Plugin not found',
+                message: 'plugin not found',
             });
         }
         if (pluginDescriptor.pluginInstance && !reinitialise) {
-            console.log(`[composaic][${pluginName}] Plugin already loaded`);
+            LoggingService.getInstance().info({
+                module: pluginModule,
+                header: pluginName,
+                message: `plugin already loaded`,
+            });
             return pluginDescriptor.pluginInstance;
         }
         if (reinitialise) {
-            console.log(`[composaic][${pluginName}] Reinitialising plugin`);
+            LoggingService.getInstance().info({
+                module: pluginModule,
+                header: pluginName,
+                message: `reinitialising plugin`,
+            });
             pluginDescriptor.pluginInstance = null;
         }
         const deferred =
@@ -211,9 +219,11 @@ export class PluginManager {
             this.awaitingDependency[pluginDescriptor.plugin];
         if (awaitingThisPlugin) {
             for (const awaitingPlugin of awaitingThisPlugin) {
-                console.log(
-                    `[composaic][${pluginDescriptor.plugin}] Loading plugin ${awaitingPlugin} that was awaiting plugin ${pluginDescriptor.plugin}`
-                );
+                LoggingService.getInstance().info({
+                    module: pluginModule,
+                    header: pluginDescriptor.plugin,
+                    message: `Loading plugin ${awaitingPlugin} that was awaiting plugin ${pluginDescriptor.plugin}`,
+                });
                 await this.loadPlugin(awaitingPlugin, {
                     processManifestOnly,
                 });
@@ -232,9 +242,11 @@ export class PluginManager {
                 // check if target plugin is available in the registry
                 // it might not have been added yet if it is a remote plugin
                 if (!this.registry[pluginToLoad]) {
-                    console.log(
-                        `[composaic][${pluginName}] Dependency with ID ${pluginToLoad} not found in registry, delaying loading of plugin ${pluginName}`
-                    );
+                    LoggingService.getInstance().info({
+                        module: pluginModule,
+                        header: pluginName,
+                        message: `Dependency with ID ${pluginToLoad} not found in registry, delaying loading of plugin ${pluginName}`,
+                    });
                     // remember that for the target plugin we are going to have to reload this plugin once again
                     // we might be able to do this in a more efficient way by only setting the extensions (which are already loaded)
                     // for the target plugin when that has become available
@@ -259,25 +271,32 @@ export class PluginManager {
             }
         }
         if (deferred) {
-            console.log(
-                `[composaic][${pluginName}] load is defined as 'deferred' so not loading plugin`
-            );
+            LoggingService.getInstance().info({
+                module: pluginModule,
+                header: pluginName,
+                message: `load is defined as 'deferred' so not loading plugin`,
+            });
         } else {
             if (!pluginDescriptor.loadedModule && !processManifestOnly) {
                 try {
-                    console.log(
-                        `[composaic][${pluginDescriptor.plugin}] Plugin module loading...`
-                    );
+                    LoggingService.getInstance().info({
+                        module: pluginModule,
+                        header: pluginDescriptor.plugin,
+                        message: `loading plugin module START`,
+                    });
                     pluginDescriptor.loadedModule =
                         await pluginDescriptor.loader(pluginDescriptor);
-                    console.log(
-                        `[composaic][${pluginDescriptor.plugin}] Plugin module loaded`
-                    );
+                    LoggingService.getInstance().info({
+                        module: pluginModule,
+                        header: pluginDescriptor.plugin,
+                        message: `loading plugin module DONE`,
+                    });
                 } catch (error) {
-                    console.error(
-                        `[composaic][${pluginDescriptor.plugin}] Failed to load plugin module`,
-                        error
-                    );
+                    LoggingService.getInstance().info({
+                        module: pluginModule,
+                        header: pluginDescriptor.plugin,
+                        message: `loading plugin module FAILED`,
+                    });
                     return null;
                 }
             }
@@ -304,9 +323,11 @@ export class PluginManager {
                         ? pluginDescriptor
                         : this.registry[extension.plugin];
                 if (!targetPlugin) {
-                    console.error(
-                        `[composaic][${pluginName}] Plugin with ID ${extension.plugin} not found for extension ${extension.id}`
-                    );
+                    LoggingService.getInstance().info({
+                        module: pluginModule,
+                        header: pluginName,
+                        message: `plugin with ID ${extension.plugin} not found for extension ${extension.id}`,
+                    });
                     continue;
                 }
                 // look up the extension point in the targetPlugin matching the extension.id
@@ -352,16 +373,20 @@ export class PluginManager {
                                     extension.plugin
                                 ].pluginInstance?.start();
                             }
-                            console.log(
-                                `[composaic][${pluginDescriptor.plugin}] Notifying listeners for change (extensions) for plugin`
-                            );
+                            LoggingService.getInstance().info({
+                                module: pluginModule,
+                                header: pluginDescriptor.plugin,
+                                message: `notifying listeners (change in connected extensions)`,
+                            });
                             this.notifyPluginChanged(extension.plugin);
                         }, 0);
                     }
                 } else {
-                    console.warn(
-                        `[composaic][${pluginDescriptor.plugin}] Extension point not found ${targetPlugin.plugin}:${extension.id}`
-                    );
+                    LoggingService.getInstance().info({
+                        module: pluginModule,
+                        header: pluginDescriptor.plugin,
+                        message: `extension point not found ${targetPlugin.plugin}:${extension.id}`,
+                    });
                 }
             }
         }
@@ -393,9 +418,11 @@ export class PluginManager {
             pluginDescriptor.pluginInstance.init(pluginDescriptor);
         }
         if (!viaGetPlugin && !processManifestOnly) {
-            console.log(
-                `[composaic][${pluginDescriptor.plugin}] Notifying listeners for change for plugin`
-            );
+            LoggingService.getInstance().info({
+                module: pluginModule,
+                header: pluginDescriptor.plugin,
+                message: `notifying listeners for change for plugin`,
+            });
             this.notifyPluginChanged(pluginDescriptor.plugin);
         }
         // don't notify listeners for deferred plugins only when they're loaded
@@ -417,22 +444,28 @@ export class PluginManager {
     }
 
     protected async startPlugin(plugin: Plugin, dependingPlugin?: Plugin) {
-        console.log(
-            `[composaic][${plugin.pluginDescriptor.plugin}] Starting plugin`
-        );
+        LoggingService.getInstance().info({
+            module: pluginModule,
+            header: plugin.pluginDescriptor.plugin,
+            message: `starting plugin`,
+        });
         if (plugin.started) {
-            console.log(
-                `[composaic][${plugin.pluginDescriptor.plugin}] Plugin already started`
-            );
+            LoggingService.getInstance().info({
+                module: pluginModule,
+                header: plugin.pluginDescriptor.plugin,
+                message: `plugin already started`,
+            });
             return;
         }
         if (plugin.pluginDescriptor.dependencies) {
             Promise.allSettled(
                 plugin.pluginDescriptor.dependencies.map(async (dependency) => {
                     if ((dependency as PluginDescriptor).load === 'deferred') {
-                        console.log(
-                            `[composaic][${plugin.pluginDescriptor.plugin}] Deferring starting of dependency plugin with load=deferred ${(dependency as PluginDescriptor).plugin}`
-                        );
+                        LoggingService.getInstance().info({
+                            module: pluginModule,
+                            header: plugin.pluginDescriptor.plugin,
+                            message: `deferring starting of dependency plugin with load=deferred ${(dependency as PluginDescriptor).plugin}`,
+                        });
                     } else {
                         const pluginToLoad = (dependency as PluginDescriptor)
                             .plugin;
@@ -451,9 +484,11 @@ export class PluginManager {
             );
         }
         await plugin.start();
-        console.log(
-            `[composaic][${plugin.pluginDescriptor.plugin}] Plugin started`
-        );
+        LoggingService.getInstance().info({
+            module: pluginModule,
+            header: plugin.pluginDescriptor.plugin,
+            message: `plugin started`,
+        });
     }
 
     /**
@@ -467,9 +502,11 @@ export class PluginManager {
         options: GetPluginOptions = {}
     ): Promise<Plugin | undefined> {
         const { reinitialise = false } = options;
-        console.log(
-            `[composaic][${pluginName}] Retrieve plugin, reinitialise=${reinitialise}); `
-        );
+        LoggingService.getInstance().info({
+            module: pluginModule,
+            header: pluginName,
+            message: `Retrieve plugin, reinitialise=${reinitialise})`,
+        });
         try {
             const pluginDescriptor = this.registry[pluginName];
             if (!pluginDescriptor) {
@@ -491,7 +528,11 @@ export class PluginManager {
             }
             return pluginDescriptor?.pluginInstance!;
         } catch (error) {
-            console.warn(`Error getting plugin: ${pluginName}`, error);
+            LoggingService.getInstance().error({
+                module: pluginModule,
+                header: pluginName,
+                message: `error getting plugin: ${error}`,
+            });
             throw error;
         }
     }

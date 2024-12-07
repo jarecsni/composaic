@@ -50,7 +50,7 @@ export const init = async (options: InitOptions) => {
     RemotePluginLoader.getInstance().loadManifests(configuration.remotes);
 
     // Create and initialize services
-    await createServices();
+    createServices();
 
     LoggingService.getInstance().info({
         module: LogCore,
