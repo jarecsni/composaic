@@ -1,47 +1,33 @@
 import { PluginManager } from '../plugins/PluginManager.js';
 import {
     ComposaicSubSystemName,
-    LogLevel,
     LoggerPlugin,
 } from '../plugins/impl/logger/index.js';
 
+interface LogArgs {
+    message: string;
+    module?: string;
+    header?: string;
+}
+
+type LogLevel = 'info' | 'warn' | 'error' | 'debug' | 'trace';
+
 export class LoggingService {
     private static instance: LoggingService;
-    private loggerPlugin?: LoggerPlugin;
+    private loggerPlugin: any;
 
-    private constructor() {
-        // Private constructor to prevent direct instantiation
-    }
+    private constructor() {}
 
-    private async initLoggerPlugin(): Promise<void> {
-        this.loggerPlugin = (await PluginManager.getInstance().getPlugin(
-            '@composaic/logger'
-        )) as LoggerPlugin;
-        this.loggerPlugin.log({
-            level: 'info',
-            message: 'All OK! Logger initialised.',
-            timestamp: new Date(),
-            subSystemName: ComposaicSubSystemName,
-        });
-    }
-
-    /**
-     * Static method to create and initialize an instance of LoggingService.
-     */
-    public static async createInstance(): Promise<LoggingService> {
-        if (!LoggingService.instance) {
-            const instance = new LoggingService();
-            await instance.initLoggerPlugin();
-            LoggingService.instance = instance;
+    public static async createInstance(
+        reinitialise = false
+    ): Promise<LoggingService> {
+        if (!LoggingService.instance || reinitialise) {
+            LoggingService.instance = new LoggingService();
+            await LoggingService.instance.initLoggerPlugin();
         }
         return LoggingService.instance;
     }
 
-    /**
-     * Returns the singleton instance of the LoggingService.
-     * If the instance does not exist, it warns and suggests to call createInstance.
-     * @returns The singleton instance of the LoggingService.
-     */
     public static getInstance(): LoggingService {
         if (!LoggingService.instance) {
             console.warn(
@@ -51,39 +37,74 @@ export class LoggingService {
         return LoggingService.instance;
     }
 
-    public info(message: string): void {
-        this._log(message, 'info');
+    public info(args: LogArgs): void {
+        this._log({ ...args, level: 'info' });
     }
 
-    public error(message: string): void {
-        this._log(message, 'error');
+    public warn(args: LogArgs): void {
+        this._log({ ...args, level: 'warn' });
     }
 
-    public debug(message: string): void {
-        this._log(message, 'debug');
+    public error(args: LogArgs): void {
+        this._log({ ...args, level: 'error' });
     }
 
-    public warn(message: string): void {
-        this._log(message, 'warn');
+    public debug(args: LogArgs): void {
+        this._log({ ...args, level: 'debug' });
     }
 
-    public trace(message: string): void {
-        this._log(message, 'trace');
+    public trace(args: LogArgs): void {
+        this._log({ ...args, level: 'trace' });
     }
 
-    public fatal(message: string): void {
-        this._log(message, 'fatal');
-    }
-
-    /**
-     * Logs the specified message.
-     * @param message - The message to be logged.
-     */
-    private _log(message: string, level: LogLevel): void {
-        // Your logging logic here
-        this.loggerPlugin!.log({
+    private _log(args: LogArgs & { level: LogLevel }): void {
+        const { message, module, header, level } = args;
+        const logEntry = {
             level,
-            message: message,
+            message,
+            module,
+            header,
+            timestamp: new Date(),
+            subSystemName: ComposaicSubSystemName, // Replace with actual subsystem name
+        };
+
+        if (this.loggerPlugin) {
+            this.loggerPlugin.log(logEntry);
+        } else {
+            // Fallback to console logging if loggerPlugin is not available
+            const padding = !logEntry.module || !logEntry.header ? ' ' : '';
+            const logMessage = `[${logEntry.timestamp.toISOString()}][${logEntry.subSystemName}]${logEntry.module ? `[${logEntry.module}]` : ''}${logEntry.header ? `[${logEntry.header}] ` : ''}${padding}${logEntry.message}`;
+            switch (level) {
+                case 'error':
+                    console.error(logMessage);
+                    break;
+                case 'warn':
+                    console.warn(logMessage);
+                    break;
+                case 'info':
+                    console.info(logMessage);
+                    break;
+                case 'debug':
+                    console.debug(logMessage);
+                    break;
+                case 'trace':
+                    console.trace(logMessage);
+                    break;
+                default:
+                    console.log(logMessage);
+                    break;
+            }
+        }
+    }
+
+    private async initLoggerPlugin(): Promise<void> {
+        this.loggerPlugin = (await PluginManager.getInstance().getPlugin(
+            '@composaic/logger',
+            { reinitialise: true }
+        )) as LoggerPlugin;
+        this.loggerPlugin?.log({
+            level: 'info',
+            message: 'Logging Service initialised.',
             timestamp: new Date(),
             subSystemName: ComposaicSubSystemName,
         });

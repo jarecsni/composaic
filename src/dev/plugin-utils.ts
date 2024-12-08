@@ -3,8 +3,10 @@ import { PluginManager } from '../plugins/PluginManager.js';
 import { PluginDescriptor, PluginManifest } from '../plugins/types.js';
 import { RemoteDefinition } from '../services/configuration.js';
 
-export const loadRemotePlugin = (pluginDescriptor: PluginDescriptor): Promise<object | undefined> => {
-    return RemoteModuleLoaderService.getInstance().loadRemoteModule({
+export const loadRemotePlugin = async (
+    pluginDescriptor: PluginDescriptor
+): Promise<object | undefined> => {
+    return await RemoteModuleLoaderService.getInstance().loadRemoteModule({
         url: pluginDescriptor.remoteURL!,
         name: pluginDescriptor.remoteName!,
         bundleFile: pluginDescriptor.bundleFile!,
@@ -65,7 +67,9 @@ export const convertManifestToPluginDescriptor = (
     });
 };
 
-export type LoadModuleFunction = (pluginDescriptor: PluginDescriptor) => Promise<object | undefined>;
+export type LoadModuleFunction = (
+    pluginDescriptor: PluginDescriptor
+) => Promise<object | undefined>;
 
 export const processManifest = async (
     manifest: PluginManifest,

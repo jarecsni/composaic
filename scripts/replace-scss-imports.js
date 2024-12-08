@@ -29,5 +29,4 @@ replaceScssImports(path.join(directory, 'cjs'), 'js');
 replaceScssImports(path.join(directory, 'esm'), 'mjs');
 
 console.log('Replacing .scss imports with .css in .d.ts files');
-replaceScssImports(path.join(directory, 'cjs'), 'd.ts');
-replaceScssImports(path.join(directory, 'esm'), 'd.ts');
+replaceScssImports(path.join(directory, 'types'), 'd.ts');

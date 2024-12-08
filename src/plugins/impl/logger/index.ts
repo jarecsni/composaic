@@ -1,3 +1,4 @@
+import { PluginManager } from '../../PluginManager.js';
 import { Plugin } from '../../types.js';
 
 export type LogLevel = 'trace' | 'debug' | 'info' | 'warn' | 'error' | 'fatal';
@@ -7,10 +8,12 @@ export type LogMessage = {
     message: string;
     timestamp: Date;
     subSystemName: string;
+    module?: string;
+    header?: string;
     args?: unknown[];
 };
 
-export const ComposaicSubSystemName = 'Composaic';
+export const ComposaicSubSystemName = 'composaic';
 
 /**
  * Logger extension point.
@@ -27,20 +30,26 @@ export class LoggerPlugin extends Plugin {
         super.start();
         this.log({
             level: 'info',
-            message: '@composaic/logger plugin started',
+            module: 'plugins',
+            header: '@composaic/logger',
+            message: 'plugin started',
             timestamp: new Date(),
             subSystemName: ComposaicSubSystemName,
         });
-        this.getConnectedExtensions('logger').forEach((extension) => {
+        this.getConnectedExtensions('logger').forEach(async (extension) => {
+            // make sure the plugin is loaded (at this point it is probably manifest information loaded only)
+            await PluginManager.getInstance().getPlugin(extension.plugin);
             const loggerExtension =
                 extension.extensionImpl as LoggerExtensionPoint;
-            loggerExtension.setLogCallback(this.log.bind(this));
+            loggerExtension?.setLogCallback(this.log.bind(this));
         });
     }
     async stop() {}
     log(message: LogMessage) {
+        const module = message.module ? `[${message.module}]` : '';
+        const header = message.header ? `[${message.header}]` : '';
         console.log(
-            `${message.timestamp.toISOString()} [${message.level.toUpperCase()}] [${message.subSystemName}] ${message.message}`
+            `[${message.timestamp.toISOString()}[${message.level.toUpperCase()}][${message.subSystemName}]${module}${header}${': ' + message.message}`
         );
     }
 }

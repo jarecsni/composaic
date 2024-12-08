@@ -1,9 +1,8 @@
 import React, { Suspense } from 'react';
 import { NavbarItem, NavbarPlugin } from '../../plugins/impl/navbar';
-import { MenuItem } from './menuModel.js'; // Import the MenuItemModel and menuItems
+import { MenuItem, MenuModel } from './menuModel.js'; // Import the MenuItemModel and menuItems
 import { Route } from 'react-router-dom';
 import { PluginManager } from '../../plugins/PluginManager.js';
-import { menuItems } from './menuModel.js'; // Import the MenuItemModel and menuItems
 import PluginComponentPage from './PluginComponentPage.js';
 
 export const transformNavBarItemsToMenuItems = (
@@ -60,7 +59,8 @@ export const getRoutes = async () => {
     const navbarItems = (navBarPlugin as NavbarPlugin).getNavbarItems();
     const items = transformNavBarItemsToMenuItems(navbarItems);
     for (const item of items) {
-        menuItems.push(item);
+        MenuModel.getInstance().addMenuItem(item);
     }
-    return generateRoutes(menuItems);
+    const routes = generateRoutes(MenuModel.getInstance().getMenuItems());
+    return routes;
 };

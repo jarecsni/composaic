@@ -8,6 +8,8 @@ import {
     Unknown,
 } from 'runtypes';
 
+export const LogCore = 'core';
+
 /**
  * Describes a single plugin.
  * This will need to be validated by ajv.
@@ -21,7 +23,9 @@ export interface PluginDescriptor {
     module: string;
     package: string;
     class: string;
-    loader?: (pluginDescriptor: PluginDescriptor) => Promise<object | undefined>;
+    loader?: (
+        pluginDescriptor: PluginDescriptor
+    ) => Promise<object | undefined>;
     loadedClass?: object;
     loadedModule?: { [exportedModule: string]: object };
     plugin: string;
@@ -113,17 +117,15 @@ export abstract class Plugin {
         return this._started;
     }
     async start(): Promise<void> {
-        console.log('Starting plugin', this.pluginDescriptor.plugin);
         this._started = true;
     }
     async stop(): Promise<void> {
-        console.log('Stopping plugin', this.pluginDescriptor.plugin);
         this.stopped = true;
     }
     init(pluginDescriptor: PluginDescriptor): void {
-        if (this.initialised) {
-            throw new Error('Plugin already initialised');
-        }
+        // if (this.initialised) {
+        //     throw new Error('Plugin already initialised');
+        // }
         this.pluginDescriptor = pluginDescriptor;
         this.initialised = true;
     }
@@ -138,9 +140,9 @@ export abstract class Plugin {
             meta?: object;
         }[]
     ): void {
-        if (this.initialised) {
-            throw new Error('Plugin already initialised');
-        }
+        // if (this.initialised) {
+        //     throw new Error('Plugin already initialised');
+        // }
         this.extensionsPoints[extensionPointId] = extensions;
     }
     protected getConnectedExtensions(
@@ -153,9 +155,9 @@ export abstract class Plugin {
         extensionPointId: string,
         extensionImpl: object
     ): void {
-        if (this.initialised) {
-            throw new Error('Plugin already initialised');
-        }
+        // if (this.initialised) {
+        //     throw new Error('Plugin already initialised');
+        // }
         this.extensions[plugin + '::' + extensionPointId] = extensionImpl;
     }
     protected getExtensionImpl(plugin: string, extensionId: string): object {
