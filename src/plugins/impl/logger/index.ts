@@ -30,7 +30,9 @@ export class LoggerPlugin extends Plugin {
         super.start();
         this.log({
             level: 'info',
-            message: '@composaic/logger plugin started',
+            module: 'plugins',
+            header: '@composaic/logger',
+            message: 'plugin started',
             timestamp: new Date(),
             subSystemName: ComposaicSubSystemName,
         });
@@ -44,9 +46,11 @@ export class LoggerPlugin extends Plugin {
     }
     async stop() {}
     log(message: LogMessage) {
-        const padding = !message.module || !message.header ? ' ' : '';
+        const padding = message.module || message.header ? ' ' : '';
+        const module = message.module ? `[${message.module}]` : '';
+        const header = message.header ? `[${message.header}]` : '';
         console.log(
-            `${message.timestamp.toISOString()}[${message.level.toUpperCase()}][${message.subSystemName}][${message.header}]${padding}${message.message}`
+            `[${message.timestamp.toISOString()}[${message.level.toUpperCase()}][${message.subSystemName}]${module}${header}${padding}${message.message}`
         );
     }
 }

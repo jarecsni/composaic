@@ -1,4 +1,8 @@
-import { ComposaicSubSystemName } from '../plugins/impl/logger/index.js';
+import { PluginManager } from '../plugins/PluginManager.js';
+import {
+    ComposaicSubSystemName,
+    LoggerPlugin,
+} from '../plugins/impl/logger/index.js';
 
 interface LogArgs {
     message: string;
@@ -94,6 +98,15 @@ export class LoggingService {
     }
 
     private async initLoggerPlugin(): Promise<void> {
-        // Initialize the logger plugin
+        this.loggerPlugin = (await PluginManager.getInstance().getPlugin(
+            '@composaic/logger',
+            { reinitialise: true }
+        )) as LoggerPlugin;
+        this.loggerPlugin?.log({
+            level: 'info',
+            message: 'Logging Service initialised.',
+            timestamp: new Date(),
+            subSystemName: ComposaicSubSystemName,
+        });
     }
 }
