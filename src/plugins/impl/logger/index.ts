@@ -46,11 +46,10 @@ export class LoggerPlugin extends Plugin {
     }
     async stop() {}
     log(message: LogMessage) {
-        const padding = message.module || message.header ? ' ' : '';
         const module = message.module ? `[${message.module}]` : '';
         const header = message.header ? `[${message.header}]` : '';
         console.log(
-            `[${message.timestamp.toISOString()}[${message.level.toUpperCase()}][${message.subSystemName}]${module}${header}${padding}${message.message}`
+            `[${message.timestamp.toISOString()}[${message.level.toUpperCase()}][${message.subSystemName}]${module}${header}${': ' + message.message}`
         );
     }
 }
