@@ -54,7 +54,6 @@ export const generateRoutes = (items: MenuItem[]): JSX.Element[] => {
 };
 
 export const getRoutes = async () => {
-    MenuModel.getInstance().reset();
     const navBarPlugin =
         await PluginManager.getInstance().getPlugin('@composaic/navbar');
     const navbarItems = (navBarPlugin as NavbarPlugin).getNavbarItems();
