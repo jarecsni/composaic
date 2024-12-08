@@ -502,7 +502,7 @@ export class PluginManager {
         options: GetPluginOptions = {}
     ): Promise<Plugin | undefined> {
         const { reinitialise = false } = options;
-        LoggingService.getInstance().info({
+        LoggingService.getInstance().debug({
             module: pluginModule,
             header: pluginName,
             message: `Retrieve plugin, reinitialise=${reinitialise})`,

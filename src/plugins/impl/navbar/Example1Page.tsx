@@ -12,7 +12,7 @@ export const Example1Page: React.FC = () => {
         console.log('Selection changed:', event);
     });
 
-    useEffect(() => {
+    const refreshViews = () => {
         // Assuming PluginManager has a method getPlugin to get a plugin by name
         // and the plugin has a method getViewsByContext to get views by context
         PluginManager.getInstance()
@@ -59,6 +59,14 @@ export const Example1Page: React.FC = () => {
                         );
                 }
             });
+    };
+
+    useEffect(() => {
+        refreshViews();
+        PluginManager.getInstance().registerPluginChangeListener(
+            ['@composaic/views'],
+            refreshViews
+        );
     }, []); // Empty dependency array means this effect runs once on mount
 
     return (
