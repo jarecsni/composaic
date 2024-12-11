@@ -1,23 +1,27 @@
 # Changelog
 
-## 10.0.5 (5 Nov 2024)
+## 0.11.0 (11 Dec 2024)
+
+o Reactive + progressive refactor done
+
+## 0.10.5 (5 Nov 2024)
 
 o Fix for the incorrect use of Promise.all (change to Promise.allSettled) causing a premature application initialisation
 (first failed remote manifest fetch aborted loading rest of the manifests)
 
-## 10.0.4 (20 Oct 2024)
+## 0.10.4 (20 Oct 2024)
 
 o no change (npm i was not picking up on 0.10.3 but it was a caching/time issue)
 
-## 10.0.2-3 (13 Oct 2024)
+## 0.10.2-3 (13 Oct 2024)
 
 o expose ConfigurationService.getEnv() to return environment string.
 
-## 10.0.1 (13 Oct 2024)
+## 0.10.1 (13 Oct 2024)
 
 o expose ConfigurationService
 
-## 10.0.0 (13 Oct 2024)
+## 0.10.0 (13 Oct 2024)
 
 o moving to @module-federation/enhanced requires some slight refactoring around the remote attributes
 
